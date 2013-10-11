@@ -1,7 +1,6 @@
-/**
- *
- * @author Billy
- */
+/*******************************************************
+* Enumeration of the different states
+*******************************************************/
 public enum stateEnum {
     battle,
     store,

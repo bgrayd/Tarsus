@@ -1,10 +1,10 @@
-/**
- *
- * @author Billy
- */
+/*******************************************************
+* Class for the player's character, child of Character
+*   class.  requestAction function gets user input.
+*******************************************************/
 public class PlayerCharacter extends Character{
     
-    PlayerCharacter(String name, int level, String bio, int health, int strength, int agility, int magic,item[] itemsHeld)
+    PlayerCharacter(String name, int level, String bio, int health, int strength, int agility, int magic,Item[] itemsHeld)
     {
         super(name, level, bio, health, strength, agility, magic, itemsHeld);
     }
