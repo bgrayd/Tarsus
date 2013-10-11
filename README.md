@@ -1,2 +1,1 @@
-Tarsus
-======
+Tarsus is a group project for a Distributed Client Server Programming class.
