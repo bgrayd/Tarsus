@@ -14,7 +14,7 @@ public class AresCharacter extends Character{
      *******************************************************/
     actionEnum requestAction()
     {
-        return actionEnum.attack;
+        return actionEnum.ATTACK;
     }
     
 }
