@@ -7,10 +7,13 @@ public enum actionEnum {
     goToBlacksmith,
     attack,
     useItem,
-    equipItem,
+    equipWeapon,
+    equipArmor,
     browseStore,
     buyItem,
     sellItem,
     upgradeItem,
-    upgradeStat    
+    upgradeStat,
+    login,
+    logout
 }
