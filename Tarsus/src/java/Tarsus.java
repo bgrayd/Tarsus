@@ -9,6 +9,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -29,9 +30,9 @@ public class Tarsus extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        PrintWriter out = response.getWriter();
+        PrintWriter out = response.getWriter();        
         try {
-            /* TODO output your page here. You may use following sample code. */
+            /* TODO output your page here. You may use following sample code. 
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
@@ -40,7 +41,19 @@ public class Tarsus extends HttpServlet {
             out.println("<body>");
             out.println("<h1>Servlet Tarsus at " + request.getContextPath() + "</h1>");
             out.println("</body>");
-            out.println("</html>");
+            out.println("</html>");*/
+        
+            HttpSession session = request.getSession();
+            GameInstance instance = (GameInstance)session.getAttribute("GameInstance");
+            
+            if(instance == null)
+            {
+                instance = new GameInstance();
+                session.setAttribute("GameInstance", (Object)instance);
+            }
+            
+            instance.advanceGame(out, request);
+
         } finally {            
             out.close();
         }
