@@ -68,7 +68,7 @@ public class GameInstance {
 
                 case DECISION:
                     //this state is for asking what to do next
-                    nextState = betweenStatesState(out, request);
+                    nextState = decisionState(out, request);
                     break;
 
                 case BLACKSMITH:
@@ -209,7 +209,7 @@ public class GameInstance {
      * @param request the servlet request
      * @return the next state
      ***************************************************/
-    stateEnum betweenStatesState(PrintWriter out, HttpServletRequest request) {
+    stateEnum decisionState(PrintWriter out, HttpServletRequest request) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

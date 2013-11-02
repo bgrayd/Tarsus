@@ -3,41 +3,34 @@
 *******************************************************/
 class Item {
     String name;
-    int itemId, type, upgradeCnt;
-    Double strengthBonus, agilityBonus, magicBonus;
+    int itemId, type, upgradeCount, strength, agility, magic;
     
-    Item(String name, int itemId, int type, Double strengthBonus, Double agilityBonus, Double magicBonus)
+    //type: 0 = error, 1 = weapon, 2 = armor, 3 = consumable
+    Item(String name, int itemId, int type, int upgradeCount, int strength, int agility, int magic)
     {
         
     }
-    
-    void upgradeStrength(int bonus)
+
+    int getType()
     {
-        
+        return type;
+    }
+    int getUpgradeCount()
+    {
+        return upgradeCount;
+    }
+    int getStrength()
+    {
+        return strength;
     }
     
-    void upgradeAgility(int bonus)
+    int getAgility()
     {
-        
+        return agility;
     }
     
-    void upgradeMagic(int bonus)
+    int getMagic()
     {
-        
-    }
-    
-    Double getStrength()
-    {
-        return strengthBonus;
-    }
-    
-    Double getAgility()
-    {
-        return agilityBonus;
-    }
-    
-    Double getMagic()
-    {
-        return magicBonus;
+        return magic;
     }
 }

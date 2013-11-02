@@ -5,11 +5,12 @@
 *******************************************************/
 public abstract class Character {
     Item[] itemsHeld;
-    int health, strength, agility, magic, level;
+    int level, health, strength, agility, magic;
     Item[] equipedItems;
     String name, bio;
+    Item weapon, armor;
     
-    Character(String name, int level, String bio, int health, int strength, int agility, int magic,Item[] itemsHeld)
+    Character(String name, String bio, int level, int health, int strength, int agility, int magic, Item[] itemsHeld, Item weapon, Item armor)
     {
         
     }
@@ -27,7 +28,18 @@ public abstract class Character {
      **************************************************/
     void equipItem(Item newItem)
     {
-        
+        if (newItem.getType() == 1)
+        {
+            weapon = newItem;
+        }
+        else if (newItem.getType() == 2)
+        {
+            armor = newItem;
+        }
+        else
+        {
+            //print something about how you can't do this
+        }
     }
     
     /***************************************************
@@ -36,12 +48,19 @@ public abstract class Character {
      **************************************************/
     void useItem(Item itemToUse)
     {
-        
+        if (itemToUse.getType() == 3)
+        {
+            //do whatever the item does
+        }
+        else
+        {
+            //cannot use that item
+        }
     }
     
     void setHealth(int health)
     {
-        
+        this.health = health;
     }
     
     int getHealth()
@@ -51,7 +70,7 @@ public abstract class Character {
     
     void setStrength(int strength)
     {
-        
+        this.strength = strength;
     }
     
     int getStrength()
@@ -61,7 +80,7 @@ public abstract class Character {
     
     void setAgility(int agility)
     {
-        
+        this.agility = agility;
     }
     
     int getAgility()
@@ -71,7 +90,7 @@ public abstract class Character {
     
     void setMagic(int magic)
     {
-        
+        this.magic = magic;
     }
     
     int getMagic()
@@ -81,7 +100,7 @@ public abstract class Character {
             
     void setLevel(int level)
     {
-        
+        this.level = level;
     }
     
     int getLevel()

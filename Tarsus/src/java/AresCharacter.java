@@ -3,9 +3,10 @@
 *   contains the AI
 *******************************************************/
 public class AresCharacter extends Character{
-    AresCharacter(String name, int level, String bio, int health, int strength, int agility, int magic,Item[] itemsHeld)
+    
+    AresCharacter(String name, String bio, int level, int health, int strength, int agility, int magic, Item[] itemsHeld, Item weapon, Item armor)
     {
-        super(name, level, bio, health, strength, agility, magic, itemsHeld);
+        super(name, bio, level, health, strength, agility, magic, itemsHeld, weapon, armor);
     }
     
     /*******************************************************
