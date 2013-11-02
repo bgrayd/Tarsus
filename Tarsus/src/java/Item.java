@@ -3,10 +3,11 @@
 *******************************************************/
 class Item {
     String name;
+    boolean isEquipt;
     int itemId, type, upgradeCount, strength, agility, magic;
     
     //type: 0 = error, 1 = weapon, 2 = armor, 3 = consumable
-    Item(String name, int itemId, int type, int upgradeCount, int strength, int agility, int magic)
+    Item(String name, int itemId, int type, int upgradeCount, boolean isEquipt, int strength, int agility, int magic)
     {
         
     }
@@ -18,6 +19,25 @@ class Item {
     int getUpgradeCount()
     {
         return upgradeCount;
+    }
+    void equipItem()
+    {
+        isEquipt = true;
+    }
+    void unequipItem()
+    {
+        isEquipt = false;
+    }
+    boolean isEquipt()
+    {
+        if (isEquipt == true)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
     int getStrength()
     {
@@ -33,4 +53,5 @@ class Item {
     {
         return magic;
     }
+    
 }

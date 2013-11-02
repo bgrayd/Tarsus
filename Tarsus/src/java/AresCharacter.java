@@ -2,11 +2,11 @@
 * Ares AI character class for storing the enemy and 
 *   contains the AI
 *******************************************************/
-public class AresCharacter extends Character{
+public class AresCharacter extends Character {
     
-    AresCharacter(String name, String bio, int level, int health, int strength, int agility, int magic, Item[] itemsHeld, Item weapon, Item armor)
+    AresCharacter(String name, String bio, int level, int health, int strength, int agility, int magic, Item[] itemsHeld)
     {
-        super(name, bio, level, health, strength, agility, magic, itemsHeld, weapon, armor);
+        super(name, bio, level, health, strength, agility, magic, itemsHeld);
     }
     
     /*******************************************************

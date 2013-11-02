@@ -4,13 +4,11 @@
 *   by child classes
 *******************************************************/
 public abstract class Character {
-    Item[] itemsHeld;
-    int level, health, strength, agility, magic;
-    Item[] equipedItems;
     String name, bio;
-    Item weapon, armor;
+    int level, health, strength, agility, magic;
+    Item[] itemsHeld;
     
-    Character(String name, String bio, int level, int health, int strength, int agility, int magic, Item[] itemsHeld, Item weapon, Item armor)
+    Character(String name, String bio, int level, int health, int strength, int agility, int magic, Item[] itemsHeld)
     {
         
     }
@@ -28,17 +26,39 @@ public abstract class Character {
      **************************************************/
     void equipItem(Item newItem)
     {
-        if (newItem.getType() == 1)
+        if (newItem.isEquipt() == true)
         {
-            weapon = newItem;
+            //say something about item is already equipt
         }
-        else if (newItem.getType() == 2)
-        {
-            armor = newItem;
-        }
-        else
-        {
-            //print something about how you can't do this
+        else{ //newItem.isEquipt() == false
+            if (newItem.getType() == 1)
+            {
+                for (int i = 0; i < itemsHeld.length; i++)
+                {
+                    if (itemsHeld[i].getType() == 1 && itemsHeld[i].isEquipt() == true)
+                    {
+                        itemsHeld[i].unequipItem();
+                        break;
+                    }
+                }
+                newItem.equipItem();
+            }
+            else if (newItem.getType() == 2)
+            {
+                for (int i = 0; i < itemsHeld.length; i++)
+                {
+                    if (itemsHeld[i].getType() == 2 && itemsHeld[i].isEquipt() == true)
+                    {
+                        itemsHeld[i].unequipItem();
+                        break;
+                    }
+                }
+                newItem.equipItem();
+            }
+            else
+            {
+                //print something about how you can't do this
+            }
         }
     }
     
@@ -58,11 +78,19 @@ public abstract class Character {
         }
     }
     
+    void setLevel(int level)
+    {
+        this.level = level;
+    }
+    int getLevel()
+    {
+        return level;
+    }
+    
     void setHealth(int health)
     {
         this.health = health;
     }
-    
     int getHealth()
     {
         return health;
@@ -72,7 +100,6 @@ public abstract class Character {
     {
         this.strength = strength;
     }
-    
     int getStrength()
     {
         return strength;
@@ -82,7 +109,6 @@ public abstract class Character {
     {
         this.agility = agility;
     }
-    
     int getAgility()
     {
         return agility;
@@ -92,20 +118,9 @@ public abstract class Character {
     {
         this.magic = magic;
     }
-    
     int getMagic()
     {
         return magic;
-    }
-            
-    void setLevel(int level)
-    {
-        this.level = level;
-    }
-    
-    int getLevel()
-    {
-        return level;
     }
     
 }
