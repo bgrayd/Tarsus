@@ -1,0 +1,26 @@
+
+/* Grids for Alignment */
+
+.grid1 {width: 10%;}
+.grid2 {width: 20%;}
+.grid3 {width: 30%;}
+.grid4 {width: 40%;}
+.grid5 {width: 50%;}
+.grid6 {width: 60%;}
+.grid7 {width: 70%;}
+.grid8 {width: 80%;}
+.grid9 {width: 90%;}
+.grid10 {width: 100%;}
+
+.gridHalf{width: 50%; float:left; display: block;}
+
+.centeredHead {margin-left: auto; margin-right: auto;}
+
+.centered{margin-left: auto; margin-right: auto;}
+
+.grid1, .grid2, .grid3, .grid4, .grid5, .grid6, .grid7, .grid8, .grid9, .grid10 
+{
+	margin: 0 1% 3% 0;
+	float: left;
+	display: block;
+}
