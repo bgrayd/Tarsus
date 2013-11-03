@@ -1,0 +1,245 @@
+/* 
+	New: 
+	Primary: #2f3256
+	Seconday:
+	Old:
+	Header: #606060
+		Text Color: rgba(105,103,103,0.99)
+	Background: #f0f0f0
+	Button: #4c4b4b
+*/
+
+h1,caption {
+    margin: 0;
+}
+
+h3 {font-family: "Sanchez";}
+
+html {
+	font-family: sans-serif;
+	margin: 0 auto 0 auto; 
+	padding: 0em; 
+	/*text-align: center; */
+	background: #f0f0f0;
+	text-size: 1.5em;
+	color:#000000;
+	/*max-width: 2200px;  */
+		min-width: 1050px;  /* 800px */
+}
+
+p{
+	font-family: "Sanchez"
+}
+
+#bioLimitID{
+	color: #767474;
+	font-size: .85em;
+}
+
+
+#header{
+	
+	background: #606060;
+	padding: 1em;
+	margin: 0px;
+	font-family: "Sanchez";
+	color:#f1f1f1;
+	font-size: 1.2em;
+}
+
+#title {
+	font-family: "Sanchez";
+	text-align: center; 
+	color: rgba(105,103,103,0.99);
+}
+
+#tarsusTitle
+{
+	text-decoration: none;
+	font-family: "Sanchez";
+	text-align: center;
+	color: #fcfcfc;
+	background: #606060;
+	font-size: 1em;
+	border:#606060;
+	border-radius: 39px;
+	border-style: solid;
+	margin: 0 2.063em 0 0;
+
+}
+#tarsusTitle:hover
+{
+	font-family: "Sanchez";
+	text-decoration: none;
+	text-align: center;
+	color: #a5a4a4;
+	background: #606060;
+	font-size: 1em;
+	border:#606060;
+	border-radius: 39px;
+	border-style: solid;
+	margin: 0 2.063em 0 0;
+
+}
+
+#table{
+	font-family: "Sanchez";
+	border: .2em solid;
+	border-color: #a5a4a4;
+	border-collapse: collapsed;
+	border-radius: .5em;
+	
+}
+#table td, th{
+	padding: .65em;
+	
+}
+}
+
+.colorBox
+{
+	background: #dfdfdf;
+}
+
+/*Styling for a generic button  */
+.button
+{
+	font-family: "Sanchez";
+	text-decoration: none;
+	text-align: center;
+	color: #3e3d3d;
+	background: #f6f6f6;
+	font-size: 1em;
+	padding:.6em;
+	border:#f6f6f6;
+	border-radius: 39px;
+	border-style: solid;
+	margin: 0 2.063em 0 0;
+}
+.button:hover
+{
+	font-family: "Sanchez";
+	text-decoration: none;
+	text-align: center;
+	color: #fcfcfc;
+	background: #a2a1a1;
+	font-size: 1em;
+	padding:.6em;
+	border:#a2a1a1;
+	border-radius: 39px;
+	border-style: solid;
+	margin: 0 2.063em 0 0;
+}
+
+/* Styling for the two butttons used on the front page */
+.frontPageButton
+{
+	font-family: "Sanchez";
+	text-decoration: none;
+	text-align: center;
+	color: #fcfcfc;
+	background: #4c4b4b;
+	font-size: 1.5em;
+	padding:.6em;
+	border:#fcfcfc;
+	border-radius: 39px;
+	border-style: solid;
+}
+.frontPageButton:hover
+{
+	font-family: "Sanchez";
+	text-decoration: none;
+	text-align: center;
+	color: #4c4b4b;
+	background: #fcfcfc;
+	font-size: 1.5em;
+	padding:.6em;
+	border:#4c4b4b;
+	border-radius: 39px;
+	border-style: solid;
+}
+
+/* CSS for the Sign Up button */
+.signUpButton
+{
+	font-family: "Sanchez";
+	text-decoration: none;
+	text-align: center;
+	color: #fcfcfc;
+	background: #4c4b4b;
+	font-size: 1.1em;
+	padding:.6em;
+	border:#fcfcfc;
+	border-radius: 39px;
+	border-style: solid;
+}
+
+.signUpButton:hover
+{
+	font-family: "Sanchez";
+	text-decoration: none;
+	text-align: center;
+	color: #4c4b4b;
+	background: #fcfcfc;
+	font-size: 1.1em;
+	padding:.6em;
+	border:#4c4b4b;
+	border-radius: 39px;
+	border-style: solid;
+}
+
+/* Styling for the main navigation buttons */
+.profileButton
+{
+	font-family: "Sanchez";
+	text-decoration: none;
+	text-align: center;
+	color: #fcfcfc;
+	background: #4c4b4b;
+	font-size: 1.1em;
+	padding:.6em;
+	border:#fcfcfc;
+	border-radius: 39px;
+	border-style: solid;
+}
+.profileButton:hover
+{
+	font-family: "Sanchez";
+	text-decoration: none;
+	text-align: center;
+	color: #4c4b4b;
+	background: #fcfcfc;
+	font-size: 1.1em;
+	padding:.6em;
+	border:#4c4b4b;
+	border-radius: 39px;
+	border-style: solid;
+}
+
+/* Styling for the  butttons used on the tables  */
+.tableButton
+{
+	font-family: "Sanchez";
+	text-decoration: none;
+	text-align: center;
+	color: #fcfcfc;
+	background: #4c4b4b;
+	font-size: 1.1em;
+	padding:.3em;
+	border:#fcfcfc;
+	border-radius: 39px;
+	border-style: solid;
+}
+.tableButton:hover
+{
+	font-family: "Sanchez";
+	text-decoration: none;
+	text-align: center;
+	color: #4c4b4b;
+	background: #fcfcfc;
+	font-size: 1.1em;
+	padding:.3em;
+	border:#4c4b4b;
+	border-radius: 39px;
+	border-style: solid;
+}

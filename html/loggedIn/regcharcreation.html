@@ -1,0 +1,52 @@
+<html>
+	<head>
+	<!-- Call normalize.css -->
+	<link rel="stylesheet" href="./css/normalize.css" type="text/css" media="screen">
+	<!-- Import Font to be used in titles and buttons -->
+	<link href='http://fonts.googleapis.com/css?family=Sanchez' rel='stylesheet' type='text/css'>
+	<link href='http://fonts.googleapis.com/css?family=Prosto+One' rel='stylesheet' type='text/css'>
+	<!-- Call style.css -->
+	<link rel="stylesheet" href="../css/grid.css" type="text/css" media="screen">
+	<!-- Call style.css -->
+	<link rel="stylesheet" href="../css/style.css" type="text/css" media="screen">
+	<title> Tarsus </title>
+	</head>
+	<body>
+		<div id="header" class="grid10" align="right">
+			<a href="profile.html" id="tarsusTitle"> USERNAME </a> 
+			<a class="button" href="../index.html"> Log Out </a> </div>
+		<div class="grid1"> </div>
+		<div class="grid8 centered">
+		<h1 id="title" class="centered">Character Creation</h1>
+		
+		<div class="grid2"> </div>
+		<form method="post">
+		<div class="grid6" align="center">
+			<h3> Level 1 </h3>
+			<p> Experience Points to Allocate: 5
+			</p>
+			<p> 
+				Name: <input type="text" name="name"/>
+			</p>
+			<p> 
+				Strength: <input type="number" name="name"min="0" max="100" value="0"/>
+			</p> 
+			<p> 
+				Agility: <input type="number" name="agility"min="0" max="100" value="0"/>
+			</p>  
+			<p> 
+				Magic: <input type="number" name="magic" min="0" max="100" value="0"/>
+			</p>   
+			<p>
+				Biography:<textarea name="bio" cols="35" rows="3" maxlength="300"> </textarea> <br /> <a id="bioLimitID">  (Max of 300 Chars)</a>
+			</p>
+		</div>
+		<div class="grid10" align="center">
+			<a href="continuechar.html" class=frontPageButton>Create Character</a>
+		</div>
+		</form>
+		</div>
+		<div class="grid1"> </div>
+	</body>
+	
+</html>
