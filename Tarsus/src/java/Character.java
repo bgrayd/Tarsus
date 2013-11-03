@@ -6,6 +6,7 @@
 public abstract class Character {
     String name, bio;
     int level, health, strength, agility, magic;
+    int timesAttacked, timesSwitchedToStrength, timesSwitchedToAgility, timesSwitchedToMagic;
     Item[] itemsHeld;
     
     Character(String name, String bio, int level, int health, int strength, int agility, int magic, Item[] itemsHeld)

@@ -12,6 +12,10 @@ class Item {
         
     }
 
+    String getName()
+    {
+        return name;
+    }
     int getType()
     {
         return type;
