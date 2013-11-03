@@ -396,13 +396,15 @@ public class GameInstance {
             String username = request.getParameter("username");
             String findUsername = "SELECT username FROM Login "
                     + "WHERE username = \"" + username + "\";";
-            /*if(!isValidString(username) || )
+            ResultSet result = sqlQuery(findUsername);
+            // Check to see if the username is valid
+            if(!isValidString(username) || !(result.next()))
             {
                out.println(accountPageBegin + 
                         "<h3 id=\"title\" class=\"centered\"> Invalid Username "
                        + "</h3 \n" + accountPageEnd);
             }
-            */ 
+             
             int password = request.getParameter("password").hashCode();
             int confirmPassword = request.getParameter("confirmpassword").hashCode();
             if(password != confirmPassword){
@@ -413,7 +415,13 @@ public class GameInstance {
             }
             String command = "INSERT INTO Login VALUES (" + username + ", "
                     + password +");";
-            return stateEnum.LOGIN;
+            if(sqlCommand(command))
+                return stateEnum.LOGIN;
+            else{
+                out.println("<h1> ERROR </h1>");
+                return stateEnum.ACCOUNT_CREATION;
+                        
+            }
         }
     }
     
