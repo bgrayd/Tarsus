@@ -212,6 +212,28 @@ public class GameInstance {
      ***************************************************/
     private stateEnum storeState(PrintWriter out, HttpServletRequest request) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		
+		// have store level as well as the items be static so that it is the same each time the player comes back to the 
+		// store unless the player has increased in level
+		/*static store_level = 1;
+		const int STORE_SIZE = 20;
+		static item[] item_array = new item[STORE_SIZE];
+		
+		// if level has changed create a new item inventory for the store
+		// based on some hash function of the character's level
+		if(playerChar.getLevel() != store_level)
+		{
+			store_level = playerChar.getLevel();
+			for(int i = 0; i < STORE_SIZE; i++)
+				{
+				// need to place the parameters for how each item could be created
+				item_array[i] = new Item(name = "", id = null, type = (i % 9), upgradeCount = 0, strength = , agility = , magic =  );
+				}
+		}
+		
+		
+		// if item bought, add to inventory
+		*/
     }
 
     /****************************************************

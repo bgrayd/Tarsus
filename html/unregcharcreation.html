@@ -11,6 +11,23 @@
 	<link rel="stylesheet" href="css/style.css" type="text/css" media="screen">
 	<title> Tarsus </title>
 	</head>
+	<script>
+		function validateForm()
+		{
+		
+			var strength = parseInt(document.forms["createCharacterForm"]["strength"].value); 
+			var agility = parseInt(document.forms["createCharacterForm"]["agility"].value);
+			var magic = parseInt(document.forms["createCharacterForm"]["magic"].value);
+			var total = strength + agility + magic;
+			alert("Total Experience points used: " + total);
+			if(total > maxValue)
+			{
+				alert("Cannot use more than" + maxValue + " experience points.");
+				return false;
+			}
+		
+		}
+		</script>
 	<body>
 		<div id="header" class="grid10" align="right">
 			<a href="index.html" id="tarsusTitle"> TARSUS </a> 
@@ -23,7 +40,7 @@
 			<a href="signup.html">here</a>.
 		</p>
 		<div class="grid2"> </div>
-		<form method="post">
+		<form name="createCharacterForm" action="GameInstance.java" onsubmit="return validateForm()" method="post">
 		<div class="grid6" align="center">
 			<p> Experience Points to Allocate: 5
 			</p>
@@ -31,24 +48,26 @@
 				Name: <input type="text" name="name"/>
 			</p>
 			<p> 
-				Strength: <input type="number" name="name"min="0" max="100" value="0"/>
+				Strength: <input type="number" id="strengthForm" name="strength"min="0" max="100" value="0"/>
 			</p> 
 			<p> 
-				Agility: <input type="number" name="agility"min="0" max="100" value="0"/>
+				Agility: <input type="number" id="agilityForm" name="agility"min="0" max="100" value="0"/>
 			</p>  
 			<p> 
-				Magic: <input type="number" name="magic" min="0" max="100" value="0"/>
+				Magic: <input type="number" id="magicForm" name="magic" min="0" max="100" value="0"/>
 			</p>   
 			<p>
 				Biography:<textarea name="bio" cols="35" rows="3" maxlength="300"> </textarea> <br /> <a id="bioLimitID">  (Max of 300 Chars)</a>
 			</p>
 		</div>
 		<div class="grid10" align="center">
-			<a href="uccsuccess.html" class=frontPageButton>Create Character</a>
+			<input type="submit" class=frontPageButton  value="Create Character">
 		</div>
 		</form>
 		</div>
 		<div class="grid1"> </div>
+		
+		
 	</body>
 	
 </html>
