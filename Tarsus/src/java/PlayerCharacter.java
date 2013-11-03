@@ -4,9 +4,9 @@
 *******************************************************/
 public class PlayerCharacter extends Character {
     
-    PlayerCharacter(String name, String bio, int level, int health, int strength, int agility, int magic, Item[] itemsHeld)
+    PlayerCharacter(String name, String bio, int level, int health, int strength, int agility, int magic, Item[] itemsHeld, Item weapon, Item armor, int timesAttacked, int timesSwitchedToStrength, int timesSwitchedToAgility, int timesSwitchedToMagic)
     {
-        super(name, bio, level, health, strength, agility, magic, itemsHeld);
+        super(name, bio, level, health, strength, agility, magic, itemsHeld, weapon, armor, timesAttacked, timesSwitchedToStrength, timesSwitchedToAgility, timesSwitchedToMagic);
     }
     
     /*******************************************************

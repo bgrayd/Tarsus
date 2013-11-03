@@ -3,46 +3,37 @@
 *******************************************************/
 class Item {
     String name;
-    boolean isEquipt;
-    int itemId, type, upgradeCount, strength, agility, magic;
+    int itemId, type, upgradeCount, strength, agility, magic, health;
+    int CONSTANT_upgradeMax = 3;
+    int CONSTANT_potionHeal = 20; //scalar
     
-    //type: 0 = error, 1 = weapon, 2 = armor, 3 = consumable
-    Item(String name, int itemId, int type, int upgradeCount, boolean isEquipt, int strength, int agility, int magic)
+    Item(String name, int itemId, int type, int upgradeCount, int strength, int agility, int magic, int health)
     {
-        
+        this.name = name;
+        this.itemId = itemId;
+        this.type = type; //type: 0 = error, 1 = weapon, 2 = armor, 3 = consumable
+        this.upgradeCount = upgradeCount;
+        this.strength = strength;
+        this.agility = agility;
+        this.magic = magic;
+        this.health = health;
     }
 
     String getName()
     {
         return name;
     }
+    
     int getType()
     {
         return type;
     }
+    
     int getUpgradeCount()
     {
         return upgradeCount;
     }
-    void equipItem()
-    {
-        isEquipt = true;
-    }
-    void unequipItem()
-    {
-        isEquipt = false;
-    }
-    boolean isEquipt()
-    {
-        if (isEquipt == true)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
+    
     int getStrength()
     {
         return strength;
@@ -56,6 +47,10 @@ class Item {
     int getMagic()
     {
         return magic;
+    }
+    int getHeal()
+    {
+        return CONSTANT_potionHeal * health;
     }
     
 }
