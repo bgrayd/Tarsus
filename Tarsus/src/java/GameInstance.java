@@ -212,17 +212,11 @@ public class GameInstance {
      ***************************************************/
     private stateEnum storeState(PrintWriter out, HttpServletRequest request) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-<<<<<<< HEAD
+
 		/*
 		// have store level as well as the items be static so that it is the same each time the player comes back to the 
 		// store unless the player has increased in level
 		static store_level = 1;
-=======
-		
-		// have store level as well as the items be static so that it is the same each time the player comes back to the 
-		// store unless the player has increased in level
-		/*static store_level = 1;
->>>>>>> origin/master
 		const int STORE_SIZE = 20;
 		static item[] item_array = new item[STORE_SIZE];
 		
@@ -234,11 +228,7 @@ public class GameInstance {
 			for(int i = 0; i < STORE_SIZE; i++)
 				{
 				// need to place the parameters for how each item could be created
-<<<<<<< HEAD
 				item_array[i] = new Item(name = "", id = null, type = (i % 9), upgradeCount = 0, strength = 0, agility = 0, magic = 0 );
-=======
-				item_array[i] = new Item(name = "", id = null, type = (i % 9), upgradeCount = 0, strength = , agility = , magic =  );
->>>>>>> origin/master
 				}
 		}
 		
@@ -330,7 +320,7 @@ public class GameInstance {
     
 	String maxValueScript(int value)
 	{
-	return ("<script> var maxValue=" + (String)(value) +";</script>");
+	return ("<script> var maxValue=" + Integer.toString(value) +";</script>");
 	}
 	
 }
