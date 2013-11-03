@@ -6,13 +6,21 @@
 import java.io.PrintWriter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.sql.*;
+//Pulled from inclass exmple
+import database.*;
 
 public class GameInstance {
     PlayerCharacter playerChar;
     AresCharacter aresChar;
     stateEnum currentState;
     String accountName;
+
     stateEnum startingState;
+
+    DBConnections dataSource;
+    Connection conn;
+
     
     GameInstance()
     {
@@ -20,6 +28,34 @@ public class GameInstance {
         aresChar = null;
         currentState = stateEnum.INIT;
         accountName = null;
+    }
+    
+    /****************************************************
+     * Connect to the database using class variables
+     * 
+     ***************************************************/
+    void connectDB(){
+        dataSource = DBConnections.getInstance();      
+        conn = dataSource.getConnection();
+    }  
+    
+    ResultSet sqlQuery(String query){
+        ResultSet result = null;
+        try{
+            Statement stat = conn.createStatement();
+             result = stat.executeQuery(query);
+        }finally{
+            return result;
+        } 
+    }
+    Boolean sqlCommand(String command){
+        Boolean result = null;
+        try{
+            Statement stat = conn.createStatement();
+             result = stat.execute(command);
+        }finally{
+            return result;
+        } 
     }
     
     /****************************************************
