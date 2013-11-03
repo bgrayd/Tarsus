@@ -15,7 +15,6 @@ public class GameInstance {
     AresCharacter aresChar;
     stateEnum currentState, startingState;
     String accountName;
-    stateEnum startingState;
     DBConnections dataSource;
     Connection conn;
 
