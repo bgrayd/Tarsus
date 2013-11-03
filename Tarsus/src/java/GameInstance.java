@@ -6,12 +6,19 @@
 import java.io.PrintWriter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.sql.*;
+//Pulled from inclass exmple
+import database.*;
 
 public class GameInstance {
     PlayerCharacter playerChar;
     AresCharacter aresChar;
     stateEnum currentState, startingState;
     String accountName;
+    stateEnum startingState;
+    DBConnections dataSource;
+    Connection conn;
+
     
     GameInstance()
     {
@@ -19,6 +26,34 @@ public class GameInstance {
         aresChar = null;
         currentState = stateEnum.INIT;
         accountName = null;
+    }
+    
+    /****************************************************
+     * Connect to the database using class variables
+     * 
+     ***************************************************/
+    void connectDB(){
+        dataSource = DBConnections.getInstance();      
+        conn = dataSource.getConnection();
+    }  
+    
+    ResultSet sqlQuery(String query){
+        ResultSet result = null;
+        try{
+            Statement stat = conn.createStatement();
+             result = stat.executeQuery(query);
+        }finally{
+            return result;
+        } 
+    }
+    Boolean sqlCommand(String command){
+        Boolean result = null;
+        try{
+            Statement stat = conn.createStatement();
+             result = stat.execute(command);
+        }finally{
+            return result;
+        } 
     }
     
     /****************************************************
@@ -315,7 +350,72 @@ public class GameInstance {
      * @return the next state
      ***************************************************/
     stateEnum accountCreation(PrintWriter out, HttpServletRequest request) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        String accountPageBegin = "<html>\n" +
+            "	<head>\n" +
+            "	<!-- Call normalize.css -->\n" +
+            "	<link rel=\"stylesheet\" href=\"css/normalize.css\" type=\"text/css\" media=\"screen\">\n" +
+            "	<!-- Import Font to be used in titles and buttons -->\n" +
+            "	<link href='http://fonts.googleapis.com/css?family=Sanchez' rel='stylesheet' type='text/css'>\n" +
+            "	<link href='http://fonts.googleapis.com/css?family=Prosto+One' rel='stylesheet' type='text/css'>\n" +
+            "	<!-- Call style.css -->\n" +
+            "	<link rel=\"stylesheet\" href=\"css/grid.css\" type=\"text/css\" media=\"screen\">\n" +
+            "	<!-- Call style.css -->\n" +
+            "	<link rel=\"stylesheet\" href=\"css/style.css\" type=\"text/css\" media=\"screen\">\n" +
+            "	<title> Tarsus </title>\n" +
+            "	</head>\n" +
+            "	<div id=\"header\" class=\"grid10\" align=\"right\"> \n" +
+            "		<a href=\"index.html\" id=\"tarsusTitle\"> TARSUS </a> \n" +
+            "		<a class=\"button\" href=\"login.html\"> Log In </a> </div>\n" +
+            "	<div class=\"grid1\"> </div>\n" +
+            "	<div class=\"grid8 centered\">\n" +
+            "		<h1 id=\"title\" class=\"centered\"> Sign Up Below</h1>\n";
+        String accountPageEnd = 
+            "		<form method=\"post\" action=\"Tarsus\"> \n" +
+            "			<p align=\"center\"> \n" +
+            "				Username: <input name=\"username\" type=\"text\" /> \n" +
+            "			</p>\n" +
+            "			<p align=\"center\"> \n" +
+            "				Password: <input name=\"password\" type=\"password\" /> \n" +
+            "			</p>\n" +
+            "			<p align=\"center\"> \n" +
+            "				Confirm Password: <input name=\"confirmpassword\" type=\"password\" /> \n" +
+            "			</p>\n" +
+            "			<p align=\"center\"> \n" +
+            "				<input class=\"signUpButton\" value=\"Sign Up\" type=\"submit\"/> \n" +
+            "			</p>\n" +
+            "		</form>\n" +
+            "	</div>\n" +
+            "	<div class=\"grid1\"> </div>\n" +
+            "	\n" +
+            "</html>";
+        if(startingState != stateEnum.ACCOUNT_CREATION)
+        {
+            out.println(accountPageBegin + accountPageEnd);
+            return stateEnum.ACCOUNT_CREATION;
+        }
+        else{
+            String username = request.getParameter("username");
+            String findUsername = "SELECT username FROM Login "
+                    + "WHERE username = \"" + username + "\";";
+            /*if(!isValidString(username) || )
+            {
+               out.println(accountPageBegin + 
+                        "<h3 id=\"title\" class=\"centered\"> Invalid Username "
+                       + "</h3 \n" + accountPageEnd);
+            }
+            */ 
+            int password = request.getParameter("password").hashCode();
+            int confirmPassword = request.getParameter("confirmpassword").hashCode();
+            if(password != confirmPassword){
+                out.println(accountPageBegin + 
+                        "<h3 id=\"title\" class=\"centered\"> The Passwords Do "
+                        + "Not Match </h3 \n" + accountPageEnd);
+                return stateEnum.ACCOUNT_CREATION;  
+            }
+            String command = "INSERT INTO Login VALUES (" + username + ", "
+                    + password +");";
+            return stateEnum.LOGIN;
+        }
     }
     
 	String maxValueScript(int value)
