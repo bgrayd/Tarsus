@@ -215,10 +215,6 @@ public class GameInstance {
      ***************************************************/
     private stateEnum storeState(PrintWriter out, HttpServletRequest request) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-<<<<<<< HEAD
-=======
-
->>>>>>> origin/master
 		/*
 		// have store level as well as the items be static so that it is the same each time the player comes back to the 
 		// store unless the player has increased in level
@@ -283,6 +279,24 @@ public class GameInstance {
 "	<link rel=\"stylesheet\" href=\"../css/style.css\" type=\"text/css\" media=\"screen\">\n" +
 "	<title> Tarsus </title>\n" +
 "	</head>\n" +
+"       <script>\n" +
+"		function validateForm()\n" +
+"		{\n" +
+"		\n" +
+"               var maxValue = %f \n" +
+"			var strength = parseInt(document.forms[\"createCharacterForm\"][\"strength\"].value); \n" +
+"			var agility = parseInt(document.forms[\"createCharacterForm\"][\"agility\"].value);\n" +
+"			var magic = parseInt(document.forms[\"createCharacterForm\"][\"magic\"].value);\n" +
+"			var total = strength + agility + magic;\n" +
+"			alert(\"Total Experience points used: \" + total);\n" +
+"			if(total > maxValue)\n" +
+"			{\n" +
+"				alert(\"Cannot use more than\" + maxValue + \" experience points.\");\n" +
+"				return false;\n" +
+"			}\n" +
+"		\n" +
+"		}\n" +
+"       </script>" + 
 "	<body>\n" +
 "		<div id=\"header\" class=\"grid10\" align=\"right\">\n" +
 "			<a href=\"profile.html\" id=\"tarsusTitle\"> Unregistered User Character Creation </a> \n" +
@@ -292,7 +306,7 @@ public class GameInstance {
 "		<h1 id=\"title\" class=\"centered\">Character Creation</h1>\n" +
 "		\n" +
 "		<div class=\"grid2\"> </div>\n" +
-"		<form method=\"post\" action=\"Tarsus\">\n" +
+"		<form name=\"createCharacterForm\" action=\"Tarsus\" onsubmit=\"return validateForm()\" method=\"post\">\n" +
 "               <input type = \"hidden\" name = \"level\"> value=\"%f\"/>\n"+
 "		<div class=\"grid6\" align=\"center\">\n" +
 "			<h3> Level %f </h3>\n" +
@@ -328,7 +342,7 @@ public class GameInstance {
             //create new page for it
             int level = (int)(Math.random()*50);
             
-            out.printf(StartPage);
+            out.printf(StartPage, level, level*constantPtsPerLevel, level*constantPtsPerLevel, level);
             
             return stateEnum.UNREGISTERED_CHARACTER_CREATION;
         }
@@ -405,7 +419,6 @@ public class GameInstance {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
-<<<<<<< HEAD
     
     /****************************************************
      * Registered user creation state
@@ -426,11 +439,9 @@ public class GameInstance {
         return toBeReturned;
     }
     
-=======
 	String maxValueScript(int value)
 	{
 	return ("<script> var maxValue=" + Integer.toString(value) +";</script>");
 	}
 	
->>>>>>> origin/master
 }
