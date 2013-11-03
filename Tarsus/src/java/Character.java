@@ -4,15 +4,28 @@
 *   by child classes
 *******************************************************/
 public abstract class Character {
-    Item[] itemsHeld;
-    int level, health, strength, agility, magic;
-    Item[] equipedItems;
     String name, bio;
+    int level, health, maxHealth, strength, agility, magic;
+    int timesAttacked, timesSwitchedToStrength, timesSwitchedToAgility, timesSwitchedToMagic;
+    Item[] itemsHeld;
     Item weapon, armor;
     
-    Character(String name, String bio, int level, int health, int strength, int agility, int magic, Item[] itemsHeld, Item weapon, Item armor)
+    Character(String name, String bio, int level, int health, int strength, int agility, int magic, Item[] itemsHeld, Item weapon, Item armor, int timesAttacked, int timesSwitchedToStrength, int timesSwitchedToAgility, int timesSwitchedToMagic)
     {
-        
+        this.name = name;
+        this.bio = bio;
+        this.level = level; //should be 1 for logged in uers
+        this.health = health;
+        this.strength = strength;
+        this.agility = agility;
+        this.magic = magic;
+        this.itemsHeld = itemsHeld;
+        this.weapon = weapon;
+        this.armor = armor;
+        this.timesAttacked = timesAttacked;
+        this.timesSwitchedToStrength = timesSwitchedToStrength;
+        this.timesSwitchedToAgility = timesSwitchedToAgility;
+        this.timesSwitchedToMagic = timesSwitchedToMagic;
     }
     
     /****************************************************
@@ -36,9 +49,9 @@ public abstract class Character {
         {
             armor = newItem;
         }
-        else
+        else //item is a consumable
         {
-            //print something about how you can't do this
+            //do nothing
         }
     }
     
@@ -50,29 +63,49 @@ public abstract class Character {
     {
         if (itemToUse.getType() == 3)
         {
-            //do whatever the item does
+            health = health + itemToUse.getHeal();
+            if (health > maxHealth)
+            {
+                health = maxHealth;
+            }
         }
-        else
+        else //item is not a consumable
         {
-            //cannot use that item
+            //do nothing
         }
+    }
+    
+    void setLevel(int level)
+    {
+        this.level = level;
+    }
+    int getLevel()
+    {
+        return level;
     }
     
     void setHealth(int health)
     {
         this.health = health;
     }
-    
     int getHealth()
     {
         return health;
+    }
+    
+    void setMaxHealth(int maxHealth)
+    {
+        this.maxHealth = maxHealth;
+    }
+    int getMaxHealth()
+    {
+        return maxHealth;
     }
     
     void setStrength(int strength)
     {
         this.strength = strength;
     }
-    
     int getStrength()
     {
         return strength;
@@ -82,7 +115,6 @@ public abstract class Character {
     {
         this.agility = agility;
     }
-    
     int getAgility()
     {
         return agility;
@@ -92,20 +124,9 @@ public abstract class Character {
     {
         this.magic = magic;
     }
-    
     int getMagic()
     {
         return magic;
-    }
-            
-    void setLevel(int level)
-    {
-        this.level = level;
-    }
-    
-    int getLevel()
-    {
-        return level;
     }
     
 }
