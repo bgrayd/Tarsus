@@ -167,7 +167,7 @@ public class GameInstance {
 		
 		// have store level as well as the items be static so that it is the same each time the player comes back to the 
 		// store unless the player has increased in level
-		static store_level = 1;
+		/*static store_level = 1;
 		const int STORE_SIZE = 20;
 		static item[] item_array = new item[STORE_SIZE];
 		
@@ -185,7 +185,7 @@ public class GameInstance {
 		
 		
 		// if item bought, add to inventory
-		
+		*/
     }
 
     /****************************************************
