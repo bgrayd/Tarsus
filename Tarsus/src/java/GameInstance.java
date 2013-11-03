@@ -119,7 +119,12 @@ public class GameInstance {
                     break;
                     
                 case ACCOUNT_CREATION:
-                    nextState = accountCreation(out, request);
+                    try{
+                    nextState = accountCreation(out, request);}
+                    catch(SQLException ex)
+                    {
+                        out.println("SQL ERROR");
+                    }
                     break;
                     
                     
@@ -449,7 +454,7 @@ public class GameInstance {
      * @param request the servlet request
      * @return the next state
      ***************************************************/
-    stateEnum accountCreation(PrintWriter out, HttpServletRequest request) {
+    stateEnum accountCreation(PrintWriter out, HttpServletRequest request) throws SQLException {
         String accountPageBegin = "<html>\n" +
             "	<head>\n" +
             "	<!-- Call normalize.css -->\n" +
@@ -497,9 +502,19 @@ public class GameInstance {
             String username = request.getParameter("username");
             String findUsername = "SELECT username FROM Login "
                     + "WHERE username = \"" + username + "\";";
-            ResultSet result = sqlQuery(findUsername);
+            
+            Boolean noResult = false;
+            try{
+                ResultSet result = sqlQuery(findUsername);
+                if(!(result.next())){
+                    noResult= true;
+                }
+            }catch(SQLException ex){
+                noResult=false;
+                out.println("SQL ERROR");
+            }
             // Check to see if the username is valid
-            if(!isValidString(username) || !(result.next()))
+            if(!isValidString(username) || noResult)
             {
                out.println(accountPageBegin + 
                         "<h3 id=\"title\" class=\"centered\"> Invalid Username "
@@ -516,6 +531,7 @@ public class GameInstance {
             }
             String command = "INSERT INTO Login VALUES (" + username + ", "
                     + password +");";
+            
             if(sqlCommand(command))
                 return stateEnum.LOGIN;
             else{
