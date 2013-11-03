@@ -10,8 +10,10 @@ import javax.servlet.http.HttpServletResponse;
 public class GameInstance {
     PlayerCharacter playerChar;
     AresCharacter aresChar;
-    stateEnum currentState;
+    stateEnum currentState, startingState;
     String accountName;
+    
+    int constantPtsPerLevel = 5;
     
     GameInstance()
     {
@@ -30,6 +32,7 @@ public class GameInstance {
     void advanceGame(PrintWriter out, HttpServletRequest request)
     {
         stateEnum nextState = currentState;
+        startingState = currentState;
         do
         {
             currentState = nextState;
@@ -134,10 +137,11 @@ public class GameInstance {
      * @param agility the agility of the character
      * @param magic  the magic of the character
      * @param itemsHeld the items held by the character
+     * @return did it work
      ***************************************************/
-    void newCharacter(String name, int level, String bio, int health, int strength, int agility, int magic,Item[] itemsHeld)
+    Boolean newCharacter(String name, int level, String bio, int health, int strength, int agility, int magic,Item[] itemsHeld)
     {
-        
+        return false;
     }
 
     
@@ -189,7 +193,88 @@ public class GameInstance {
      * @return the next state
      ***************************************************/
     stateEnum unregisteredCharacterCreationState(PrintWriter out, HttpServletRequest request) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        String StartPage = "<html>\n" +
+"	<head>\n" +
+"	<!-- Call normalize.css -->\n" +
+"	<link rel=\"stylesheet\" href=\"./css/normalize.css\" type=\"text/css\" media=\"screen\">\n" +
+"	<!-- Import Font to be used in titles and buttons -->\n" +
+"	<link href='http://fonts.googleapis.com/css?family=Sanchez' rel='stylesheet' type='text/css'>\n" +
+"	<link href='http://fonts.googleapis.com/css?family=Prosto+One' rel='stylesheet' type='text/css'>\n" +
+"	<!-- Call style.css -->\n" +
+"	<link rel=\"stylesheet\" href=\"../css/grid.css\" type=\"text/css\" media=\"screen\">\n" +
+"	<!-- Call style.css -->\n" +
+"	<link rel=\"stylesheet\" href=\"../css/style.css\" type=\"text/css\" media=\"screen\">\n" +
+"	<title> Tarsus </title>\n" +
+"	</head>\n" +
+"	<body>\n" +
+"		<div id=\"header\" class=\"grid10\" align=\"right\">\n" +
+"			<a href=\"profile.html\" id=\"tarsusTitle\"> Unregistered User Character Creation </a> \n" +
+"			<a class=\"button\" href=\"../index.html\"> Log Out </a> </div>\n" +
+"		<div class=\"grid1\"> </div>\n" +
+"		<div class=\"grid8 centered\">\n" +
+"		<h1 id=\"title\" class=\"centered\">Character Creation</h1>\n" +
+"		\n" +
+"		<div class=\"grid2\"> </div>\n" +
+"		<form method=\"post\">\n" +
+"               <input type = \"hidden\" name = \"level\"> value=\"%f\"/>\n"+
+"		<div class=\"grid6\" align=\"center\">\n" +
+"			<h3> Level %f </h3>\n" +
+"			<p> Experience Points to Allocate: %f\n" +
+"			</p>\n" +
+"			<p> \n" +
+"				Name: <input type=\"text\" name=\"name\"/>\n" +
+"			</p>\n" +
+"			<p> \n" +
+"				Strength: <input type=\"number\" name=\"name\"min=\"0\" max=\"100\" value=\"0\"/>\n" +
+"			</p> \n" +
+"			<p> \n" +
+"				Agility: <input type=\"number\" name=\"agility\"min=\"0\" max=\"100\" value=\"0\"/>\n" +
+"			</p>  \n" +
+"			<p> \n" +
+"				Magic: <input type=\"number\" name=\"magic\" min=\"0\" max=\"100\" value=\"0\"/>\n" +
+"			</p>   \n" +
+"			<p>\n" +
+"				Biography:<textarea name=\"bio\" cols=\"35\" rows=\"3\" maxlength=\"300\"> </textarea> <br /> <a id=\"bioLimitID\">  (Max of 300 Chars)</a>\n" +
+"			</p>\n" +
+"		</div>\n" +
+"		<div class=\"grid10\" align=\"center\">\n" +
+"			<a href=\"continuechar.html\" class=frontPageButton>Create Character</a>\n" +
+"		</div>\n" +
+"		</form>\n" +
+"		</div>\n" +
+"		<div class=\"grid1\"> </div>\n" +
+"	</body>\n" +
+"	\n" +
+"</html>";
+        if(startingState != stateEnum.UNREGISTERED_CHARACTER_CREATION)
+        {
+            //create new page for it
+            int level = (int)(Math.random()*50);
+            
+            out.printf(StartPage);
+            
+            return stateEnum.UNREGISTERED_CHARACTER_CREATION;
+        }
+        else
+        {
+           String name = (String) request.getAttribute("name");
+           int level = (Integer) request.getAttribute("level");
+           String bio = (String) request.getAttribute("bio");
+           int health = (Integer) request.getAttribute("health");
+           int strength = (Integer) request.getAttribute("strength");
+           int agility = (Integer) request.getAttribute("agility");
+           int magic = (Integer) request.getAttribute("magic");
+      
+           if(isValidString(name) & isValidString(bio))
+           {
+               //newCharacter(name, level,bio, health, strength, agility, magic);
+                return stateEnum.INIT;
+           }
+           else
+           {
+                return stateEnum.UNREGISTERED_CHARACTER_CREATION;
+           }
+        }
     }
 
     /****************************************************
@@ -241,6 +326,11 @@ public class GameInstance {
      ***************************************************/
     stateEnum accountCreation(PrintWriter out, HttpServletRequest request) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    Boolean isValidString(String string)
+    {
+        return true;
     }
     
 }
