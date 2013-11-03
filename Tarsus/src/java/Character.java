@@ -5,13 +5,27 @@
 *******************************************************/
 public abstract class Character {
     String name, bio;
-    int level, health, strength, agility, magic;
+    int level, health, maxHealth, strength, agility, magic;
     int timesAttacked, timesSwitchedToStrength, timesSwitchedToAgility, timesSwitchedToMagic;
     Item[] itemsHeld;
+    Item weapon, armor;
     
-    Character(String name, String bio, int level, int health, int strength, int agility, int magic, Item[] itemsHeld)
+    Character(String name, String bio, int level, int health, int strength, int agility, int magic, Item[] itemsHeld, Item weapon, Item armor, int timesAttacked, int timesSwitchedToStrength, int timesSwitchedToAgility, int timesSwitchedToMagic)
     {
-        
+        this.name = name;
+        this.bio = bio;
+        this.level = level; //should be 1 for logged in uers
+        this.health = health;
+        this.strength = strength;
+        this.agility = agility;
+        this.magic = magic;
+        this.itemsHeld = itemsHeld;
+        this.weapon = weapon;
+        this.armor = armor;
+        this.timesAttacked = timesAttacked;
+        this.timesSwitchedToStrength = timesSwitchedToStrength;
+        this.timesSwitchedToAgility = timesSwitchedToAgility;
+        this.timesSwitchedToMagic = timesSwitchedToMagic;
     }
     
     /****************************************************
@@ -27,39 +41,17 @@ public abstract class Character {
      **************************************************/
     void equipItem(Item newItem)
     {
-        if (newItem.isEquipt() == true)
+        if (newItem.getType() == 1)
         {
-            //say something about item is already equipt
+            weapon = newItem;
         }
-        else{ //newItem.isEquipt() == false
-            if (newItem.getType() == 1)
-            {
-                for (int i = 0; i < itemsHeld.length; i++)
-                {
-                    if (itemsHeld[i].getType() == 1 && itemsHeld[i].isEquipt() == true)
-                    {
-                        itemsHeld[i].unequipItem();
-                        break;
-                    }
-                }
-                newItem.equipItem();
-            }
-            else if (newItem.getType() == 2)
-            {
-                for (int i = 0; i < itemsHeld.length; i++)
-                {
-                    if (itemsHeld[i].getType() == 2 && itemsHeld[i].isEquipt() == true)
-                    {
-                        itemsHeld[i].unequipItem();
-                        break;
-                    }
-                }
-                newItem.equipItem();
-            }
-            else
-            {
-                //print something about how you can't do this
-            }
+        else if (newItem.getType() == 2)
+        {
+            armor = newItem;
+        }
+        else //item is a consumable
+        {
+            //do nothing
         }
     }
     
@@ -71,11 +63,15 @@ public abstract class Character {
     {
         if (itemToUse.getType() == 3)
         {
-            //do whatever the item does
+            health = health + itemToUse.getHeal();
+            if (health > maxHealth)
+            {
+                health = maxHealth;
+            }
         }
-        else
+        else //item is not a consumable
         {
-            //cannot use that item
+            //do nothing
         }
     }
     
@@ -95,6 +91,15 @@ public abstract class Character {
     int getHealth()
     {
         return health;
+    }
+    
+    void setMaxHealth(int maxHealth)
+    {
+        this.maxHealth = maxHealth;
+    }
+    int getMaxHealth()
+    {
+        return maxHealth;
     }
     
     void setStrength(int strength)
