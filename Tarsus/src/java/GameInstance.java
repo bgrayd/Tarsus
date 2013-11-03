@@ -215,7 +215,7 @@ public class GameInstance {
 "		<h1 id=\"title\" class=\"centered\">Character Creation</h1>\n" +
 "		\n" +
 "		<div class=\"grid2\"> </div>\n" +
-"		<form method=\"post\">\n" +
+"		<form method=\"post\" action=\"Tarsus\">\n" +
 "               <input type = \"hidden\" name = \"level\"> value=\"%f\"/>\n"+
 "		<div class=\"grid6\" align=\"center\">\n" +
 "			<h3> Level %f </h3>\n" +
@@ -328,9 +328,24 @@ public class GameInstance {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
+    
+    /****************************************************
+     * Registered user creation state
+     * @param string the string to check for validity
+     * @return the validity
+     ***************************************************/
     Boolean isValidString(String string)
     {
-        return true;
+        Boolean toBeReturned = true;
+        
+        if(string.contains("Drop"))
+            toBeReturned = false;
+        if(string.contains("Delete"))
+            toBeReturned = false;
+        if(string.contains(";"))
+            toBeReturned = false;
+        
+        return toBeReturned;
     }
     
 }
