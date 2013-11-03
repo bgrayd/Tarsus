@@ -215,6 +215,10 @@ public class GameInstance {
      ***************************************************/
     private stateEnum storeState(PrintWriter out, HttpServletRequest request) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/master
 		/*
 		// have store level as well as the items be static so that it is the same each time the player comes back to the 
 		// store unless the player has increased in level
@@ -425,7 +429,7 @@ public class GameInstance {
 =======
 	String maxValueScript(int value)
 	{
-	return ("<script> var maxValue=" + (String)(value) +";</script>");
+	return ("<script> var maxValue=" + Integer.toString(value) +";</script>");
 	}
 	
 >>>>>>> origin/master
