@@ -13,8 +13,8 @@
 	</head>
 	<script>
 <<<<<<< HEAD
-	var maxValue = 10; //temp maxValue until I can interact with the server
 =======
+	var maxValue = 10; //temp maxValue until I can interact with the server
 >>>>>>> origin/master
 		function validateForm()
 		{
@@ -24,8 +24,8 @@
 			var magic = parseInt(document.forms["createCharacterForm"]["magic"].value);
 			var total = strength + agility + magic;
 <<<<<<< HEAD
-			
 =======
+
 >>>>>>> origin/master
 			alert("Total Experience points used: " + total);
 			if(total > maxValue)
@@ -50,7 +50,7 @@
 		<div class="grid2"> </div>
 		<form name="createCharacterForm" action="GameInstance.java" onsubmit="return validateForm()" method="post">
 		<div class="grid6" align="center">
-			<p> Experience Points to Allocate: <script> document.write(maxValue) </script>
+			<p> Experience Points to Allocate: 5
 			</p>
 			<p> 
 				Name: <input type="text" name="name"/>

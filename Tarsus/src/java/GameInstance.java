@@ -6,12 +6,20 @@
 import java.io.PrintWriter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.sql.*;
+//Pulled from inclass exmple
+import database.*;
 
 public class GameInstance {
     PlayerCharacter playerChar;
     AresCharacter aresChar;
     stateEnum currentState, startingState;
     String accountName;
+    DBConnections dataSource;
+    Connection conn;
+
+    
+    int constantPtsPerLevel = 5;
     
     GameInstance()
     {
@@ -19,6 +27,34 @@ public class GameInstance {
         aresChar = null;
         currentState = stateEnum.INIT;
         accountName = null;
+    }
+    
+    /****************************************************
+     * Connect to the database using class variables
+     * 
+     ***************************************************/
+    void connectDB(){
+        dataSource = DBConnections.getInstance();      
+        conn = dataSource.getConnection();
+    }  
+    
+    ResultSet sqlQuery(String query){
+        ResultSet result = null;
+        try{
+            Statement stat = conn.createStatement();
+             result = stat.executeQuery(query);
+        }finally{
+            return result;
+        } 
+    }
+    Boolean sqlCommand(String command){
+        Boolean result = null;
+        try{
+            Statement stat = conn.createStatement();
+             result = stat.execute(command);
+        }finally{
+            return result;
+        } 
     }
     
     /****************************************************
@@ -136,10 +172,11 @@ public class GameInstance {
      * @param agility the agility of the character
      * @param magic  the magic of the character
      * @param itemsHeld the items held by the character
+     * @return did it work
      ***************************************************/
-    void newCharacter(String name, int level, String bio, int health, int strength, int agility, int magic,Item[] itemsHeld)
+    Boolean newCharacter(String name, int level, String bio, int health, int strength, int agility, int magic,Item[] itemsHeld)
     {
-        
+        return false;
     }
 
     
@@ -212,7 +249,6 @@ public class GameInstance {
      ***************************************************/
     private stateEnum storeState(PrintWriter out, HttpServletRequest request) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-
 		/*
 		// have store level as well as the items be static so that it is the same each time the player comes back to the 
 		// store unless the player has increased in level
@@ -264,7 +300,106 @@ public class GameInstance {
      * @return the next state
      ***************************************************/
     stateEnum unregisteredCharacterCreationState(PrintWriter out, HttpServletRequest request) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        String StartPage = "<html>\n" +
+"	<head>\n" +
+"	<!-- Call normalize.css -->\n" +
+"	<link rel=\"stylesheet\" href=\"./css/normalize.css\" type=\"text/css\" media=\"screen\">\n" +
+"	<!-- Import Font to be used in titles and buttons -->\n" +
+"	<link href='http://fonts.googleapis.com/css?family=Sanchez' rel='stylesheet' type='text/css'>\n" +
+"	<link href='http://fonts.googleapis.com/css?family=Prosto+One' rel='stylesheet' type='text/css'>\n" +
+"	<!-- Call style.css -->\n" +
+"	<link rel=\"stylesheet\" href=\"../css/grid.css\" type=\"text/css\" media=\"screen\">\n" +
+"	<!-- Call style.css -->\n" +
+"	<link rel=\"stylesheet\" href=\"../css/style.css\" type=\"text/css\" media=\"screen\">\n" +
+"	<title> Tarsus </title>\n" +
+"	</head>\n" +
+"       <script>\n" +
+"		function validateForm()\n" +
+"		{\n" +
+"		\n" +
+"               var maxValue = %f \n" +
+"			var strength = parseInt(document.forms[\"createCharacterForm\"][\"strength\"].value); \n" +
+"			var agility = parseInt(document.forms[\"createCharacterForm\"][\"agility\"].value);\n" +
+"			var magic = parseInt(document.forms[\"createCharacterForm\"][\"magic\"].value);\n" +
+"			var total = strength + agility + magic;\n" +
+"			alert(\"Total Experience points used: \" + total);\n" +
+"			if(total > maxValue)\n" +
+"			{\n" +
+"				alert(\"Cannot use more than\" + maxValue + \" experience points.\");\n" +
+"				return false;\n" +
+"			}\n" +
+"		\n" +
+"		}\n" +
+"       </script>" + 
+"	<body>\n" +
+"		<div id=\"header\" class=\"grid10\" align=\"right\">\n" +
+"			<a href=\"profile.html\" id=\"tarsusTitle\"> Unregistered User Character Creation </a> \n" +
+"			<a class=\"button\" href=\"../index.html\"> Log Out </a> </div>\n" +
+"		<div class=\"grid1\"> </div>\n" +
+"		<div class=\"grid8 centered\">\n" +
+"		<h1 id=\"title\" class=\"centered\">Character Creation</h1>\n" +
+"		\n" +
+"		<div class=\"grid2\"> </div>\n" +
+"		<form name=\"createCharacterForm\" action=\"Tarsus\" onsubmit=\"return validateForm()\" method=\"post\">\n" +
+"               <input type = \"hidden\" name = \"level\"> value=\"%f\"/>\n"+
+"		<div class=\"grid6\" align=\"center\">\n" +
+"			<h3> Level %f </h3>\n" +
+"			<p> Experience Points to Allocate: %f\n" +
+"			</p>\n" +
+"			<p> \n" +
+"				Name: <input type=\"text\" name=\"name\"/>\n" +
+"			</p>\n" +
+"			<p> \n" +
+"				Strength: <input type=\"number\" name=\"name\"min=\"0\" max=\"100\" value=\"0\"/>\n" +
+"			</p> \n" +
+"			<p> \n" +
+"				Agility: <input type=\"number\" name=\"agility\"min=\"0\" max=\"100\" value=\"0\"/>\n" +
+"			</p>  \n" +
+"			<p> \n" +
+"				Magic: <input type=\"number\" name=\"magic\" min=\"0\" max=\"100\" value=\"0\"/>\n" +
+"			</p>   \n" +
+"			<p>\n" +
+"				Biography:<textarea name=\"bio\" cols=\"35\" rows=\"3\" maxlength=\"300\"> </textarea> <br /> <a id=\"bioLimitID\">  (Max of 300 Chars)</a>\n" +
+"			</p>\n" +
+"		</div>\n" +
+"		<div class=\"grid10\" align=\"center\">\n" +
+"			<a href=\"continuechar.html\" class=frontPageButton>Create Character</a>\n" +
+"		</div>\n" +
+"		</form>\n" +
+"		</div>\n" +
+"		<div class=\"grid1\"> </div>\n" +
+"	</body>\n" +
+"	\n" +
+"</html>";
+        if(startingState != stateEnum.UNREGISTERED_CHARACTER_CREATION)
+        {
+            //create new page for it
+            int level = (int)(Math.random()*50);
+            
+            out.printf(StartPage, level, level*constantPtsPerLevel, level*constantPtsPerLevel, level);
+            
+            return stateEnum.UNREGISTERED_CHARACTER_CREATION;
+        }
+        else
+        {
+           String name = (String) request.getAttribute("name");
+           int level = (Integer) request.getAttribute("level");
+           String bio = (String) request.getAttribute("bio");
+           int health = (Integer) request.getAttribute("health");
+           int strength = (Integer) request.getAttribute("strength");
+           int agility = (Integer) request.getAttribute("agility");
+           int magic = (Integer) request.getAttribute("magic");
+      
+           if(isValidString(name) & isValidString(bio))
+           {
+               //newCharacter(name, level,bio, health, strength, agility, magic);
+                return stateEnum.INIT;
+           }
+           else
+           {
+                return stateEnum.UNREGISTERED_CHARACTER_CREATION;
+           }
+        }
     }
 
     /****************************************************
@@ -315,7 +450,92 @@ public class GameInstance {
      * @return the next state
      ***************************************************/
     stateEnum accountCreation(PrintWriter out, HttpServletRequest request) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        String accountPageBegin = "<html>\n" +
+            "	<head>\n" +
+            "	<!-- Call normalize.css -->\n" +
+            "	<link rel=\"stylesheet\" href=\"css/normalize.css\" type=\"text/css\" media=\"screen\">\n" +
+            "	<!-- Import Font to be used in titles and buttons -->\n" +
+            "	<link href='http://fonts.googleapis.com/css?family=Sanchez' rel='stylesheet' type='text/css'>\n" +
+            "	<link href='http://fonts.googleapis.com/css?family=Prosto+One' rel='stylesheet' type='text/css'>\n" +
+            "	<!-- Call style.css -->\n" +
+            "	<link rel=\"stylesheet\" href=\"css/grid.css\" type=\"text/css\" media=\"screen\">\n" +
+            "	<!-- Call style.css -->\n" +
+            "	<link rel=\"stylesheet\" href=\"css/style.css\" type=\"text/css\" media=\"screen\">\n" +
+            "	<title> Tarsus </title>\n" +
+            "	</head>\n" +
+            "	<div id=\"header\" class=\"grid10\" align=\"right\"> \n" +
+            "		<a href=\"index.html\" id=\"tarsusTitle\"> TARSUS </a> \n" +
+            "		<a class=\"button\" href=\"login.html\"> Log In </a> </div>\n" +
+            "	<div class=\"grid1\"> </div>\n" +
+            "	<div class=\"grid8 centered\">\n" +
+            "		<h1 id=\"title\" class=\"centered\"> Sign Up Below</h1>\n";
+        String accountPageEnd = 
+            "		<form method=\"post\" action=\"Tarsus\"> \n" +
+            "			<p align=\"center\"> \n" +
+            "				Username: <input name=\"username\" type=\"text\" /> \n" +
+            "			</p>\n" +
+            "			<p align=\"center\"> \n" +
+            "				Password: <input name=\"password\" type=\"password\" /> \n" +
+            "			</p>\n" +
+            "			<p align=\"center\"> \n" +
+            "				Confirm Password: <input name=\"confirmpassword\" type=\"password\" /> \n" +
+            "			</p>\n" +
+            "			<p align=\"center\"> \n" +
+            "				<input class=\"signUpButton\" value=\"Sign Up\" type=\"submit\"/> \n" +
+            "			</p>\n" +
+            "		</form>\n" +
+            "	</div>\n" +
+            "	<div class=\"grid1\"> </div>\n" +
+            "	\n" +
+            "</html>";
+        if(startingState != stateEnum.ACCOUNT_CREATION)
+        {
+            out.println(accountPageBegin + accountPageEnd);
+            return stateEnum.ACCOUNT_CREATION;
+        }
+        else{
+            String username = request.getParameter("username");
+            String findUsername = "SELECT username FROM Login "
+                    + "WHERE username = \"" + username + "\";";
+            /*if(!isValidString(username) || )
+            {
+               out.println(accountPageBegin + 
+                        "<h3 id=\"title\" class=\"centered\"> Invalid Username "
+                       + "</h3 \n" + accountPageEnd);
+            }
+            */ 
+            int password = request.getParameter("password").hashCode();
+            int confirmPassword = request.getParameter("confirmpassword").hashCode();
+            if(password != confirmPassword){
+                out.println(accountPageBegin + 
+                        "<h3 id=\"title\" class=\"centered\"> The Passwords Do "
+                        + "Not Match </h3 \n" + accountPageEnd);
+                return stateEnum.ACCOUNT_CREATION;  
+            }
+            String command = "INSERT INTO Login VALUES (" + username + ", "
+                    + password +");";
+            return stateEnum.LOGIN;
+        }
+    }
+    
+    
+    /****************************************************
+     * Registered user creation state
+     * @param string the string to check for validity
+     * @return the validity
+     ***************************************************/
+    Boolean isValidString(String string)
+    {
+        Boolean toBeReturned = true;
+        
+        if(string.contains("Drop"))
+            toBeReturned = false;
+        if(string.contains("Delete"))
+            toBeReturned = false;
+        if(string.contains(";"))
+            toBeReturned = false;
+        
+        return toBeReturned;
     }
     
 	String maxValueScript(int value)
