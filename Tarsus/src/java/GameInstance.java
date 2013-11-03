@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 public class GameInstance {
     PlayerCharacter playerChar;
     AresCharacter aresChar;
-    stateEnum currentState;
+    stateEnum currentState, startingState;
     String accountName;
     
     GameInstance()
@@ -30,6 +30,7 @@ public class GameInstance {
     void advanceGame(PrintWriter out, HttpServletRequest request)
     {
         stateEnum nextState = currentState;
+        startingState = currentState;
         do
         {
             currentState = nextState;
@@ -84,7 +85,8 @@ public class GameInstance {
                 case ACCOUNT_CREATION:
                     nextState = accountCreation(out, request);
                     break;
-
+                    
+                    
                 default:
                     //this should go to a specified state
                     nextState = stateEnum.INIT;
@@ -149,7 +151,57 @@ public class GameInstance {
      ***************************************************/
     stateEnum initState(PrintWriter out, HttpServletRequest request) {
         //can log in or unregistered user creation
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if(startingState != stateEnum.INIT)
+        {
+            //print the page
+            out.println("<html>\n" +
+"	<head>\n" +
+"	<!-- Call normalize.css -->\n" +
+"	<link rel=\"stylesheet\" href=\"css/normalize.css\" type=\"text/css\" media=\"screen\">\n" +
+"	<!-- Import Font to be used in titles and buttons -->\n" +
+"	<link href='http://fonts.googleapis.com/css?family=Sanchez' rel='stylesheet' type='text/css'>\n" +
+"	<link href='http://fonts.googleapis.com/css?family=Prosto+One' rel='stylesheet' type='text/css'>\n" +
+"	<!-- Call style.css -->\n" +
+"	<link rel=\"stylesheet\" href=\"css/grid.css\" type=\"text/css\" media=\"screen\">\n" +
+"	<!-- Call style.css -->\n" +
+"	<link rel=\"stylesheet\" href=\"css/style.css\" type=\"text/css\" media=\"screen\">\n" +
+"	<title> Tarsus </title>\n" +
+"	</head>\n" +
+"	<body><form action=\"Tarsus\"> \n" +
+"		<div id=\"header\" class=\"grid10\" align=\"right\">\n" +
+"			<a href=\"index.html\" id=\"tarsusTitle\"> TARSUS </a> \n" +
+"			<a class=\"button\" type=\"submit\" value=\"Log In\">  </div>\n" +
+"		<div class=\"grid1\"> </div>\n" +
+"		<div class=\"grid8 centered\">\n" +
+"		<h1 id=\"title\" class=\"centered\">Welcome</h1>\n" +
+"		<p align=\"justify\"> \n" +
+"			Tarsus is a web based Role Playing Game that allows you to create your own character and use it to fight progressively more difficult enemies as you try to make your way to the top. If you already have an account, click the Log In button above. If not, you can make a character using our character maker or your can sign up and start your own adventure.\n" +
+"		</p>\n" +
+"               \n" +
+"		<div align=\"center\">\n" +
+"			<input type=\"Create a Character\" class=frontPageButton />\n" +
+"			<input type=\"submit\" value=\"Sign Up\" class=frontPageButton />\n" +
+"		</div>\n" +
+"		</div>\n" +
+"		<div class=\"grid1\"> </div>\n </form>" +
+"	</body>\n" +
+"	\n" +
+"</html>");
+            return stateEnum.INIT;
+        }
+        else
+        {
+            //state changes
+            String value = (String)request.getAttribute("submit");
+            if(value.equals("Log in"))
+                return stateEnum.LOGIN;
+            else if(value.equals("Create a Character"))
+                return stateEnum.UNREGISTERED_CHARACTER_CREATION;
+            else if(value == "Sign Up")
+                return stateEnum.ACCOUNT_CREATION;
+            return stateEnum.INIT;
+        }
+        
     }
 
     /****************************************************
@@ -160,10 +212,17 @@ public class GameInstance {
      ***************************************************/
     private stateEnum storeState(PrintWriter out, HttpServletRequest request) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+<<<<<<< HEAD
 		/*
 		// have store level as well as the items be static so that it is the same each time the player comes back to the 
 		// store unless the player has increased in level
 		static store_level = 1;
+=======
+		
+		// have store level as well as the items be static so that it is the same each time the player comes back to the 
+		// store unless the player has increased in level
+		/*static store_level = 1;
+>>>>>>> origin/master
 		const int STORE_SIZE = 20;
 		static item[] item_array = new item[STORE_SIZE];
 		
@@ -175,7 +234,11 @@ public class GameInstance {
 			for(int i = 0; i < STORE_SIZE; i++)
 				{
 				// need to place the parameters for how each item could be created
+<<<<<<< HEAD
 				item_array[i] = new Item(name = "", id = null, type = (i % 9), upgradeCount = 0, strength = 0, agility = 0, magic = 0 );
+=======
+				item_array[i] = new Item(name = "", id = null, type = (i % 9), upgradeCount = 0, strength = , agility = , magic =  );
+>>>>>>> origin/master
 				}
 		}
 		
