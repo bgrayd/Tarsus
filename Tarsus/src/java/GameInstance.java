@@ -445,7 +445,53 @@ public class GameInstance {
      * @return the next state
      ***************************************************/
     stateEnum loginState(PrintWriter out, HttpServletRequest request) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if(startingState != stateEnum.ACCOUNT_CREATION){
+            out.println("<html>\n" +
+            "	<head>\n" +
+            "	<!-- Call normalize.css -->\n" +
+            "	<link rel=\"stylesheet\" href=\"css/normalize.css\" type=\"text/css\" media=\"screen\">\n" +
+            "	<!-- Import Font to be used in titles and buttons -->\n" +
+            "	<link href='http://fonts.googleapis.com/css?family=Sanchez' rel='stylesheet' type='text/css'>\n" +
+            "	<link href='http://fonts.googleapis.com/css?family=Prosto+One' rel='stylesheet' type='text/css'>\n" +
+            "	<!-- Call style.css -->\n" +
+            "	<link rel=\"stylesheet\" href=\"css/grid.css\" type=\"text/css\" media=\"screen\">\n" +
+            "	<!-- Call style.css -->\n" +
+            "	<link rel=\"stylesheet\" href=\"css/style.css\" type=\"text/css\" media=\"screen\">\n" +
+            "	<title> Tarsus </title>\n" +
+            "	</head>\n" +
+            "	<div id=\"header\" class=\"grid10\" align=\"right\"> \n" +
+            "		<a href=\"index.html\" id=\"tarsusTitle\"> TARSUS </a> </div>\n" +
+            "	<div class=\"grid1\"> </div>\n" +
+            "	<div class=\"grid8 centered\">\n" +
+            "		<h1 id=\"title\" class=\"centered\"> Log In</h1>\n" +
+            "		<form method=\"post\" action=\"Tarsus\"> \n" +
+            "			<p align=\"center\"> \n" +
+            "				Username: <input name=\"username\" type=\"text\" /> \n" +
+            "			</p>\n" +
+            "			<p align=\"center\"> \n" +
+            "				Password: <input name=\"password\" type=\"password\" /> \n" +
+            "			</p>\n" +
+            "			<p align=\"center\"> \n" +
+            "				<input class=\"signUpButton\" value=\"Log In\" type=\"submit\"/>\n" +
+            "			</p>\n" +
+            "		</form>\n" +
+            "	</div>\n" +
+            "</html>");
+                    
+        }else{
+            String username = request.getParameter("username");
+            int password = request.getParameter("password").hashCode();
+            if(!isValidString(username)){
+                out.println("Error");
+                return stateEnum.LOGIN;
+            }
+            String search = "SELECT * FROM Login WHERE username=\"" + username +
+                    "\", password=\"" + password+  "\";";
+            ResultSet result = sqlQuery(search);
+            //
+            
+        }
+        return stateEnum.LOGIN;
     }
 
     /****************************************************
