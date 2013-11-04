@@ -234,15 +234,18 @@ public class GameInstance {
         else
         {
             //state changes
-            String value = (String)request.getAttribute("submit");
+           String value = request.getParameter("Create a Character");
+           out.println(request.getParameter("submit"));
+           out.println(request.getParameter("Log in"));
+           out.println(value);
             if(value.equals("Log in"))
                 return stateEnum.LOGIN;
             else if(value.equals("Create a Character"))
                 return stateEnum.UNREGISTERED_CHARACTER_CREATION;
             else if(value == "Sign Up")
                 return stateEnum.ACCOUNT_CREATION;
-            return stateEnum.INIT;
         }
+       return stateEnum.INIT;
         
     }
 
@@ -387,13 +390,13 @@ public class GameInstance {
         }
         else
         {
-           String name = (String) request.getAttribute("name");
-           int level = (Integer) request.getAttribute("level");
-           String bio = (String) request.getAttribute("bio");
-           int health = (Integer) request.getAttribute("health");
-           int strength = (Integer) request.getAttribute("strength");
-           int agility = (Integer) request.getAttribute("agility");
-           int magic = (Integer) request.getAttribute("magic");
+           String name = (String) request.getParameter("name");
+           int level = Integer.parseInt(request.getParameter("level"));
+           String bio = request.getParameter("bio");
+           int health = Integer.parseInt(request.getParameter("health"));
+           int strength = Integer.parseInt(request.getParameter("strength"));
+           int agility = Integer.parseInt(request.getParameter("agility"));
+           int magic = Integer.parseInt(request.getParameter("magic"));
       
            if(isValidString(name) & isValidString(bio))
            {
