@@ -144,6 +144,31 @@ public class GameInstance {
         throw new UnsupportedOperationException("Not supported yet.");
     }
     
+    
+    /****************************************************
+     * Generates an armor item based on the player 
+     * character's level
+     * @param level the level of the player character
+     * @return an item with a type of armor
+     ***************************************************/
+    Item generateArmor(int level)
+    {
+        //needs to be filled in
+        return new Item("Armor", 0, 2, 0, 1, 2, 3, 4);
+    }
+    
+    /****************************************************
+     * Generates a weapon item based on the player 
+     * character's level
+     * @param level the level of the player character
+     * @return an item with a type of weapon
+     ***************************************************/
+    Item generateWeapon(int level)
+    {
+        //needs to be filled in
+        return new Item("Weapon", 0, 1, 0, 1, 2, 3, 4);
+    }
+    
     /****************************************************
      * Loads a new enemy from the database
      * @param level the players level
@@ -323,7 +348,8 @@ public class GameInstance {
 "			var strength = parseInt(document.forms[\"createCharacterForm\"][\"strength\"].value); \n" +
 "			var agility = parseInt(document.forms[\"createCharacterForm\"][\"agility\"].value);\n" +
 "			var magic = parseInt(document.forms[\"createCharacterForm\"][\"magic\"].value);\n" +
-"			var total = strength + agility + magic;\n" +
+"                       var health = parseInt(document.forms[\"createCharacterForm\"][\"magic\"].value);\n" +
+"			var total = strength + agility + magic + health;\n" +
 "			alert(\"Total Experience points used: \" + total);\n" +
 "			if(total > maxValue)\n" +
 "			{\n" +
@@ -354,7 +380,7 @@ public class GameInstance {
 "				Name: <input type=\"text\" name=\"name\"/>\n" +
 "			</p>\n" +
 "			<p> \n" +
-"				Strength: <input type=\"number\" name=\"name\"min=\"0\" max=\"100\" value=\"0\"/>\n" +
+"				Strength: <input type=\"number\" name=\"strength\"min=\"0\" max=\"100\" value=\"0\"/>\n" +
 "			</p> \n" +
 "			<p> \n" +
 "				Agility: <input type=\"number\" name=\"agility\"min=\"0\" max=\"100\" value=\"0\"/>\n" +
@@ -362,12 +388,16 @@ public class GameInstance {
 "			<p> \n" +
 "				Magic: <input type=\"number\" name=\"magic\" min=\"0\" max=\"100\" value=\"0\"/>\n" +
 "			</p>   \n" +
+"			<p> \n" +
+"				Health: <input type=\"number\" name=\"health\" min=\"0\" max=\"100\" value=\"0\"/>\n" +
+"			</p>   \n" +
 "			<p>\n" +
 "				Biography:<textarea name=\"bio\" cols=\"35\" rows=\"3\" maxlength=\"300\"> </textarea> <br /> <a id=\"bioLimitID\">  (Max of 300 Chars)</a>\n" +
-"			</p>\n" +
-"		</div>\n" +
+"			</p>\n";
+                String lastPart = 
+"		</div>\n"+
 "		<div class=\"grid10\" align=\"center\">\n" +
-"			<a href=\"continuechar.html\" class=frontPageButton>Create Character</a>\n" +
+"			<input type =\"submit\" value=\"Create a Character\" class=frontPageButton /> \n" +
 "		</div>\n" +
 "		</form>\n" +
 "		</div>\n" +
@@ -379,23 +409,49 @@ public class GameInstance {
         {
             //create new page for it
             Integer level = (int)(Math.random()*50);
+            int numItemChoices = 5;
+            Item tempItem;
+            String submitValue;
             
             out.printf(StartPage);
             out.println(((Integer)(level*constantPtsPerLevel)).toString());
             out.printf(secondPart);
-            out.println(level.toString());
+            out.printf(level.toString());
             out.printf(thirdPart);
             out.printf(level.toString());
             out.printf(fourthPart);
             out.printf(((Integer)(level*constantPtsPerLevel)).toString());
             out.printf(fifthPart);
-           
+            out.printf("<input type=\"hidden\" name=\"level\" value=\"%d\" />\n",level);
+            
+            out.println("<table><tr><h2>Weapons</h2></tr><tr><th>Strength</th><th>Agility</th><th>Magic</th><th>select</th><tr>");
+            for(int i=0; i<numItemChoices; i++)
+            {
+                tempItem = generateWeapon(level);
+                submitValue = tempItem.getName()+"="+((Integer)tempItem.itemId).toString()+"+"+((Integer)tempItem.getStrength()).toString()+"-"+((Integer)tempItem.getAgility()).toString()+"*"+((Integer)tempItem.getMagic()).toString()+"_"+((Integer)tempItem.getType()).toString();
+                out.printf("<tr><td>%d</td><td>%d</td><td>%d</td><td><input type=\"radio\" name=\"weapon\" value=\"%s\"></td></tr>\n",tempItem.getStrength(), tempItem.getAgility(), tempItem.getMagic(), submitValue);
+            }
+            out.println("</table>");
+            
+            out.println("<table><tr><h2>Armor</h2></tr><tr><th>Strength</th><th>Agility</th><th>Magic</th><th>select</th><tr>");
+            for(int i=0; i<numItemChoices; i++)
+            {
+                tempItem = generateArmor(level);
+                submitValue = tempItem.getName()+"="+((Integer)tempItem.itemId).toString()+"+"+((Integer)tempItem.getStrength()).toString()+"-"+((Integer)tempItem.getAgility()).toString()+"*"+((Integer)tempItem.getMagic()).toString()+"_"+((Integer)tempItem.getType()).toString();
+                out.printf("<tr><td>%d</td><td>%d</td><td>%d</td><td><input type=\"radio\" name=\"armor\" value=\"%s\"></td></tr>\n",tempItem.getStrength(), tempItem.getAgility(), tempItem.getMagic(), submitValue);
+            }
+            out.println("</table>");
+            out.println(lastPart);
+            
             return stateEnum.UNREGISTERED_CHARACTER_CREATION;
         }
         else
         {
-           if(request.getParameter("Home").equals("Home"))
+           /*if(request.getParameter("Home").equals("Home"))
+           {
                return stateEnum.INIT;
+           }*/
+
            String name = (String) request.getParameter("name");
            int level = Integer.parseInt(request.getParameter("level"));
            String bio = request.getParameter("bio");
@@ -403,11 +459,34 @@ public class GameInstance {
            int strength = Integer.parseInt(request.getParameter("strength"));
            int agility = Integer.parseInt(request.getParameter("agility"));
            int magic = Integer.parseInt(request.getParameter("magic"));
+           Item[] items = {new Item(request.getParameter("weapon")), new Item(request.getParameter("armor"))};
+
       
            if(isValidString(name) & isValidString(bio))
            {
-               //newCharacter(name, level,bio, health, strength, agility, magic);
-                return stateEnum.INIT;
+               //newCharacter(name, level,bio, health, strength, agility, magic, items);
+               
+               out.println(name);
+               out.printf("level: %d\n",level);
+               out.println(bio);
+               out.printf("health: %d\n",health);
+               out.printf("strength: %d\n",strength);
+               out.printf("agility: %d\n",agility);
+               out.printf("magic: %d\n",magic);
+               out.printf("%s\n",items[0].name);
+               out.printf("%d\n",items[0].itemId);
+               out.printf("%d\n",items[0].strength);
+               out.printf("%d\n",items[0].agility);
+               out.printf("%d\n",items[0].magic);
+               out.printf("%d\n",items[0].type);
+               
+               out.printf("%s\n",items[1].name);
+               out.printf("%d\n",items[1].itemId);
+               out.printf("%d\n",items[1].strength);
+               out.printf("%d\n",items[1].agility);
+               out.printf("%d\n",items[1].magic);
+               out.printf("%d\n",items[1].type);
+               return stateEnum.INIT;
            }
            else
            {
