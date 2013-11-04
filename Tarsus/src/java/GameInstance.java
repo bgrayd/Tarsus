@@ -221,8 +221,9 @@ public class GameInstance {
 "		</p>\n" +
 "               \n" +
 "		<div align=\"center\">\n" +
+                    "			<input type=\"submit\" value=\"Sign Up\" class=frontPageButton />\n" +
 "			<input type=\"Create a Character\" class=frontPageButton />\n" +
-"			<input type=\"submit\" value=\"Sign Up\" class=frontPageButton />\n" +
+
 "		</div>\n" +
 "		</div>\n" +
 "		<div class=\"grid1\"> </div>\n </form>" +
@@ -233,17 +234,23 @@ public class GameInstance {
         }
         else
         {
+            String value1 = request.getParameter("Log in");
+            String value2 = request.getParameter("Create a Character");
+            String value3 = request.getParameter("Sign Up");
+            out.println(value3);
+            
             //state changes
-           String value = request.getParameter("Create a Character");
-           out.println(request.getParameter("submit"));
-           out.println(request.getParameter("Log in"));
-           out.println(value);
-            if(value.equals("Log in"))
-                return stateEnum.LOGIN;
-            else if(value.equals("Create a Character"))
-                return stateEnum.UNREGISTERED_CHARACTER_CREATION;
-            else if(value == "Sign Up")
+            if(value3.equals("Sign Up")){
+                out.println("Here");
                 return stateEnum.ACCOUNT_CREATION;
+            }
+            if(request.getParameter("Log in").equals("Log in"))
+                return stateEnum.LOGIN;
+            else if(request.getParameter("Create a Character").equals("Create a Character"))
+                return stateEnum.UNREGISTERED_CHARACTER_CREATION; 
+             
+                
+            
         }
        return stateEnum.INIT;
         
