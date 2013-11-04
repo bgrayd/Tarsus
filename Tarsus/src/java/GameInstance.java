@@ -230,9 +230,7 @@ public class GameInstance {
         {
             //state changes
            String value = request.getParameter("Create a Character");
-           out.println(request.getParameter("submit"));
-           out.println(request.getParameter("Log in"));
-           out.println(value);
+
             if(value.equals("Log in"))
                 return stateEnum.LOGIN;
             else if(value.equals("Create a Character"))
@@ -306,21 +304,22 @@ public class GameInstance {
         String StartPage = "<html>\n" +
 "	<head>\n" +
 "	<!-- Call normalize.css -->\n" +
-"	<link rel=\"stylesheet\" href=\"./css/normalize.css\" type=\"text/css\" media=\"screen\">\n" +
+"	<link rel=\"stylesheet\" href=\"css/normalize.css\" type=\"text/css\" media=\"screen\">\n" +
 "	<!-- Import Font to be used in titles and buttons -->\n" +
 "	<link href='http://fonts.googleapis.com/css?family=Sanchez' rel='stylesheet' type='text/css'>\n" +
 "	<link href='http://fonts.googleapis.com/css?family=Prosto+One' rel='stylesheet' type='text/css'>\n" +
 "	<!-- Call style.css -->\n" +
-"	<link rel=\"stylesheet\" href=\"../css/grid.css\" type=\"text/css\" media=\"screen\">\n" +
+"	<link rel=\"stylesheet\" href=\"css/grid.css\" type=\"text/css\" media=\"screen\">\n" +
 "	<!-- Call style.css -->\n" +
-"	<link rel=\"stylesheet\" href=\"../css/style.css\" type=\"text/css\" media=\"screen\">\n" +
+"	<link rel=\"stylesheet\" href=\"css/style.css\" type=\"text/css\" media=\"screen\">\n" +
 "	<title> Tarsus </title>\n" +
 "	</head>\n" +
 "       <script>\n" +
 "		function validateForm()\n" +
 "		{\n" +
 "		\n" +
-"               var maxValue = %f \n" +
+"               var maxValue = ";
+        String secondPart = " \n" +
 "			var strength = parseInt(document.forms[\"createCharacterForm\"][\"strength\"].value); \n" +
 "			var agility = parseInt(document.forms[\"createCharacterForm\"][\"agility\"].value);\n" +
 "			var magic = parseInt(document.forms[\"createCharacterForm\"][\"magic\"].value);\n" +
@@ -335,19 +334,21 @@ public class GameInstance {
 "		}\n" +
 "       </script>" + 
 "	<body>\n" +
+                "<form name=\"createCharacterForm\" action=\"Tarsus\" onsubmit=\"return validateForm()\" method=\"post\">\n" +
 "		<div id=\"header\" class=\"grid10\" align=\"right\">\n" +
-"			<a href=\"profile.html\" id=\"tarsusTitle\"> Unregistered User Character Creation </a> \n" +
-"			<a class=\"button\" href=\"../index.html\"> Log Out </a> </div>\n" +
-"		<div class=\"grid1\"> </div>\n" +
+                "<input type=\"Submit\" name=\"Home\" value=\"Home\"  class=\"FrontPageButton\" />" +
+"		<div class=\"grid1\"> </div></div>\n" +
 "		<div class=\"grid8 centered\">\n" +
 "		<h1 id=\"title\" class=\"centered\">Character Creation</h1>\n" +
 "		\n" +
 "		<div class=\"grid2\"> </div>\n" +
-"		<form name=\"createCharacterForm\" action=\"Tarsus\" onsubmit=\"return validateForm()\" method=\"post\">\n" +
-"               <input type = \"hidden\" name = \"level\"> value=\"%f\"/>\n"+
+"               <input type = \"hidden\" name = \"level\" value=\"";
+        String thirdPart = "\"/>\n"+
 "		<div class=\"grid6\" align=\"center\">\n" +
-"			<h3> Level %f </h3>\n" +
-"			<p> Experience Points to Allocate: %f\n" +
+"			<h3> Level ";
+        String fourthPart = " </h3>\n" +
+"			<p> Experience Points to Allocate: ";
+        String fifthPart = "\n" +
 "			</p>\n" +
 "			<p> \n" +
 "				Name: <input type=\"text\" name=\"name\"/>\n" +
@@ -377,14 +378,24 @@ public class GameInstance {
         if(startingState != stateEnum.UNREGISTERED_CHARACTER_CREATION)
         {
             //create new page for it
-            int level = (int)(Math.random()*50);
+            Integer level = (int)(Math.random()*50);
             
-            out.printf(StartPage, level, level*constantPtsPerLevel, level*constantPtsPerLevel, level);
-            
+            out.printf(StartPage);
+            out.println(((Integer)(level*constantPtsPerLevel)).toString());
+            out.printf(secondPart);
+            out.println(level.toString());
+            out.printf(thirdPart);
+            out.printf(level.toString());
+            out.printf(fourthPart);
+            out.printf(((Integer)(level*constantPtsPerLevel)).toString());
+            out.printf(fifthPart);
+           
             return stateEnum.UNREGISTERED_CHARACTER_CREATION;
         }
         else
         {
+           if(request.getParameter("Home").equals("Home"))
+               return stateEnum.INIT;
            String name = (String) request.getParameter("name");
            int level = Integer.parseInt(request.getParameter("level"));
            String bio = request.getParameter("bio");
