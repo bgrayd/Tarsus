@@ -35,7 +35,6 @@
 		</div>
 		<div class="grid1"> </div>
             </form>
-            How
 	</body>
 	
 </html>

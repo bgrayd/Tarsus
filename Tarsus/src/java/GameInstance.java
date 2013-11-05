@@ -3,6 +3,7 @@
 * sessions through being the session data.
 *******************************************************/
 
+import database.DBConnections;
 import java.io.PrintWriter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -15,8 +16,9 @@ public class GameInstance {
     AresCharacter aresChar;
     stateEnum currentState, startingState;
     String accountName;
-    DBConnections dataSource;
-    Connection conn;
+    DBConnections dataSource = null;
+    Connection conn = null;
+    Statement stat = null;
 
     
     int constantPtsPerLevel = 5;
@@ -31,26 +33,30 @@ public class GameInstance {
     
     /****************************************************
      * Connect to the database using class variables
-     * 
+     * SQL Commands
      ***************************************************/
     void connectDB(){
-        dataSource = DBConnections.getInstance();      
+        dataSource = DBConnections.getInstance();  
         conn = dataSource.getConnection();
     }  
     
-    ResultSet sqlQuery(String query){
+    ResultSet sqlQuery(String query, PrintWriter out){
+        
         ResultSet result = null;
         try{
-            Statement stat = conn.createStatement();
+            connectDB();
+             stat = conn.createStatement();
              result = stat.executeQuery(query);
-        }finally{
+             return result;
+        }catch(Exception ex){
+            out.println(ex);
             return result;
         } 
     }
     Boolean sqlCommand(String command){
         Boolean result = null;
         try{
-            Statement stat = conn.createStatement();
+             stat = conn.createStatement();
              result = stat.execute(command);
         }finally{
             return result;
@@ -123,7 +129,7 @@ public class GameInstance {
                     nextState = accountCreation(out, request);}
                     catch(SQLException ex)
                     {
-                        out.println("SQL ERROR");
+                        out.println(ex);
                     }
                     break;
                     
@@ -236,18 +242,17 @@ public class GameInstance {
         {
             String value1 = request.getParameter("Log in");
             String value2 = request.getParameter("Create a Character");
-            String value3 = request.getParameter("Sign Up");
-            out.println(value3);
+            String value = request.getParameter("Sign Up");
             
             //state changes
-            if(value3.equals("Sign Up")){
-                out.println("Here");
+           
+            if(value.equals("Sign Up"))
                 return stateEnum.ACCOUNT_CREATION;
-            }
             if(request.getParameter("Log in").equals("Log in"))
                 return stateEnum.LOGIN;
-            else if(request.getParameter("Create a Character").equals("Create a Character"))
+            if(request.getParameter("Create a Character").equals("Create a Character"))
                 return stateEnum.UNREGISTERED_CHARACTER_CREATION; 
+            
              
                 
             
@@ -497,7 +502,7 @@ public class GameInstance {
             }
             String search = "SELECT * FROM Login WHERE username=\"" + username +
                     "\", password=\"" + password+  "\";";
-            ResultSet result = sqlQuery(search);
+            ResultSet result = sqlQuery(search, out);
             //
             
         }
@@ -511,6 +516,15 @@ public class GameInstance {
      * @return the next state
      ***************************************************/
     stateEnum accountCreation(PrintWriter out, HttpServletRequest request) throws SQLException {
+        sqlCommand("CREATE TABLE test(\n" +
+                        "\n" +
+                        "username Char(30),\n" +
+                        "\n" +
+                        "PRIMARY KEY(username),\n" +
+                        "\n" +
+                        "FOREIGN KEY(username) REFERENCES Login (username)\n" +
+                        "\n" +
+                        ");");
         String accountPageBegin = "<html>\n" +
             "	<head>\n" +
             "	<!-- Call normalize.css -->\n" +
@@ -555,28 +569,31 @@ public class GameInstance {
             return stateEnum.ACCOUNT_CREATION;
         }
         else{
+            
             String username = request.getParameter("username");
             String findUsername = "SELECT username FROM Login "
                     + "WHERE username = \"" + username + "\";";
             
-            Boolean noResult = false;
+            Boolean alreadyExists = false;
             try{
-                ResultSet result = sqlQuery(findUsername);
-                if(!(result.next())){
-                    noResult= true;
+                ResultSet result = sqlQuery(findUsername, out);
+                if(!result.isBeforeFirst()){
+                    alreadyExists= true;
                 }
-            }catch(SQLException ex){
-                noResult=false;
-                out.println("SQL ERROR");
+                
+            }catch(Exception ex){
+                out.println(ex);
+                alreadyExists=false;
             }
             // Check to see if the username is valid
-            if(!isValidString(username) || noResult)
+            if(!isValidString(username) || alreadyExists)
             {
                out.println(accountPageBegin + 
                         "<h3 id=\"title\" class=\"centered\"> Invalid Username "
                        + "</h3 \n" + accountPageEnd);
+               return stateEnum.ACCOUNT_CREATION;
             }
-             
+            
             int password = request.getParameter("password").hashCode();
             int confirmPassword = request.getParameter("confirmpassword").hashCode();
             if(password != confirmPassword){
@@ -588,13 +605,20 @@ public class GameInstance {
             String command = "INSERT INTO Login VALUES (" + username + ", "
                     + password +");";
             
+            try{
             if(sqlCommand(command))
+            {
+                out.println("Success");
                 return stateEnum.LOGIN;
-            else{
+            } return stateEnum.ACCOUNT_CREATION;
+            /*else{
                 out.println("<h1> ERROR </h1>");
                 return stateEnum.ACCOUNT_CREATION;
                         
-            }
+            } */
+            }catch(Exception ex)
+            {//out.println(ex);
+                return stateEnum.ACCOUNT_CREATION;}
         }
     }
     

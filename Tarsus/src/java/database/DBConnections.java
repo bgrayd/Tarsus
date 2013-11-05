@@ -1,3 +1,5 @@
+package database;
+
 import java.sql.*;
 
 public class DBConnections
@@ -5,7 +7,7 @@ public class DBConnections
     private static DBConnections pool = null;
     private static String url = null;
     private static String username = null;
-    private static String password = null;
+    private static String password =  null;
  
     private DBConnections()
     {
@@ -13,9 +15,9 @@ public class DBConnections
         {
             String driver = "com.mysql.jdbc.Driver";
 
-            username = "jjc52";
-            password = "xyz123";
-            url = "jdbc:mysql://localhost/" + username;
+            username = "dcsp02";
+            password = "baadf00d";
+            url = "jdbc:mysql://pluto.cse.msstate.edu/" + username;
 
             Class.forName(driver);
         }
