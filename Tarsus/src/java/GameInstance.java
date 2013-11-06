@@ -126,6 +126,7 @@ public class GameInstance {
 
                 case DECISION:
                     //this state is for asking what to do next
+                    out.println("Decision");
                     nextState = decisionState(out, request);
                     break;
 
@@ -517,10 +518,15 @@ public class GameInstance {
                 return stateEnum.LOGIN;
             }
             String search = "SELECT * FROM Login WHERE username=\"" + username +
-                    "\", password=" + password+  ";";
+                    "\" AND password=" + password+  ";";
             ResultSet result = sqlQuery(search, out);
-            //
-            
+            try{
+            if(result.isBeforeFirst()){
+                    return stateEnum.DECISION;
+            }
+            }catch(Exception ex){
+                out.println("Login SQL Error: " + ex);
+            }
         }
         return stateEnum.LOGIN;
     }
