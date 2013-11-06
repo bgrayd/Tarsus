@@ -42,6 +42,8 @@ public class GameInstance {
     
     /****************************************************
      * Returns the result set result of your query
+     * @param query the SQL query you want to execute
+     * @param out the printwriter
      ***************************************************/
     ResultSet sqlQuery(String query, PrintWriter out){
         
@@ -61,10 +63,13 @@ public class GameInstance {
     /****************************************************
      * Returns true if your SQL command succeeded, 
      * returns false if it does not
+     * @param command the SQL command you want to execute
+     * @param out the printwriter
      ***************************************************/
     Boolean sqlCommand(String command, PrintWriter out){
         Boolean result = false;
         try{
+            connectDB();
              stat = conn.createStatement();
              stat.execute(command);
              result = true;
@@ -257,8 +262,6 @@ public class GameInstance {
         }
         else
         {
-            String value1 = request.getParameter("Log in");
-            String value2 = request.getParameter("Create a Character");
             String value = request.getParameter("Sign Up");
             
             //state changes
@@ -524,6 +527,40 @@ public class GameInstance {
             if(result.isBeforeFirst()){
                     accountName = username;
                     return stateEnum.DECISION;
+            }else{
+                out.println("<html>\n" +
+                    "	<head>\n" +
+                    "	<!-- Call normalize.css -->\n" +
+                    "	<link rel=\"stylesheet\" href=\"css/normalize.css\" type=\"text/css\" media=\"screen\">\n" +
+                    "	<!-- Import Font to be used in titles and buttons -->\n" +
+                    "	<link href='http://fonts.googleapis.com/css?family=Sanchez' rel='stylesheet' type='text/css'>\n" +
+                    "	<link href='http://fonts.googleapis.com/css?family=Prosto+One' rel='stylesheet' type='text/css'>\n" +
+                    "	<!-- Call style.css -->\n" +
+                    "	<link rel=\"stylesheet\" href=\"css/grid.css\" type=\"text/css\" media=\"screen\">\n" +
+                    "	<!-- Call style.css -->\n" +
+                    "	<link rel=\"stylesheet\" href=\"css/style.css\" type=\"text/css\" media=\"screen\">\n" +
+                    "	<title> Tarsus </title>\n" +
+                    "	</head>\n" +
+                    "	<div id=\"header\" class=\"grid10\" align=\"right\"> \n" +
+                    "		<a href=\"index.jsp\" id=\"tarsusTitle\"> TARSUS </a> </div>\n" +
+                    "	<div class=\"grid1\"> </div>\n" +
+                    "	<div class=\"grid8 centered\">\n" +
+                    "		<h1 id=\"title\" class=\"centered\"> Log In</h1>\n" +
+                    "		<h3>Invalid Login </h3> \n " +
+                    "		<form method=\"post\" action=\"Tarsus\"> \n " +
+                    "			<p align=\"center\"> \n" +
+                    "				Username: <input name=\"username\" type=\"text\" /> \n" +
+                    "			</p>\n" +
+                    "			<p align=\"center\"> \n" +
+                    "				Password: <input name=\"password\" type=\"password\" /> \n" +
+                    "			</p>\n" +
+                    "			<p align=\"center\"> \n" +
+                    "				<input class=\"signUpButton\" value=\"Log In\" type=\"submit\"/>\n" +
+                    "			</p>\n" +
+                    "		</form>\n" +
+                    "	</div>\n" +
+                    "</html>");
+                return stateEnum.LOGIN;
             }
             }catch(Exception ex){
                 out.println("Login SQL Error: " + ex);
