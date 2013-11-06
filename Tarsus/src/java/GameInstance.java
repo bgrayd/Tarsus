@@ -40,6 +40,9 @@ public class GameInstance {
         conn = dataSource.getConnection();
     }  
     
+    /****************************************************
+     * Returns the result set result of your query
+     ***************************************************/
     ResultSet sqlQuery(String query, PrintWriter out){
         
         ResultSet result = null;
@@ -49,15 +52,27 @@ public class GameInstance {
              result = stat.executeQuery(query);
              return result;
         }catch(Exception ex){
+            
+           out.println("Query error:");
             out.println(ex);
             return result;
         } 
     }
-    Boolean sqlCommand(String command){
-        Boolean result = null;
+    /****************************************************
+     * Returns true if your SQL command succeeded, 
+     * returns false if it does not
+     ***************************************************/
+    Boolean sqlCommand(String command, PrintWriter out){
+        Boolean result = false;
         try{
              stat = conn.createStatement();
-             result = stat.execute(command);
+             stat.execute(command);
+             result = true;
+             
+        }catch(Exception ex){
+            out.println("sqlCommand Exception: ");
+            out.println(ex);
+            
         }finally{
             return result;
         } 
@@ -129,6 +144,7 @@ public class GameInstance {
                     nextState = accountCreation(out, request);}
                     catch(SQLException ex)
                     {
+                        out.println("What the ");
                         out.println(ex);
                     }
                     break;
@@ -217,7 +233,7 @@ public class GameInstance {
 "	</head>\n" +
 "	<body><form action=\"Tarsus\"> \n" +
 "		<div id=\"header\" class=\"grid10\" align=\"right\">\n" +
-"			<a href=\"index.html\" id=\"tarsusTitle\"> TARSUS </a> \n" +
+"			<a href=\"index.jsp\" id=\"tarsusTitle\"> TARSUS </a> \n" +
 "			<a class=\"button\" type=\"submit\" value=\"Log In\">  </div>\n" +
 "		<div class=\"grid1\"> </div>\n" +
 "		<div class=\"grid8 centered\">\n" +
@@ -460,7 +476,7 @@ public class GameInstance {
      * @return the next state
      ***************************************************/
     stateEnum loginState(PrintWriter out, HttpServletRequest request) {
-        if(startingState != stateEnum.ACCOUNT_CREATION){
+        if(startingState != stateEnum.LOGIN){
             out.println("<html>\n" +
             "	<head>\n" +
             "	<!-- Call normalize.css -->\n" +
@@ -475,7 +491,7 @@ public class GameInstance {
             "	<title> Tarsus </title>\n" +
             "	</head>\n" +
             "	<div id=\"header\" class=\"grid10\" align=\"right\"> \n" +
-            "		<a href=\"index.html\" id=\"tarsusTitle\"> TARSUS </a> </div>\n" +
+            "		<a href=\"index.jsp\" id=\"tarsusTitle\"> TARSUS </a> </div>\n" +
             "	<div class=\"grid1\"> </div>\n" +
             "	<div class=\"grid8 centered\">\n" +
             "		<h1 id=\"title\" class=\"centered\"> Log In</h1>\n" +
@@ -501,7 +517,7 @@ public class GameInstance {
                 return stateEnum.LOGIN;
             }
             String search = "SELECT * FROM Login WHERE username=\"" + username +
-                    "\", password=\"" + password+  "\";";
+                    "\", password=" + password+  ";";
             ResultSet result = sqlQuery(search, out);
             //
             
@@ -516,15 +532,6 @@ public class GameInstance {
      * @return the next state
      ***************************************************/
     stateEnum accountCreation(PrintWriter out, HttpServletRequest request) throws SQLException {
-        sqlCommand("CREATE TABLE test(\n" +
-                        "\n" +
-                        "username Char(30),\n" +
-                        "\n" +
-                        "PRIMARY KEY(username),\n" +
-                        "\n" +
-                        "FOREIGN KEY(username) REFERENCES Login (username)\n" +
-                        "\n" +
-                        ");");
         String accountPageBegin = "<html>\n" +
             "	<head>\n" +
             "	<!-- Call normalize.css -->\n" +
@@ -539,7 +546,7 @@ public class GameInstance {
             "	<title> Tarsus </title>\n" +
             "	</head>\n" +
             "	<div id=\"header\" class=\"grid10\" align=\"right\"> \n" +
-            "		<a href=\"index.html\" id=\"tarsusTitle\"> TARSUS </a> \n" +
+            "		<a href=\"index.jsp\" id=\"tarsusTitle\"> TARSUS </a> \n" +
             "		<a class=\"button\" href=\"login.html\"> Log In </a> </div>\n" +
             "	<div class=\"grid1\"> </div>\n" +
             "	<div class=\"grid8 centered\">\n" +
@@ -577,14 +584,16 @@ public class GameInstance {
             Boolean alreadyExists = false;
             try{
                 ResultSet result = sqlQuery(findUsername, out);
-                if(!result.isBeforeFirst()){
+                if(result.isBeforeFirst()){
                     alreadyExists= true;
                 }
                 
             }catch(Exception ex){
+                out.println("username fail");
                 out.println(ex);
                 alreadyExists=false;
             }
+            
             // Check to see if the username is valid
             if(!isValidString(username) || alreadyExists)
             {
@@ -602,22 +611,25 @@ public class GameInstance {
                         + "Not Match </h3 \n" + accountPageEnd);
                 return stateEnum.ACCOUNT_CREATION;  
             }
-            String command = "INSERT INTO Login VALUES (" + username + ", "
+            String command = "INSERT INTO Login VALUES (\"" + username + "\", "
                     + password +");";
             
             try{
-            if(sqlCommand(command))
+            if(sqlCommand(command, out))
             {
-                out.println("Success");
                 return stateEnum.LOGIN;
-            } return stateEnum.ACCOUNT_CREATION;
-            /*else{
-                out.println("<h1> ERROR </h1>");
+             
+            } 
+            
+            else{
+                out.println(accountPageBegin +"<h1> ERROR! </h1>"+ accountPageEnd);
                 return stateEnum.ACCOUNT_CREATION;
                         
-            } */
+            } 
             }catch(Exception ex)
-            {//out.println(ex);
+            {
+                out.println("SQL Command Error:");
+                out.println(ex);
                 return stateEnum.ACCOUNT_CREATION;}
         }
     }
