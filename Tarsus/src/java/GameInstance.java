@@ -522,6 +522,7 @@ public class GameInstance {
             ResultSet result = sqlQuery(search, out);
             try{
             if(result.isBeforeFirst()){
+                    accountName = username;
                     return stateEnum.DECISION;
             }
             }catch(Exception ex){
