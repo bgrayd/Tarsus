@@ -41,6 +41,14 @@ public class GameInstance {
     }  
     
     /****************************************************
+     * Disconnect from the database using class variables
+     * SQL Commands
+     ***************************************************/
+    void disconnectDB(){
+        dataSource.freeConnection(conn);
+    }
+    
+    /****************************************************
      * Returns the result set result of your query
      * @param query the SQL query you want to execute
      * @param out the printwriter
@@ -52,11 +60,12 @@ public class GameInstance {
             connectDB();
              stat = conn.createStatement();
              result = stat.executeQuery(query);
-             return result;
         }catch(Exception ex){
             
            out.println("Query error:");
             out.println(ex);
+        }finally{
+            disconnectDB();
             return result;
         } 
     }
@@ -79,6 +88,8 @@ public class GameInstance {
             out.println(ex);
             
         }finally{
+            DBUtilities.closeStatement(stat);
+            disconnectDB();
             return result;
         } 
     }
@@ -520,8 +531,8 @@ public class GameInstance {
                 out.println("Error");
                 return stateEnum.LOGIN;
             }
-            String search = "SELECT * FROM Login WHERE username=\"" + username +
-                    "\" AND password=" + password+  ";";
+            String search = "SELECT * FROM Login WHERE username='" + username +
+                    "' AND password= MD5('" + password+  "');";
             ResultSet result = sqlQuery(search, out);
             try{
             if(result.isBeforeFirst()){
@@ -655,8 +666,8 @@ public class GameInstance {
                         + "Not Match </h3 \n" + accountPageEnd);
                 return stateEnum.ACCOUNT_CREATION;  
             }
-            String command = "INSERT INTO Login VALUES (\"" + username + "\", "
-                    + password +");";
+            String command = "INSERT INTO Login VALUES ('" + username + "', MD5('"
+                    + password +"'));";
             
             try{
             if(sqlCommand(command, out))
