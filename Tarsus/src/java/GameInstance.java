@@ -294,24 +294,24 @@ public class GameInstance {
 "	<link rel=\"stylesheet\" href=\"css/style.css\" type=\"text/css\" media=\"screen\">\n" +
 "	<title> Tarsus </title>\n" +
 "	</head>\n" +
-"	<body><form action=\"Tarsus\"> \n" +
+"	<body>\n" +
+"            <form action=\"Tarsus\" method=\"post\">\n" +
 "		<div id=\"header\" class=\"grid10\" align=\"right\">\n" +
-"			<a href=\"index.jsp\" id=\"tarsusTitle\"> TARSUS </a> \n" +
-"			<a class=\"button\" type=\"submit\" value=\"Log In\">  </div>\n" +
+"			<input href=\"index.html\" id=\"tarsusTitle\" /> \n" +
+"			<input class=\"button\" type=\"submit\" value=\"Log in\" name=\"Log in\" /> </div>\n" +
 "		<div class=\"grid1\"> </div>\n" +
 "		<div class=\"grid8 centered\">\n" +
 "		<h1 id=\"title\" class=\"centered\">Welcome</h1>\n" +
 "		<p align=\"justify\"> \n" +
 "			Tarsus is a web based Role Playing Game that allows you to create your own character and use it to fight progressively more difficult enemies as you try to make your way to the top. If you already have an account, click the Log In button above. If not, you can make a character using our character maker or your can sign up and start your own adventure.\n" +
 "		</p>\n" +
-"               \n" +
 "		<div align=\"center\">\n" +
-                    "			<input type=\"submit\" value=\"Sign Up\" class=frontPageButton />\n" +
-"			<input type=\"Create a Character\" class=frontPageButton />\n" +
-
+"                    <input type=\"submit\" value=\"Create a Character\" name=\"Create a Character\" class=frontPageButton />\n" +
+"			<input type=\"submit\" value=\"Sign Up\" name=\"Sign Up\" class=frontPageButton />\n" +
 "		</div>\n" +
 "		</div>\n" +
-"		<div class=\"grid1\"> </div>\n </form>" +
+"		<div class=\"grid1\"> </div>\n" +
+"            </form>\n" +
 "	</body>\n" +
 "	\n" +
 "</html>");
@@ -529,10 +529,10 @@ public class GameInstance {
         }
         else
         {
-           /*if(request.getParameter("Home").equals("Home"))
+           if(request.getParameter("Home").equals("Home"))
            {
                return stateEnum.INIT;
-           }*/
+           }
 
            String name = (String) request.getParameter("name");
            int level = Integer.parseInt(request.getParameter("level"));
