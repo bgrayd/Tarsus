@@ -386,7 +386,135 @@ public class GameInstance {
      * @return the next state
      ***************************************************/
     private stateEnum battleState(PrintWriter out, HttpServletRequest request) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if(startingState != stateEnum.BATTLE)
+        {
+            Item[] itemsHeld = {generateWeapon(1), generateArmor(1)};
+            playerChar = new PlayerCharacter("player", "", 1, 10, 1, 2, 3, itemsHeld, itemsHeld[0], itemsHeld[1], 0, 0, 0, 0);
+            aresChar = new AresCharacter("enemy", "", 1, 10, 1, 2, 3, itemsHeld, itemsHeld[0], itemsHeld[1], 0, 0, 0, 0);
+        }
+        else
+        {
+            //get parameters
+        }
+        
+        String page = "<html>\n" +
+"	<head>\n" +
+"	<!-- Call normalize.css -->\n" +
+"	<link rel=\"stylesheet\" href=\"../css/normalize.css\" type=\"text/css\" media=\"screen\">\n" +
+"	<!-- Import Font to be used in titles and buttons -->\n" +
+"	<link href='http://fonts.googleapis.com/css?family=Sanchez' rel='stylesheet' type='text/css'>\n" +
+"	<link href='http://fonts.googleapis.com/css?family=Prosto+One' rel='stylesheet' type='text/css'>\n" +
+"	<!-- Call style.css -->\n" +
+"	<link rel=\"stylesheet\" href=\"css/grid.css\" type=\"text/css\" media=\"screen\">\n" +
+"	<!-- Call style.css -->\n" +
+"	<link rel=\"stylesheet\" href=\"css/style.css\" type=\"text/css\" media=\"screen\">\n" +
+"	<title> Tarsus </title>\n" +
+"	</head>\n" +
+"	<body>\n" +
+"		<div id=\"header\" class=\"grid10\" align=\"right\">\n" +
+"			<a href=\"continuechar.html\" id=\"tarsusTitle\"> %s </a> \n" +
+"			<a class=\"button\" href=\"../login.html\"> Log Out </a> </div>\n" +
+"		<div class=\"grid1\"> </div>\n" +
+"		<div class=\"grid8 centered\">\n" +
+"		<br />\n" +
+"		<p align=\"center\">\n" +
+"		</p>\n" +
+"		<div class=\"gridHalf\"> \n" +
+"			<h2 align=\"center\"> %s </h2>\n" +
+"			\n" +
+"			<table id=\"table\" align=\"center\">\n" +
+"				<tr>\n" +
+"					<th> Health </th>\n" +
+"					<th> Strength </th>\n" +
+"					<th> Magic </th>\n" +
+"					<th> Agility </th>\n" +
+"				</tr>\n" +
+"				<tr>\n" +
+"					<th> $d </th>\n" +
+"					<td> $d </td>\n" +
+"					<td> %d </td>\n" +
+"					<td> %d </td>\n" +
+"				</tr>\n" +
+"			</table>\n" +
+"			\n" +
+"			<h3 align=\"center\"> Equipped </h3>\n" +
+"			<table id=\"table\" align=\"center\">\n" +
+"				<tr>\n" +
+"					<td> </td>\n" +
+"					<th> Name </th>\n" +
+"					<th> Strength </th>\n" +
+"					<th> Magic </th>\n" +
+"					<th> Agility </th>\n" +
+"				</tr>\n" +
+"				<tr>\n" +
+"					<th> Weapon: </th>\n" +
+"					<td> %s </td>\n" +
+"					<td> %d </td>\n" +
+"					<td> %d </td>\n" +
+"					<td> %d </td>\n" +
+"				</tr>\n" +
+"				<tr>\n" +
+"					<th> Armor: </th>\n" +
+"					<td> %s </td>\n" +
+"					<td> %d% </td>\n" +
+"					<td> %d% </td>\n" +
+"					<td> %d% </td>\n" +
+"				</tr>\n" +
+"			</table>\n" +
+"		</div>\n" +
+"		<div class=\"gridHalf\"> \n" +
+"			<h2 align=\"center\"> %s </h3>\n" +
+"			<table id=\"table\" align=\"center\">\n" +
+"				<tr>\n" +
+"					<th> Health </th>\n" +
+"					<th> Strength </th>\n" +
+"					<th> Magic </th>\n" +
+"					<th> Agility </th>\n" +
+"				</tr>\n" +
+"				<tr>\n" +
+"					<th> %d </th>\n" +
+"					<td> %d </td>\n" +
+"					<td> %d </td>\n" +
+"					<td> %d </td>\n" +
+"				</tr>\n" +
+"			</table>\n" +
+"			\n" +
+"			<h3 align=\"center\"> Equipped </h3>\n" +
+"			<table id=\"table\" align=\"center\">\n" +
+"				<tr>\n" +
+"					<td> </td>\n" +
+"					<th> Name </th>\n" +
+"					<th> Strength </th>\n" +
+"					<th> Magic </th>\n" +
+"					<th> Agility </th>\n" +
+"				</tr>\n" +
+"				<tr>\n" +
+"					<th> Weapon: </th>\n" +
+"					<td> %s </td>\n" +
+"					<td> %d </td>\n" +
+"					<td> %d </td>\n" +
+"					<td> %d </td>\n" +
+"				</tr>\n" +
+"				<tr>\n" +
+"					<th> Armor: </th>\n" +
+"					<td> %s </td>\n" +
+"					<td> %d% </td>\n" +
+"					<td> %d% </td>\n" +
+"					<td> %d% </td>\n" +
+"				</tr>\n" +
+"			</table>\n" +
+"		</div>\n" +
+"		\n" +
+"		</div>\n" +
+                "				<a href=\"fight.html\" class=\"profileButton\">Attack</a>  \n" +
+"				<a href=\"inventory.html\" class=\"profileButton\">Switch weapon to</a> \n" +
+"		<div class=\"grid1\"> </div>\n" +
+"	</body>\n" +
+"	\n" +
+"</html>";
+        out.printf(page,"username", playerChar.name, playerChar.health, playerChar.strength, playerChar.magic, playerChar.agility, playerChar.weapon.name,playerChar.weapon.strength, playerChar.weapon.magic, playerChar.weapon.agility, playerChar.armor.name, playerChar.armor.strength, playerChar.armor.magic, playerChar.armor.agility, aresChar.name, aresChar.health, aresChar.strength, aresChar.magic, aresChar.agility, aresChar.weapon.name,aresChar.weapon.strength, aresChar.weapon.magic, aresChar.weapon.agility, aresChar.armor.name, aresChar.armor.strength, aresChar.armor.magic, aresChar.armor.agility);
+        
+        return stateEnum.BATTLE;
     }
 
     /****************************************************
@@ -529,11 +657,11 @@ public class GameInstance {
         {
            if(request.getParameter("Home").equals("Home"))
            {
-               return stateEnum.INIT;
+               return stateEnum.BATTLE; //debug
            }
 
            String name = (String) request.getParameter("name");
-           int level = Integer.parseInt(request.getParameter("level"));
+           Integer level = Integer.parseInt(request.getParameter("level"));
            String bio = request.getParameter("bio");
            int health = Integer.parseInt(request.getParameter("health"));
            int strength = Integer.parseInt(request.getParameter("strength"));
@@ -570,6 +698,41 @@ public class GameInstance {
            }
            else
            {
+                level = (int)(Math.random()*50);
+                int numItemChoices = 5;
+                Item tempItem;
+                String submitValue;
+
+                out.printf(StartPage);
+                out.println(((Integer)(level*constantPtsPerLevel)).toString());
+                out.printf(secondPart);
+                out.printf(level.toString());
+                out.printf(thirdPart);
+                out.printf(level.toString());
+                out.printf(fourthPart);
+                out.printf(((Integer)(level*constantPtsPerLevel)).toString());
+                out.printf(fifthPart);
+                out.printf("<input type=\"hidden\" name=\"level\" value=\"%d\" />\n",level);
+
+                out.println("<table><tr><h2>Weapons</h2></tr><tr><th>Strength</th><th>Agility</th><th>Magic</th><th>select</th><tr>");
+                for(int i=0; i<numItemChoices; i++)
+                {
+                    tempItem = generateWeapon(level);
+                    submitValue = tempItem.getName()+"="+((Integer)tempItem.itemId).toString()+"+"+((Integer)tempItem.getStrength()).toString()+"-"+((Integer)tempItem.getAgility()).toString()+"*"+((Integer)tempItem.getMagic()).toString()+"_"+((Integer)tempItem.getType()).toString();
+                    out.printf("<tr><td>%d</td><td>%d</td><td>%d</td><td><input type=\"radio\" name=\"weapon\" value=\"%s\"></td></tr>\n",tempItem.getStrength(), tempItem.getAgility(), tempItem.getMagic(), submitValue);
+                }
+                out.println("</table>");
+
+                out.println("<table><tr><h2>Armor</h2></tr><tr><th>Strength</th><th>Agility</th><th>Magic</th><th>select</th><tr>");
+                for(int i=0; i<numItemChoices; i++)
+                {
+                    tempItem = generateArmor(level);
+                    submitValue = tempItem.getName()+"="+((Integer)tempItem.itemId).toString()+"+"+((Integer)tempItem.getStrength()).toString()+"-"+((Integer)tempItem.getAgility()).toString()+"*"+((Integer)tempItem.getMagic()).toString()+"_"+((Integer)tempItem.getType()).toString();
+                    out.printf("<tr><td>%d</td><td>%d</td><td>%d</td><td><input type=\"radio\" name=\"armor\" value=\"%s\"></td></tr>\n",tempItem.getStrength(), tempItem.getAgility(), tempItem.getMagic(), submitValue);
+                }
+                out.println("</table>");
+                out.println(lastPart);
+                out.println("<script>alert(\"Invalid name or bio\");</script>");
                 return stateEnum.UNREGISTERED_CHARACTER_CREATION;
            }
         }
@@ -821,9 +984,9 @@ public class GameInstance {
     {
         Boolean toBeReturned = true;
         
-        if(string.contains("Drop"))
+        if(string.contains("drop"))
             toBeReturned = false;
-        if(string.contains("Delete"))
+        if(string.contains("delete"))
             toBeReturned = false;
         if(string.contains(";"))
             toBeReturned = false;
