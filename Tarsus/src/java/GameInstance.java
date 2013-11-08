@@ -22,6 +22,9 @@ public class GameInstance {
 
     
     int constantPtsPerLevel = 5;
+    int constantWeaponPtsPerLevel = 3;
+    int constantArmorPtsPerLevel = 5;
+    
     
     GameInstance()
     {
@@ -198,7 +201,13 @@ public class GameInstance {
     Item generateArmor(int level)
     {
         //needs to be filled in
-        return new Item("Armor", 0, 2, 0, 1, 2, 3, 4);
+        int Spts=0, Apts=0, Mpts=0;
+        
+        Spts = (int) ((int) level*constantWeaponPtsPerLevel*((Math.random()*.4+.8)));
+        Apts = (int) ((int) level*constantWeaponPtsPerLevel*((Math.random()*.4+.8)));
+        Mpts = (int) ((int) level*constantWeaponPtsPerLevel*((Math.random()*.4+.8)));
+        
+        return new Item("Armor", 0, 2, 0, Spts, Apts, Mpts, 0);
     }
     
     /****************************************************
@@ -209,8 +218,21 @@ public class GameInstance {
      ***************************************************/
     Item generateWeapon(int level)
     {
-        //needs to be filled in
-        return new Item("Weapon", 0, 1, 0, 1, 2, 3, 4);
+        int points, Spts=0, Apts=0, Mpts=0, type;
+        type = ((int) (Math.random()*2+1));
+        
+        //calculate the strength value
+        points = (int) ((int) level*constantWeaponPtsPerLevel*((Math.random()*.4+.8)));
+        
+        if(type == 1)
+            Spts=points;
+        else if(type==2)
+            Apts=points;
+        else if(type==3)
+            Mpts=points;
+        
+        
+        return new Item("Weapon", 0, 1, 0, Spts, Apts, Mpts, 0);
     }
     
     /****************************************************
