@@ -297,8 +297,10 @@ public class GameInstance {
 "	<body>\n" +
 "            <form action=\"Tarsus\" method=\"post\">\n" +
 "		<div id=\"header\" class=\"grid10\" align=\"right\">\n" +
+
 "			<input href=\"index.html\" id=\"tarsusTitle\" /> \n" +
 "			<input class=\"button\" type=\"submit\" value=\"Log in\" name=\"Log in\" /> </div>\n" +
+
 "		<div class=\"grid1\"> </div>\n" +
 "		<div class=\"grid8 centered\">\n" +
 "		<h1 id=\"title\" class=\"centered\">Welcome</h1>\n" +
@@ -319,6 +321,7 @@ public class GameInstance {
         }
         else
         {
+
             String value1 = request.getParameter("Sign Up");
             String value2 = request.getParameter("Log in");
             String value3 = request.getParameter("Create a Character");
@@ -340,7 +343,7 @@ public class GameInstance {
                 return stateEnum.UNREGISTERED_CHARACTER_CREATION;
             if("Sign Up".equals(value))
                 return stateEnum.ACCOUNT_CREATION;
-            
+      
              
                 
             
