@@ -18,22 +18,23 @@
 	<title> Tarsus </title>
 	</head>
 	<body>
+            <form action="Tarsus" method="post">
 		<div id="header" class="grid10" align="right">
-			<a href="index.html" id="tarsusTitle"> TARSUS </a> 
-			<a class="button" href="login.html"> Log In </a> </div>
+			<input href="index.html" id="tarsusTitle" /> 
+			<input class="button" type="submit" value="Log in" name="Log in" /> </div>
 		<div class="grid1"> </div>
 		<div class="grid8 centered">
 		<h1 id="title" class="centered">Welcome</h1>
 		<p align="justify"> 
 			Tarsus is a web based Role Playing Game that allows you to create your own character and use it to fight progressively more difficult enemies as you try to make your way to the top. If you already have an account, click the Log In button above. If not, you can make a character using our character maker or your can sign up and start your own adventure.
 		</p>
-
 		<div align="center">
-			<a href="unregcharcreation.html" class=frontPageButton>Create a Character</a>
-			<a href="signup.html" class=frontPageButton>Sign Up</a>
+                    <input type="submit" value="Create a Character" name="Create a Character" class=frontPageButton />
+			<input type="submit" value="Sign Up" name="Sign Up" class=frontPageButton />
 		</div>
 		</div>
 		<div class="grid1"> </div>
+            </form>
 	</body>
 	
 </html>
