@@ -321,7 +321,6 @@ public class GameInstance {
         }
         else
         {
-
             String value1 = request.getParameter("Sign Up");
             String value2 = request.getParameter("Log in");
             String value3 = request.getParameter("Create a Character");
@@ -342,11 +341,7 @@ public class GameInstance {
             if(value.equals("Create a Character"))
                 return stateEnum.UNREGISTERED_CHARACTER_CREATION;
             if("Sign Up".equals(value))
-                return stateEnum.ACCOUNT_CREATION;
-      
-             
-                
-            
+                return stateEnum.ACCOUNT_CREATION; 
         }
        return stateEnum.INIT;
         
