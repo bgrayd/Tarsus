@@ -110,7 +110,6 @@ public class GameInstance {
         do
         {
             currentState = nextState;
-            
             switch(currentState)
             {
                 case INIT:
@@ -320,16 +319,27 @@ public class GameInstance {
         }
         else
         {
-            String value = request.getParameter("Sign Up");
-            
+            String value1 = request.getParameter("Sign Up");
+            String value2 = request.getParameter("Log in");
+            String value3 = request.getParameter("Create a Character");
             //state changes
+
+
           
-            if(value.equals("Sign Up"))
-                return stateEnum.ACCOUNT_CREATION;
-            if(request.getParameter("Log in").equals("Log in"))
+            String value = "";
+            if(value1 != null)
+                value = value1;
+            if(value2!=null)
+                value = value2;
+            if(value3!=null)
+                value = value3;
+          
+            if(value.equals("Log in"))
                 return stateEnum.LOGIN;
-            if(request.getParameter("Create a Character").equals("Create a Character"))
-                return stateEnum.UNREGISTERED_CHARACTER_CREATION; 
+            if(value.equals("Create a Character"))
+                return stateEnum.UNREGISTERED_CHARACTER_CREATION;
+            if("Sign Up".equals(value))
+                return stateEnum.ACCOUNT_CREATION;
             
              
                 
