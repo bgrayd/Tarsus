@@ -397,7 +397,7 @@ public class GameInstance {
             //get parameters
         }
         
-        String page = "<html>\n" +
+        String startPage = "<html>\n" +
 "	<head>\n" +
 "	<!-- Call normalize.css -->\n" +
 "	<link rel=\"stylesheet\" href=\"../css/normalize.css\" type=\"text/css\" media=\"screen\">\n" +
@@ -419,51 +419,10 @@ public class GameInstance {
 "		<br />\n" +
 "		<p align=\"center\">\n" +
 "		</p>\n" +
-"		<div class=\"gridHalf\"> \n" +
+"		<div class=\"gridHalf\"> \n";
+         String statsTable =       
 "			<h2 align=\"center\"> %s </h2>\n" +
 "			\n" +
-"			<table id=\"table\" align=\"center\">\n" +
-"				<tr>\n" +
-"					<th> Health </th>\n" +
-"					<th> Strength </th>\n" +
-"					<th> Magic </th>\n" +
-"					<th> Agility </th>\n" +
-"				</tr>\n" +
-"				<tr>\n" +
-"					<th> $d </th>\n" +
-"					<td> $d </td>\n" +
-"					<td> %d </td>\n" +
-"					<td> %d </td>\n" +
-"				</tr>\n" +
-"			</table>\n" +
-"			\n" +
-"			<h3 align=\"center\"> Equipped </h3>\n" +
-"			<table id=\"table\" align=\"center\">\n" +
-"				<tr>\n" +
-"					<td> </td>\n" +
-"					<th> Name </th>\n" +
-"					<th> Strength </th>\n" +
-"					<th> Magic </th>\n" +
-"					<th> Agility </th>\n" +
-"				</tr>\n" +
-"				<tr>\n" +
-"					<th> Weapon: </th>\n" +
-"					<td> %s </td>\n" +
-"					<td> %d </td>\n" +
-"					<td> %d </td>\n" +
-"					<td> %d </td>\n" +
-"				</tr>\n" +
-"				<tr>\n" +
-"					<th> Armor: </th>\n" +
-"					<td> %s </td>\n" +
-"					<td> %d% </td>\n" +
-"					<td> %d% </td>\n" +
-"					<td> %d% </td>\n" +
-"				</tr>\n" +
-"			</table>\n" +
-"		</div>\n" +
-"		<div class=\"gridHalf\"> \n" +
-"			<h2 align=\"center\"> %s </h3>\n" +
 "			<table id=\"table\" align=\"center\">\n" +
 "				<tr>\n" +
 "					<th> Health </th>\n" +
@@ -477,7 +436,8 @@ public class GameInstance {
 "					<td> %d </td>\n" +
 "					<td> %d </td>\n" +
 "				</tr>\n" +
-"			</table>\n" +
+"			</table>\n";
+        String equippedTable1 = 
 "			\n" +
 "			<h3 align=\"center\"> Equipped </h3>\n" +
 "			<table id=\"table\" align=\"center\">\n" +
@@ -494,16 +454,20 @@ public class GameInstance {
 "					<td> %d </td>\n" +
 "					<td> %d </td>\n" +
 "					<td> %d </td>\n" +
-"				</tr>\n" +
-"				<tr>\n" +
+"				</tr>\n";
+        String equippedTable2 = 
+"                               <tr>\n" +
 "					<th> Armor: </th>\n" +
 "					<td> %s </td>\n" +
-"					<td> %d% </td>\n" +
-"					<td> %d% </td>\n" +
-"					<td> %d% </td>\n" +
+"					<td> %d </td>\n" +
+"					<td> %d </td>\n" +
+"					<td> %d </td>\n" +
 "				</tr>\n" +
-"			</table>\n" +
+"			</table>\n";
+        String betweenCharacters = 
 "		</div>\n" +
+"		<div class=\"gridHalf\"> \n";
+        String afterTable = 
 "		\n" +
 "		</div>\n" +
                 "				<a href=\"fight.html\" class=\"profileButton\">Attack</a>  \n" +
@@ -512,7 +476,16 @@ public class GameInstance {
 "	</body>\n" +
 "	\n" +
 "</html>";
-        out.printf(page,"username", playerChar.name, playerChar.health, playerChar.strength, playerChar.magic, playerChar.agility, playerChar.weapon.name,playerChar.weapon.strength, playerChar.weapon.magic, playerChar.weapon.agility, playerChar.armor.name, playerChar.armor.strength, playerChar.armor.magic, playerChar.armor.agility, aresChar.name, aresChar.health, aresChar.strength, aresChar.magic, aresChar.agility, aresChar.weapon.name,aresChar.weapon.strength, aresChar.weapon.magic, aresChar.weapon.agility, aresChar.armor.name, aresChar.armor.strength, aresChar.armor.magic, aresChar.armor.agility);
+        
+        out.printf(startPage,"username");
+        out.printf(statsTable, "testing", playerChar.getHealth(), playerChar.getStrength(), playerChar.getMagic(), playerChar.getAgility());
+        out.printf(equippedTable1, playerChar.weapon.getName(), playerChar.weapon.getStrength(), playerChar.weapon.getMagic(), playerChar.weapon.getAgility());
+        out.printf(equippedTable2, playerChar.armor.getName(), playerChar.armor.getStrength(), playerChar.armor.getMagic(), playerChar.armor.getAgility());
+        out.printf(betweenCharacters);
+        out.printf(statsTable, aresChar.name, aresChar.getHealth(), aresChar.getStrength(), aresChar.getMagic(), aresChar.getAgility());
+        out.printf(equippedTable1, aresChar.weapon.getName(),aresChar.weapon.getStrength(), aresChar.weapon.getMagic(), aresChar.weapon.getAgility());
+        out.printf(equippedTable2, aresChar.armor.getName(), aresChar.armor.getStrength(), aresChar.armor.getMagic(), aresChar.armor.getAgility());
+        out.printf(afterTable);
         
         return stateEnum.BATTLE;
     }
