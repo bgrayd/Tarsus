@@ -38,6 +38,14 @@ class Item {
         type =  Integer.parseInt(input.substring(underscore+1));
     }
 
+    void upgradeItem()
+    {
+        upgradeCount = upgradeCount + 1;
+        
+    }
+    
+    
+    
     String getName()
     {
         return name;
