@@ -75,6 +75,16 @@ public abstract class Character {
         }
     }
     
+    String getName()
+    {
+        return name;
+    }
+    
+    String getBio()
+    {
+        return bio;
+    }
+    
     void setLevel(int level)
     {
         this.level = level;

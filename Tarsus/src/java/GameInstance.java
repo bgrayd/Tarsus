@@ -143,7 +143,6 @@ public class GameInstance {
 
                 case DECISION:
                     //this state is for asking what to do next
-                    out.println("Decision");
                     nextState = decisionState(out, request);
                     break;
 
@@ -158,6 +157,7 @@ public class GameInstance {
                     break;
                     
                 case ACCOUNT_CREATION:
+                    //account creation
                     try{
                     nextState = accountCreation(out, request);}
                     catch(SQLException ex)
@@ -167,6 +167,26 @@ public class GameInstance {
                     }
                     break;
                     
+                case PROFILE:
+                    //profile
+                    try{
+                    nextState = profileState(out, request);}
+                    catch(SQLException ex)
+                    {
+                        out.println("What the ");
+                        out.println(ex);
+                    }
+                    break;
+                    
+                case PAST_CHARACTERS:
+                    //Look at Past Characters
+                    nextState = pastCharactersState(out, request);
+                    break;
+                    
+                case LOGOUT:
+                    //Log Out
+                    nextState = LogoutState(out, request);
+                    break;
                     
                 default:
                     //this should go to a specified state
@@ -322,10 +342,7 @@ public class GameInstance {
             String value1 = request.getParameter("Sign Up");
             String value2 = request.getParameter("Log in");
             String value3 = request.getParameter("Create a Character");
-            //state changes
 
-
-          
             String value = "";
             if(value1 != null)
                 value = value1;
@@ -338,7 +355,7 @@ public class GameInstance {
                 return stateEnum.LOGIN;
             if(value.equals("Create a Character"))
                 return stateEnum.UNREGISTERED_CHARACTER_CREATION;
-            if("Sign Up".equals(value))
+            if(value.equals("Sign Up"))
                 return stateEnum.ACCOUNT_CREATION; 
         }
        return stateEnum.INIT;
@@ -591,7 +608,74 @@ public class GameInstance {
      * @return the next state
      ***************************************************/
     stateEnum decisionState(PrintWriter out, HttpServletRequest request) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (startingState != stateEnum.DECISION)
+        {
+            String characterName = ""; //need to get SQL query
+            out.println("<html>\n" +
+                        "	<head>\n" +
+                        "	<!-- Call normalize.css -->\n" +
+                        "	<link rel=\"stylesheet\" href=\"css/normalize.css\" type=\"text/css\" media=\"screen\">\n" +
+                        "	<!-- Import Font to be used in titles and buttons -->\n" +
+                        "	<link href='http://fonts.googleapis.com/css?family=Sanchez' rel='stylesheet' type='text/css'>\n" +
+                        "	<link href='http://fonts.googleapis.com/css?family=Prosto+One' rel='stylesheet' type='text/css'>\n" +
+                        "	<!-- Call style.css -->\n" +
+                        "	<link rel=\"stylesheet\" href=\"css/grid.css\" type=\"text/css\" media=\"screen\">\n" +
+                        "	<!-- Call style.css -->\n" +
+                        "	<link rel=\"stylesheet\" href=\"css/style.css\" type=\"text/css\" media=\"screen\">\n" +
+                        "	<title> Tarsus </title>\n" +
+                        "	</head>\n" +
+                        "	<body>\n" +
+                        "	    <form action=\"Tarsus\" method=\"POST\">\n" +
+                        "		<div id=\"header\" class=\"grid10\" align=\"right\">\n" +
+                        "			<input name=\"" + accountName + "\" value=\"" + accountName + "\" type=\"submit\" id=\"tarsusTitle\" /> \n" +
+                        "			<input class=\"button\" name=\"Log out\" value=\"Log out\" type=\"submit\" /> </div>\n" +
+                        "		<div class=\"grid1\"> </div>\n" +
+                        "		<div class=\"grid8 centered\">\n" +
+                        "			<h1 id=\"title\" class=\"centered\">" + playerChar.getName() + "</h1>\n" +
+                        "			<p align=\"center\">\n" +
+                        "				<input name=\"To Battle!\" value=\"To Battle!\" type=\"submit\" class=\"profileButton\" />\n" +
+                        "				<input name=\"Store\" value=\"Store\" type=\"submit\" class=\"profileButton\" />\n" +
+                        "				<input name=\"Blacksmith\" value=\"Blacksmith\" type=\"submit\" class=\"profileButton\" />\n" +
+                        "			</p>\n" +
+                        "		</div>\n" +
+                        "		<div class=\"grid1\"> </div>\n" +
+                        "	    </form>\n" +
+                        "	</body>\n" +
+                        "</html>");
+            return stateEnum.DECISION;
+        }
+        else
+        {
+            String value1 = request.getParameter(accountName);
+            String value2 = request.getParameter("Log out");
+            String value3 = request.getParameter("To Battle!");
+            String value4 = request.getParameter("Store");
+            String value5 = request.getParameter("Blacksmith");
+            
+            String value = "";
+            if(value1 != null)
+                value = value1;
+            if(value2 != null)
+                value = value2;
+            if(value3 != null)
+                value = value3;
+            if(value4 != null)
+                value = value4;
+            if(value5 != null)
+                value = value5;
+            
+            if(value.equals(accountName))
+                printProfileState(out);
+            if(value.equals("Log out"))
+                return stateEnum.LOGOUT;
+            if(value.equals("To Battle!"))
+                return stateEnum.BATTLE;
+            if(value.equals("Store"))
+                return stateEnum.STORE;
+            if(value.equals("Blacksmith"))
+                return stateEnum.BLACKSMITH;
+        }
+        return stateEnum.PROFILE;
     }
 
     /****************************************************
@@ -608,17 +692,22 @@ public class GameInstance {
         }
         else
         {
-            if(request.getParameter(accountName) != null)
+            String value1 = request.getParameter(accountName);
+            if(value1 != null)
                 return stateEnum.DECISION;
-            for (int i = 0; i < playerChar.itemsHeld.length - 1; i++){
-                String tempValue = request.getParameter("Upgrade" + i);
-                if(tempValue != null)
-                {
-                    playerChar.itemsHeld[i].upgradeItem();
-                    printBlacksmithState(out);
+            else
+            {
+                for (int i = 0; i < playerChar.itemsHeld.length - 1; i++){
+                    String tempValue = request.getParameter("Upgrade" + i);
+                    if(tempValue != null)
+                    {
+                        playerChar.itemsHeld[i].upgradeItem();
+                        printBlacksmithState(out);
+                        break;
+                    }
                 }
+                return stateEnum.BLACKSMITH;
             }
-            return stateEnum.BLACKSMITH;
         }
     }
 
@@ -675,7 +764,7 @@ public class GameInstance {
             try{
             if(result.isBeforeFirst()){
                     accountName = username;
-                    return stateEnum.DECISION;
+                    return stateEnum.PROFILE;
             }else{
                 out.println("<html>\n" +
                     "	<head>\n" +
@@ -832,6 +921,58 @@ public class GameInstance {
         }
     }
     
+    stateEnum profileState(PrintWriter out, HttpServletRequest request)  throws SQLException {
+        if(startingState != stateEnum.PROFILE)
+        {
+            printProfileState(out);
+        }
+        else
+        {
+            String value1 = request.getParameter(accountName);
+            String value2 = request.getParameter("Log out");
+            String value3 = request.getParameter("Create a Character");
+            String value4 = request.getParameter("Load Character");
+            String value5 = request.getParameter("Look at Past Characters");
+            
+            String value = "";
+            if(value1 != null)
+                value = value1;
+            if(value2 != null)
+                value = value2;
+            if(value3 != null)
+                value = value3;
+            if(value4 != null)
+                value = value4;
+            if(value5 != null)
+                value = value5;
+            
+            if(value.equals(accountName))
+                printProfileState(out);
+            if(value.equals("Log out"))
+                return stateEnum.LOGOUT;
+            if(value.equals("Create a Character"))
+                return stateEnum.REGISTERED_CHARACTER_CREATION;
+            if(value.equals("Load Character"))
+            {
+                //String search = "SELECT * FROM Characters WHERE username='" + accountName + "';";
+                //ResultSet result = sqlQuery(search, out);
+                
+                return stateEnum.DECISION;
+            }
+            if(value.equals("Look at Past Characters"))
+                return stateEnum.PAST_CHARACTERS;
+        }
+        return stateEnum.PROFILE;
+    }
+    
+    stateEnum pastCharactersState(PrintWriter out, HttpServletRequest request) {
+        out.println("Past");
+        return stateEnum.PAST_CHARACTERS;
+    }
+    
+    stateEnum LogoutState(PrintWriter out, HttpServletRequest request) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
     
     /****************************************************
      * Registered user creation state
@@ -857,24 +998,25 @@ public class GameInstance {
     return ("<script> var maxValue=" + Integer.toString(value) +";</script>");
     }
     
-    public void printBlacksmithState(PrintWriter out)
+    void printBlacksmithState(PrintWriter out)
     {
         String startPart = "<html>\n" +
             "	<head>\n" +
             "	<!-- Call normalize.css -->\n" +
-            "	<link rel=\"stylesheet\" href=\"../css/normalize.css\" type=\"text/css\" media=\"screen\">\n" +
+            "	<link rel=\"stylesheet\" href=\"css/normalize.css\" type=\"text/css\" media=\"screen\">\n" +
             "	<!-- Import Font to be used in titles and buttons -->\n" +
             "	<link href='http://fonts.googleapis.com/css?family=Sanchez' rel='stylesheet' type='text/css'>\n" +
             "	<link href='http://fonts.googleapis.com/css?family=Prosto+One' rel='stylesheet' type='text/css'>\n" +
             "	<!-- Call style.css -->\n" +
-            "	<link rel=\"stylesheet\" href=\"../css/grid.css\" type=\"text/css\" media=\"screen\">\n" +
+            "	<link rel=\"stylesheet\" href=\"css/grid.css\" type=\"text/css\" media=\"screen\">\n" +
             "	<!-- Call style.css -->\n" +
-            "	<link rel=\"stylesheet\" href=\"../css/style.css\" type=\"text/css\" media=\"screen\">\n" +
+            "	<link rel=\"stylesheet\" href=\"css/style.css\" type=\"text/css\" media=\"screen\">\n" +
             "	<title> Tarsus </title>\n" +
             "	</head>\n" +
             "	<body>\n" +
+            "   <form action=\"Tarsus\" method=\"post\">" + 
             "		<div id=\"header\" class=\"grid10\" align=\"right\">\n" +
-            "			<input value=\"Character Page\" name=\"" + accountName + "\" type=\"submit\" id=\"tarsusTitle\" />\n" +
+            "			<input value=\"" + accountName + "\" name=\"" + accountName + "\" type=\"submit\" id=\"tarsusTitle\" />\n" +
             "			<input class=\"button\" value=\"Log Out\" name=\"Log Out\" /> </div>\n" +
             "		<div class=\"grid1\"> </div>\n" +
             "		<div class=\"grid8 centered\">\n" +
@@ -892,6 +1034,7 @@ public class GameInstance {
         String endPart = "		</table>\n" +
             "		</div>\n" +
             "		<div class=\"grid1\"> </div>\n" +
+            "       </form>" +
             "	</body>\n" +
             "	\n" +
             "</html>";
@@ -920,5 +1063,41 @@ public class GameInstance {
             }
         }
         out.println(endPart);
+    }
+    
+    void printProfileState(PrintWriter out)
+    {
+        out.println("<html>\n" +
+            "	<head>\n" +
+            "	<!-- Call normalize.css -->\n" +
+            "	<link rel=\"stylesheet\" href=\"css/normalize.css\" type=\"text/css\" media=\"screen\">\n" +
+            "	<!-- Import Font to be used in titles and buttons -->\n" +
+            "	<link href='http://fonts.googleapis.com/css?family=Sanchez' rel='stylesheet' type='text/css'>\n" +
+            "	<link href='http://fonts.googleapis.com/css?family=Prosto+One' rel='stylesheet' type='text/css'>\n" +
+            "	<!-- Call style.css -->\n" +
+            "	<link rel=\"stylesheet\" href=\"css/grid.css\" type=\"text/css\" media=\"screen\">\n" +
+            "	<!-- Call style.css -->\n" +
+            "	<link rel=\"stylesheet\" href=\"css/style.css\" type=\"text/css\" media=\"screen\">\n" +
+            "	<title> Tarsus </title>\n" +
+            "	</head>\n" +
+            "	<body>\n" +
+            "   <form action=\"Tarsus\" method=\"post\">" + 
+            "		<div id=\"header\" class=\"grid10\" align=\"right\">\n" +
+            "			<input name=\"" + accountName + "\" value=\"" + accountName + "\" id=\"tarsusTitle\" type=\"submit\" /> \n" +
+            "			<input class=\"button\" name=\"Log out\" value=\"Log out\" type=\"submit\" /> </div>\n" +
+            "		<div class=\"grid2\"> </div>\n" +
+            "		<div class=\"grid6 centered\">\n" +
+            "			<h1 id=\"title\" class=\"centered\">TARSUS</h1> <br />\n" +
+            "			<div align=\"center\"> \n" +
+            "				<input class=\"profileButton\" name=\"Create Character\" value=\"Create Character\" type=\"submit\" />\n" +
+            "				<input class=\"profileButton\" name=\"Load Character\" value=\"Load Character\" type=\"submit\" />  \n" +
+            "				<input class=\"profileButton\" name=\"Look at Past Characters\" value=\"Look at Past Characters\" type=\"submit\" /> \n" +
+            "			</div>\n" +
+            "		</div>\n" +
+            "		<div class=\"grid1\"> </div>\n" +
+            "           </form>" +
+            "	</body>\n" +
+            "	\n" +
+            "</html>");
     }
 }
