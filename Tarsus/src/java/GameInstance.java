@@ -45,6 +45,7 @@ public class GameInstance {
      * SQL Commands
      ***************************************************/
     void disconnectDB(){
+        DBUtilities.closeStatement(stat);
         dataSource.freeConnection(conn);
     }
     
@@ -61,11 +62,9 @@ public class GameInstance {
              stat = conn.createStatement();
              result = stat.executeQuery(query);
         }catch(Exception ex){
-            
            out.println("Query error:");
-            out.println(ex);
+           out.println(ex);
         }finally{
-            disconnectDB();
             return result;
         } 
     }
@@ -88,8 +87,6 @@ public class GameInstance {
             out.println(ex);
             
         }finally{
-            DBUtilities.closeStatement(stat);
-            disconnectDB();
             return result;
         } 
     }
@@ -644,11 +641,13 @@ public class GameInstance {
                 }
                 
             }catch(Exception ex){
-                out.println("username fail");
+                out.println("username check failure");  //Test Check
                 out.println(ex);
-                alreadyExists=false;
+                alreadyExists=true;
             }
             
+            DBUtilities.closeStatement(stat);
+            disconnectDB();
             // Check to see if the username is valid
             if(!isValidString(username) || alreadyExists)
             {
@@ -672,6 +671,9 @@ public class GameInstance {
             try{
             if(sqlCommand(command, out))
             {
+                
+                DBUtilities.closeStatement(stat);
+                disconnectDB();
                 return stateEnum.LOGIN;
              
             } 
