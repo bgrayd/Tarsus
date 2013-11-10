@@ -624,9 +624,9 @@ public class GameInstance {
     private stateEnum battleState(PrintWriter out, HttpServletRequest request) {
         if(startingState != stateEnum.BATTLE)
         {
-            Item[] itemsHeld = {generateWeapon(1), generateArmor(1), generateWeapon(50), generateArmor(50)};
-            playerChar = new PlayerCharacter("player", "", 1, 10, 1, 2, 3, itemsHeld, itemsHeld[0], itemsHeld[1], 0, 0, 0, 0);
-            aresChar = new AresCharacter("enemy", "", 1, 10, 1, 2, 3, itemsHeld, itemsHeld[0], itemsHeld[1], 0, 0, 0, 0);
+            Item[] itemsHeld = {generateWeapon(1), generateArmor(1), generateWeapon(1), generateArmor(1)};
+            playerChar = new PlayerCharacter("player", "", 1, 1000, 1, 2, 3, itemsHeld, itemsHeld[0], itemsHeld[1], 0, 0, 0, 0);
+            aresChar = new AresCharacter("enemy", "", 1, 1000, 1, 2, 3, itemsHeld, itemsHeld[0], itemsHeld[1], 0, 0, 0, 0);
         }
         
         String startPage = "<html>\n" +
@@ -816,13 +816,11 @@ public class GameInstance {
         else if(aresChar.getHealth()<1)
         {
             int newGold = (int) (constantGoldPerLevel*playerChar.getLevel()*(Math.random()*.4+.8));
-            //add newGold to the accounts gold
+            gold+=newGold;
             playerChar.setHealth(playerChar.getMaxHealth());
             out.printf("Congradulations you beat your enemy.\n You get %d gold.\n", newGold);
             out.printf("<input type=\"submit\" name=\"OK\" value=\"OK\" class=\"profileButton\" /> \n");
         }
-        out.printf("attack:%d,strength:%d,magic:%d,agility:%d ",playerChar.timesAttacked,playerChar.timesSwitchedToStrength,playerChar.timesSwitchedToMagic, playerChar.timesSwitchedToAgility);
-
         out.printf(lastPart);
         return stateEnum.BATTLE;
     }
@@ -966,7 +964,7 @@ public class GameInstance {
         {
            if(request.getParameter("Home").equals("Home"))
            {
-               return stateEnum.INIT; //debug
+               return stateEnum.BATTLE; //debug
            }
 
            String name = (String) request.getParameter("name");

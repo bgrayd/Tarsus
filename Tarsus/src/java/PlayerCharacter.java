@@ -16,6 +16,7 @@ public class PlayerCharacter extends Character {
      * interprets an action from a form given to the player
      * @return player action
      *******************************************************/
+    @Override
     actionEnum requestAction(HttpServletRequest request)
     {
         String value = null, valueAttack=request.getParameter("attack"), valueUse=request.getParameter("use"), valueOK=request.getParameter("OK"), itemName = null;
@@ -39,7 +40,7 @@ public class PlayerCharacter extends Character {
             Item item;
             for(int i=0; i < itemsHeld.length;i++)
             {
-                if(itemsHeld[i].name==itemName)
+                if((itemsHeld[i].name).equals(itemName))
                 {
                     item = itemsHeld[i];
                     if(item.getType()==1)
