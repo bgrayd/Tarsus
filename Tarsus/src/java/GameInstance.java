@@ -203,9 +203,9 @@ public class GameInstance {
         //needs to be filled in
         int Spts=0, Apts=0, Mpts=0;
         
-        Spts = (int) ((int) level*constantWeaponPtsPerLevel*((Math.random()*.4+.8)));
-        Apts = (int) ((int) level*constantWeaponPtsPerLevel*((Math.random()*.4+.8)));
-        Mpts = (int) ((int) level*constantWeaponPtsPerLevel*((Math.random()*.4+.8)));
+        Spts = (int) (level*constantWeaponPtsPerLevel*((Math.random()*.4+.8)));
+        Apts = (int) (level*constantWeaponPtsPerLevel*((Math.random()*.4+.8)));
+        Mpts = (int) (level*constantWeaponPtsPerLevel*((Math.random()*.4+.8)));
         
         return new Item("Armor", 0, 2, 0, Spts, Apts, Mpts, 0);
     }
@@ -222,7 +222,7 @@ public class GameInstance {
         type = ((int) (Math.random()*2+1));
         
         //calculate the strength value
-        points = (int) ((int) level*constantWeaponPtsPerLevel*((Math.random()*.4+.8)));
+        points = (int) (level*constantWeaponPtsPerLevel*((Math.random()*.4+.8)));
         
         if(type == 1)
             Spts=points;
@@ -389,7 +389,7 @@ public class GameInstance {
     private stateEnum battleState(PrintWriter out, HttpServletRequest request) {
         if(startingState != stateEnum.BATTLE)
         {
-            Item[] itemsHeld = {generateWeapon(1), generateArmor(1)};
+            Item[] itemsHeld = {generateWeapon(1), generateArmor(1), generateWeapon(50), generateArmor(50)};
             playerChar = new PlayerCharacter("player", "", 1, 10, 1, 2, 3, itemsHeld, itemsHeld[0], itemsHeld[1], 0, 0, 0, 0);
             aresChar = new AresCharacter("enemy", "", 1, 10, 1, 2, 3, itemsHeld, itemsHeld[0], itemsHeld[1], 0, 0, 0, 0);
         }
@@ -469,11 +469,11 @@ public class GameInstance {
 "		</div>\n" +
 "                               <form action=\"Tarsus\" method = \"post\">";
         String attackButton =
-"				<input type = \"submit\" class=\"profileButton\" name = \"attack\" value = \"attack\" />  \n" + 
+"				<input type = \"submit\" class=\"profileButton\" name = \"attack\" value = \"Attack\" />  \n" + 
 "                               <select name = \"itemSelected\"> \n";
         String useButton = 
 "                               </select>" + 
-"				<input type = \"submit\" class=\"profileButton\" name=\"use\" value = \"use\" /> \n";
+"				<input type = \"submit\" class=\"profileButton\" name=\"use\" value = \"Use item\" /> \n";
         String lastPart = 
 "                               </form>" + 
 "		<div class=\"grid1\"> </div>\n" +
@@ -485,9 +485,10 @@ public class GameInstance {
         
         if(startingState == stateEnum.BATTLE)
         {
-             String value = null, valueAttack=request.getParameter("attack"), valueUse=request.getParameter("use"), valueOK=request.getParameter("OK"), itemName;
+            String value = null, valueAttack=request.getParameter("attack"), valueUse=request.getParameter("use"), valueOK=request.getParameter("OK"), itemName;
             if(valueAttack!=null)
                 value = valueAttack;
+            
             if(valueUse!=null)
             {
                 value=valueUse;
@@ -500,7 +501,6 @@ public class GameInstance {
             {
                 actionEnum playerAction = playerChar.requestAction(request);
                 actionEnum aresAction = aresChar.requestAction(request);
-                
 
                 if(playerAction == actionEnum.ATTACK)
                 {
@@ -535,8 +535,8 @@ public class GameInstance {
                     }
                 }
 
-                playerChar.setHealth(playerChar.getHealth() - aresDamage);
-                aresChar.setHealth(aresChar.getHealth() - playerDamage);
+                playerChar.setHealth(playerChar.getHealth() - playerDamage);
+                aresChar.setHealth(aresChar.getHealth() - aresDamage);
 
             }
             
@@ -566,17 +566,17 @@ public class GameInstance {
             out.printf(attackButton);
             for(int i=0; i < playerChar.itemsHeld.length;i++)
             {
+                //change first string, the value parameter, to itemId
                 out.printf("<option value = \"%s\"> %s </option> \n", playerChar.itemsHeld[i].getName(),playerChar.itemsHeld[i].getName());
             }
             out.printf(useButton);
         }
-        
         else if(playerChar.getHealth()<1)
         {
             out.printf("The valiant hero has been killed.\n");
             out.printf("<input type=\"submit\" name=\"OK\" value=\"OK\" class=\"profileButton\" /> \n");
         }
-            
+   
         
         else if(aresChar.getHealth()<1)
         {
@@ -586,6 +586,8 @@ public class GameInstance {
             out.printf("Congradulations you beat your enemy.\n You get %d gold.\n", newGold);
             out.printf("<input type=\"submit\" name=\"OK\" value=\"OK\" class=\"profileButton\" /> \n");
         }
+        out.printf("attack:%d,strength:%d,magic:%d,agility:%d ",playerChar.timesAttacked,playerChar.timesSwitchedToStrength,playerChar.timesSwitchedToMagic, playerChar.timesSwitchedToAgility);
+
         out.printf(lastPart);
         return stateEnum.BATTLE;
     }

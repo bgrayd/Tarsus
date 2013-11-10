@@ -18,6 +18,57 @@ public class PlayerCharacter extends Character {
      *******************************************************/
     actionEnum requestAction(HttpServletRequest request)
     {
+        String value = null, valueAttack=request.getParameter("attack"), valueUse=request.getParameter("use"), valueOK=request.getParameter("OK"), itemName = null;
+        if(valueAttack!=null)
+            value = valueAttack;
+        if(valueUse!=null)
+        {
+            value=valueUse;
+            itemName = request.getParameter("itemSelected");
+        }
+        if(valueOK!=null)
+            value=valueOK;
+        
+        if("Attack".equals(value))
+        {
+            timesAttacked++;
+            return actionEnum.ATTACK;
+        }
+        if("Use item".equals(value))
+        {
+            Item item;
+            for(int i=0; i < itemsHeld.length;i++)
+            {
+                if(itemsHeld[i].name==itemName)
+                {
+                    item = itemsHeld[i];
+                    if(item.getType()==1)
+                    {
+                        weapon=itemsHeld[i];
+                        if(weapon.getStrength()!=0)
+                            timesSwitchedToStrength++;
+                        if(weapon.getAgility()!=0)
+                            timesSwitchedToAgility++;
+                        if(weapon.getMagic()!=0)
+                            timesSwitchedToMagic++;
+                    }
+                    else if(item.getType()==2)
+                        armor = itemsHeld[i];
+                    else if(item.getType()==3)
+                    {
+                        health+=item.getHeal();
+                        strength+=item.getStrength();
+                        agility+=item.getAgility();
+                        magic+=item.getAgility();
+                        itemsHeld[i]=null;
+                        return actionEnum.USE_ITEM;
+                    }
+                    return actionEnum.EQUIP;
+                }
+            }
+            return actionEnum.EQUIP;
+        }
+        
         return actionEnum.ATTACK;
     }
     
