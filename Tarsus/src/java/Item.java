@@ -18,7 +18,34 @@ class Item {
         this.magic = magic;
         this.health = health;
     }
+    
+    Item(String input)
+    {
+        //constructor that takes a string of the format name=id+strength-agility*magic_type
+        //assumes health = 0
+        int equals = input.indexOf("=");
+        int plus = input.indexOf("+");
+        int minus = input.indexOf("-");
+        int star = input.indexOf("*");
+        int underscore = input.indexOf("_");
+        
+        name = input.substring(0, equals);
+        itemId = Integer.parseInt(input.substring(equals+1,plus));
+        upgradeCount = 0;
+        strength =  Integer.parseInt(input.substring(plus+1,minus));
+        agility =  Integer.parseInt(input.substring(minus+1,star));
+        magic =  Integer.parseInt(input.substring(star+1,underscore));
+        type =  Integer.parseInt(input.substring(underscore+1));
+    }
 
+    void upgradeItem()
+    {
+        upgradeCount = upgradeCount + 1;
+        
+    }
+    
+    
+    
     String getName()
     {
         return name;
@@ -51,6 +78,14 @@ class Item {
     int getHeal()
     {
         return CONSTANT_potionHeal * health;
+    }
+	
+	int getValue()
+    {
+    	// returns a value with a slight exponential increase as items get better
+    	int sum = strength + agility + magic + health;
+    	int value_sum = (sum) * (sum / 10);
+    	return value_sum;
     }
     
 }
