@@ -138,7 +138,6 @@ public class GameInstance {
 
                 case DECISION:
                     //this state is for asking what to do next
-                    out.println("Decision");
                     nextState = decisionState(out, request);
                     break;
 
@@ -667,7 +666,7 @@ public class GameInstance {
                 return stateEnum.ACCOUNT_CREATION;  
             }
             String command = "INSERT INTO Login VALUES ('" + username + "', MD5('"
-                    + password +"'));";
+                    + password +"'), gold=0);";
             
             try{
                 connectDB();
