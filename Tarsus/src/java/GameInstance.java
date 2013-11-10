@@ -62,9 +62,8 @@ public class GameInstance {
              stat = conn.createStatement();
              result = stat.executeQuery(query);
         }catch(Exception ex){
-            
            out.println("Query error:");
-            out.println(ex);
+           out.println(ex);
         }finally{
             return result;
         } 
@@ -637,16 +636,14 @@ public class GameInstance {
             Boolean alreadyExists = false;
             try{
                 ResultSet result = sqlQuery(findUsername, out);
-                out.println("Reached1");
                 if(result.isBeforeFirst()){
                     alreadyExists= true;
                 }
-                out.println("Reached2");
                 
             }catch(Exception ex){
-                out.println("username fail");
+                out.println("username check failure");  //Test Check
                 out.println(ex);
-                alreadyExists=false;
+                alreadyExists=true;
             }
             
             DBUtilities.closeStatement(stat);
