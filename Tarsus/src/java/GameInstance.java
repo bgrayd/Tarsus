@@ -199,10 +199,11 @@ public class GameInstance {
 		for(int i = 0; i < STORE_SIZE; i++)
 		{
 						
-			//general type index
-			int gi = (int)(Math.round(Math.random() * (general_item_type.length - 2) + 1);
+			//general type index that decides one of the three
+                        // item types. // not including error
+			int gi = (int)(Math.round(Math.random() * (3)) + 1);
 			
-			storeItems[i] = generateItems(gi, STORE_LEVEL);
+			storeItems[i] = generateItem(gi, STORE_LEVEL);
 		}
 		
 		return storeItems;
