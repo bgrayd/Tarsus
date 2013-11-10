@@ -1,3 +1,6 @@
+
+import javax.servlet.http.HttpServletRequest;
+
 /*******************************************************
 * Ares AI character class for storing the enemy and 
 *   contains the AI
@@ -13,7 +16,7 @@ public class AresCharacter extends Character {
      * Ares AI decides its next move
      * @return player action
      *******************************************************/
-    actionEnum requestAction()
+    actionEnum requestAction(HttpServletRequest request)
     {
         return actionEnum.ATTACK;
     }

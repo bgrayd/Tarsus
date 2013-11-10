@@ -24,6 +24,7 @@ public class GameInstance {
     int constantPtsPerLevel = 5;
     int constantWeaponPtsPerLevel = 3;
     int constantArmorPtsPerLevel = 5;
+    int constantGoldPerLevel = 20;
     
     
     GameInstance()
@@ -412,8 +413,8 @@ public class GameInstance {
 "	</head>\n" +
 "	<body>\n" +
 "		<div id=\"header\" class=\"grid10\" align=\"right\">\n" +
-"			<a href=\"continuechar.html\" id=\"tarsusTitle\"> %s </a> \n" +
-"			<a class=\"button\" href=\"../login.html\"> Log Out </a> </div>\n" +
+"			%s \n" +
+"	        </div>\n" +
 "		<div class=\"grid1\"> </div>\n" +
 "		<div class=\"grid8 centered\">\n" +
 "		<br />\n" +
@@ -470,12 +471,77 @@ public class GameInstance {
         String afterTable = 
 "		\n" +
 "		</div>\n" +
-                "				<a href=\"fight.html\" class=\"profileButton\">Attack</a>  \n" +
-"				<a href=\"inventory.html\" class=\"profileButton\">Switch weapon to</a> \n" +
+"                               <form action=\"Tarsus\" method = \"post\">";
+        String attackButton =
+"				<input type = \"submit\" class=\"profileButton\" name = \"attack\" value = \"attack\" />  \n" + 
+"                               <select name = \"itemSelected\"> \n";
+        String useButton = 
+"                               </select>" + 
+"				<input type = \"submit\" class=\"profileButton\" name=\"use\" value = \"use\" /> \n";
+        String lastPart = 
+"                               </form>" + 
 "		<div class=\"grid1\"> </div>\n" +
 "	</body>\n" +
 "	\n" +
 "</html>";
+        
+        if(startingState != stateEnum.BATTLE)
+        {
+             String value = null, valueAttack=request.getParameter("attack"), valueUse=request.getParameter("use"), valueOK=request.getParameter("OK"), itemName;
+            if(valueAttack!=null)
+                value = valueAttack;
+            if(valueUse!=null)
+            {
+                value=valueUse;
+                itemName = request.getParameter("itemSelected");
+            }
+            if(valueOK!=null)
+                value=valueOK;
+
+            if((value != "decision") || (value!="profile"))
+            {
+                actionEnum playerAction = playerChar.requestAction(request);
+                actionEnum aresAction = aresChar.requestAction(request);
+                int aresDamage = 0, playerDamage = 0;
+
+                if(playerAction == actionEnum.ATTACK)
+                {
+                    if(playerChar.weapon.getStrength()!=0)
+                    {
+                        aresDamage = playerChar.getStrength()+playerChar.weapon.getStrength()-(aresChar.getStrength()*aresChar.armor.getStrength()/100);
+                    }
+
+                    if(playerChar.weapon.getAgility()!=0)
+                    {
+                        aresDamage = playerChar.getAgility()+playerChar.weapon.getAgility()-(aresChar.getAgility()*aresChar.armor.getAgility()/100);
+                    }
+
+                    if(playerChar.weapon.getMagic()!=0)
+                    {
+                        aresDamage = playerChar.getMagic()+playerChar.weapon.getMagic()-(aresChar.getMagic()*aresChar.armor.getMagic()/100);
+                    }
+                }
+                if(aresAction == actionEnum.ATTACK)
+                {
+                    if(aresChar.weapon.getStrength()!=0)
+                    {
+                        playerDamage = aresChar.getStrength()+aresChar.weapon.getStrength()-(playerChar.getStrength()*playerChar.armor.getStrength()/100);
+                    }
+                    if(aresChar.weapon.getMagic()!=0)
+                    {
+                        playerDamage = aresChar.getMagic()+aresChar.weapon.getMagic()-(playerChar.getMagic()*playerChar.armor.getMagic()/100);
+                    }
+                    if(aresChar.weapon.getAgility()!=0)
+                    {
+                        playerDamage = aresChar.getAgility()+aresChar.weapon.getAgility()-(playerChar.getAgility()*playerChar.armor.getAgility()/100);
+                    }
+                }
+
+                playerChar.setHealth(playerChar.getHealth() - aresDamage);
+                aresChar.setHealth(aresChar.getHealth() - playerDamage);
+
+            }
+        }
         
         out.printf(startPage,"username");
         out.printf(statsTable, "testing", playerChar.getHealth(), playerChar.getStrength(), playerChar.getMagic(), playerChar.getAgility());
@@ -487,6 +553,27 @@ public class GameInstance {
         out.printf(equippedTable2, aresChar.armor.getName(), aresChar.armor.getStrength(), aresChar.armor.getMagic(), aresChar.armor.getAgility());
         out.printf(afterTable);
         
+       
+        
+        if((playerChar.getHealth()>0) && (aresChar.getHealth()>0))
+        {
+            out.printf(attackButton);
+            for(int i=0; i < playerChar.itemsHeld.length;i++)
+            {
+                out.printf("<option value = \"%s\"> %s </option> \n", playerChar.itemsHeld[i].getName(),playerChar.itemsHeld[i].getName());
+            }
+            out.printf(useButton);
+        }
+        
+        else if(aresChar.getHealth()<1)
+        {
+            int newGold = (int) (constantGoldPerLevel*playerChar.getLevel()*(Math.random()*.4+.8));
+            //add newGold to the accounts gold
+            playerChar.setHealth(playerChar.getMaxHealth());
+            out.printf("Congradulations you beat your enemy.\n You get %d gold.\n", newGold);
+            out.printf("<input type=\"submit\" name=\"OK\" value=\"decision\" class=\"profileButton\" /> \n");
+        }
+        out.printf(lastPart);
         return stateEnum.BATTLE;
     }
 
@@ -949,7 +1036,7 @@ public class GameInstance {
     
     
     /****************************************************
-     * Registered user creation state
+     * Checks the validity of a String for the database
      * @param string the string to check for validity
      * @return the validity
      ***************************************************/

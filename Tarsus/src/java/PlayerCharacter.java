@@ -1,3 +1,6 @@
+
+import javax.servlet.http.HttpServletRequest;
+
 /*******************************************************
 * Class for the player's character, child of Character
 *   class.  requestAction function gets user input.
@@ -13,7 +16,7 @@ public class PlayerCharacter extends Character {
      * interprets an action from a form given to the player
      * @return player action
      *******************************************************/
-    actionEnum requestAction()
+    actionEnum requestAction(HttpServletRequest request)
     {
         return actionEnum.ATTACK;
     }
