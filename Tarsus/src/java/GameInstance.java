@@ -954,10 +954,64 @@ public class GameInstance {
                 return stateEnum.REGISTERED_CHARACTER_CREATION;
             if(value.equals("Load Character"))
             {
-                //String search = "SELECT * FROM Characters WHERE username='" + accountName + "';";
-                //ResultSet result = sqlQuery(search, out);
-                
-                return stateEnum.DECISION;
+                String search1 = "SELECT * FROM Characters WHERE creator='" + accountName + "' AND isDead=0;";
+                connectDB();
+                ResultSet result = sqlQuery(search1, out);
+                if(result.isBeforeFirst())
+                {
+                    result.next();
+                    String name = result.getString("name");
+                    String bio = result.getString("bio");
+                    int level = result.getInt("level");
+                    int health = result.getInt("health");
+                    int strength = result.getInt("strength");
+                    int agility = result.getInt("agility");
+                    int magic = result.getInt("magic");
+                    int timesAttacked = result.getInt("timesAttacked");
+                    int timesSwitchedToStrength = result.getInt("timesSwitchedToStrength");
+                    int timesSwitchedToAgility = result.getInt("timesSwitchedToAgility");
+                    int timesSwitchedToMagic = result.getInt("timesSwitchedToMagic");
+                    int equipWeaponId = result.getInt("equippedWeapon");
+                    int equipArmorId = result.getInt("equippedArmor");
+                    disconnectDB();
+                    
+                    //creating the itemsHeld array
+                    Item[] itemsHeld = null;
+                    Item weapon = null;
+                    Item armor = null;
+                    connectDB();
+                    String search2 = "SELECT * FROM Items I, CharacterHasItem C WHERE I.itemId=C.itemId AND C.charName='" + name + "';";
+                    //temp varible
+                    int i = 0;
+                    while (result.next())
+                    {
+                        String iName = result.getString("name");
+                        int itemId = result.getInt("itemId");
+                        int type = result.getInt("type");
+                        int upgradeCount = result.getInt("upgradeCount");
+                        int strengthVal= result.getInt("strengthVal");
+                        int agilityVal = result.getInt("agilityVal");
+                        int magicVal = result.getInt("magicVal");
+                        itemsHeld[i] = new Item(iName, itemId, type, upgradeCount, strengthVal, agilityVal, magicVal, 0);
+                        if (equipWeaponId == itemId)
+                        {
+                            weapon = new Item(iName, itemId, type, upgradeCount, strengthVal, agilityVal, magicVal, 0);
+                        }
+                        else if(equipArmorId == itemId)
+                        {
+                            armor = new Item(iName, itemId, type, upgradeCount, strengthVal, agilityVal, magicVal, 0);
+                        }
+                        i++;
+                    }
+                    disconnectDB();
+                    playerChar = new PlayerCharacter(name, bio, level, health, strength, agility, magic, itemsHeld, weapon, armor, timesAttacked, timesSwitchedToStrength, timesSwitchedToAgility, timesSwitchedToMagic);
+                    return stateEnum.DECISION;
+                }
+                else
+                {
+                    out.println("No Valid Character");
+                    return stateEnum.PROFILE;
+                }
             }
             if(value.equals("Look at Past Characters"))
                 return stateEnum.PAST_CHARACTERS;
