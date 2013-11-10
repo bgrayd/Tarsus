@@ -58,7 +58,7 @@ public class GameInstance {
         
         ResultSet result = null;
         try{
-            connectDB();
+            
              stat = conn.createStatement();
              result = stat.executeQuery(query);
         }catch(Exception ex){
@@ -77,7 +77,6 @@ public class GameInstance {
     Boolean sqlCommand(String command, PrintWriter out){
         Boolean result = false;
         try{
-            connectDB();
              stat = conn.createStatement();
              stat.execute(command);
              result = true;
@@ -634,7 +633,9 @@ public class GameInstance {
                     + "WHERE username = \"" + username + "\";";
             
             Boolean alreadyExists = false;
+            connectDB();
             try{
+                
                 ResultSet result = sqlQuery(findUsername, out);
                 if(result.isBeforeFirst()){
                     alreadyExists= true;
@@ -669,18 +670,20 @@ public class GameInstance {
                     + password +"'));";
             
             try{
-            if(sqlCommand(command, out))
-            {
-                
-                DBUtilities.closeStatement(stat);
-                disconnectDB();
-                return stateEnum.LOGIN;
+                connectDB();
              
-            } 
-            
-            else{
-                out.println(accountPageBegin +"<h1> ERROR! </h1>"+ accountPageEnd);
-                return stateEnum.ACCOUNT_CREATION;
+                if(sqlCommand(command, out))
+                {
+
+                    DBUtilities.closeStatement(stat);
+                    disconnectDB();
+                    return stateEnum.LOGIN;
+
+                } 
+
+                else{
+                    out.println(accountPageBegin +"<h1> ERROR! </h1>"+ accountPageEnd);
+                    return stateEnum.ACCOUNT_CREATION;
                         
             } 
             }catch(Exception ex)
