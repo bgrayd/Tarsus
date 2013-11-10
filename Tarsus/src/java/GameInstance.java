@@ -196,124 +196,13 @@ public class GameInstance {
 		final int STORE_SIZE = 20;
 		Item[] storeItems = new Item[STORE_SIZE];
 		
-		final String[] armor_name_type = {"Plate Armor", "Leather Armor", "Robe", "Mail Armor", "Magic-Strength Armor stuff", "Magic-Agility Armor stuff", "Armor"};
-		final String[] weapon_name_type = {"Sword", "Axe", "Mace", "Bow", "Crossbow", "Throwing Knives", "Staff", "Wand", "Orb"}; // Could have room for permutations
-		final String[] item_name_type = {"potion"};
-		final String[] item_name_quality_description = {"Broken", "Inferior", "Common", "Slightly Better", "Ancient", "Legendary", "Actually Broken"};
-		final String[][] general_item_type = {armor_name_type, weapon_name_type, item_name_type};
-		//final String[] item_name_Modifier_description = ["Warrior", "Hunter", "Wizard", "Bandit", "BattleMage", "Magic-Range Thing whatever", "Balance"] // permutation for each thing
 		for(int i = 0; i < STORE_SIZE; i++)
 		{
-			double[] base_stats = {0, 0, 0, 0};
-			
+						
 			//general type index
-			int gi = (int)(Math.round(Math.random() * (general_item_type.length - 1)));
-			//System.out.println(gi);
-			// special type index
-			int si = (int)(Math.round(Math.random() * (general_item_type[gi].length - 1)));
-			//System.out.println(si);
+			int gi = (int)(Math.round(Math.random() * (general_item_type.length - 2) + 1);
 			
-			// armor case
-			if(gi == 0)
-			{
-				switch (si)
-				{
-				case 0: base_stats[0] = 1;
-						base_stats[1] = 0;
-						base_stats[2] = 0;
-						break;
-				case 1: base_stats[0] = 0;
-						base_stats[1] = 1;
-						base_stats[2] = 0;
-						break;
-				case 2: base_stats[0] = 0;
-						base_stats[1] = 0;
-						base_stats[2] = 1;
-						break;
-				case 3: base_stats[0] = .5;
-						base_stats[1] = .5;
-						base_stats[2] = 0;
-						break;
-				case 4: base_stats[0] = .5;
-						base_stats[1] = 0;
-						base_stats[2] = .5;
-						break;
-				case 5: base_stats[0] = 0;
-						base_stats[1] = .5;
-						base_stats[2] = .5;
-						break;
-				case 6: base_stats[0] = 0.3333;
-						base_stats[1] = 0.3333;
-						base_stats[2] = 0.3333;
-						break;
-				
-				}
-			}
-			// weapon case
-			else if(gi == 1)
-			{
-				if((si % 9) < 3)
-				{
-					base_stats[0] = 1;
-				}
-				else if((si % 9) < 6)
-				{
-					base_stats[1] = 1;
-				}
-				else if((si % 9) < 9)
-				{
-					base_stats[2] = 1;
-				}
-			}
-			// item case
-			else if(gi == 2)
-			{
-				switch(si)
-				{
-				// potions have an abitrary larger base value thing
-				case 0: base_stats[3] = 2;
-						break;
-				}
-				
-			}
-			// Higher levels will have a more balance distribution of items
-			// e.g. Cannot possibly find a legendary item until at least level 9
-			
-			double quality = getQuality(STORE_LEVEL);
-			int index = (int) Math.round(quality * ((item_name_quality_description.length) - 1));
-			String item_quality = item_name_quality_description[index];
-			
-			String item_type = general_item_type[gi][si];
-			
-			// Get the base damage of each stat
-			// will only affect one stat at the moment
-			
-			int value_sum = 0;
-			for(int j = 0; j < 4; j++)
-			{
-				// multiples the base stat for cases where the base stat is split up in proportions
-				base_stats[j] *=(((quality) * 100) + 20);
-				base_stats[j] = Math.round(base_stats[j]);
-				value_sum += base_stats[j];
-				//base_stats[j] *= ((quality * .4) + .8) * LEVEL * PPL;
-			}
-			if(gi == 2)
-			{
-				value_sum = value_sum; // redundant for the moment
-			}
-			else
-			{
-				// some slightly exponential increase for cost of the item
-				value_sum = (value_sum) * (value_sum / 10);
-				// An idea of maybe multiplying the value times the character level
-				// to be extra cruel. Maybe use the quality function
-			}
-		String item_name = item_quality + " " + item_type;
-		//System.out.println(item_name);
-		//System.out.println(Arrays.toString(base_stats));
-		//System.out.println("Cost: " + (value_sum));
-		//System.out.println();
-		storeItems[i] = new Item(item_name, 0, gi, 0, (int)base_stats[0], (int)base_stats[1],(int)base_stats[2], (int)base_stats[3]);
+			storeItems[i] = generateItems(gi, STORE_LEVEL);
 		}
 		
 		return storeItems;
@@ -327,7 +216,9 @@ public class GameInstance {
 		final String[] item_name_quality_description = {"Broken", "Inferior", "Common", "Slightly Better", "Ancient", "Legendary", "Actually Broken"};
 		final String[][] general_item_type = {armor_name_type, weapon_name_type, item_name_type};
 		//final String[] item_name_Modifier_description = ["Warrior", "Hunter", "Wizard", "Bandit", "BattleMage", "Magic-Range Thing whatever", "Balance"] // permutation for each thing
+		
 		double base_stats[] = {0, 0, 0, 0};
+		
                 //general type index
 			int gi = type;
 			//System.out.println(gi);
@@ -336,7 +227,7 @@ public class GameInstance {
 			//System.out.println(si);
 			
 			// armor case
-			if(gi == 0)
+			if(gi == 2)
 			{
 				switch (si)
 				{
@@ -388,7 +279,7 @@ public class GameInstance {
 				}
 			}
 			// item case
-			else if(gi == 2)
+			else if(gi == 3)
 			{
 				switch(si)
 				{
@@ -417,24 +308,10 @@ public class GameInstance {
 				base_stats[j] *=(((quality) * 100) + 20);
 				base_stats[j] = Math.round(base_stats[j]);
 				value_sum += base_stats[j];
-				//base_stats[j] *= ((quality * .4) + .8) * LEVEL * PPL;
 			}
-			if(gi == 2)
-			{
-				value_sum = value_sum; // redundant for the moment
-			}
-			else
-			{
-				// some slightly exponential increase for cost of the item
-				value_sum = (value_sum) * (value_sum / 10);
-				// An idea of maybe multiplying the value times the character level
-				// to be extra cruel. Maybe use the quality function
-			}
+			
 		String item_name = item_quality + " " + item_type;
-		//System.out.println(item_name);
-		//System.out.println(Arrays.toString(base_stats));
-		//System.out.println("Cost: " + (value_sum));
-		//System.out.println();
+		
 		Item item = new Item(item_name, 0, gi, 0, (int)base_stats[0], (int)base_stats[1],(int)base_stats[2], (int)base_stats[3]);
 		return item;
 
