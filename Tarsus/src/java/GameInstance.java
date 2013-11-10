@@ -19,7 +19,10 @@ public class GameInstance {
     DBConnections dataSource = null;
     Connection conn = null;
     Statement stat = null;
+    final int STORE_SIZE = 20;    
     int gold;
+    int storeLevel;
+    Item[] storeItems;
 
     
     int constantPtsPerLevel = 5;
@@ -36,6 +39,8 @@ public class GameInstance {
         currentState = stateEnum.INIT;
         accountName = "Unregistered User";
         int gold = 0;
+        int storeLevel = 0;
+        Item[] storeItems = new Item[STORE_SIZE];
     }
     
     /****************************************************
@@ -190,11 +195,11 @@ public class GameInstance {
      * @param level the level of the player character
      * @return an array of new items for the store
      ***************************************************/
-    Item[] getStoreInventory(int level)
+    Item[] getStoreInventory(int level, int size)
     {
         final int STORE_LEVEL = level;
-		final int STORE_SIZE = 20;
-		Item[] storeItems = new Item[STORE_SIZE];
+	final int STORE_SIZE = size;
+	Item[] storeItems = new Item[STORE_SIZE];
 		
 		for(int i = 0; i < STORE_SIZE; i++)
 		{
@@ -459,38 +464,54 @@ public class GameInstance {
      * @return the next state
      ***************************************************/
     private stateEnum storeState(PrintWriter out, HttpServletRequest request) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-		/*
-		// have store level as well as the items be static so that it is the same each time the player comes back to the 
-		// store unless the player has increased in level
 		
-		
-		static store_level = 1;
-		final int STORE_SIZE = 20;
-		static item[] item_array = new item[STORE_SIZE];
-		
-		// if level has changed create a new item inventory for the store
-		// based on some hash function of the character's level
-		if(playerChar.getLevel() != store_level)
-		{
-			store_level = playerChar.getLevel();
-			
-			final String[] item_name_type = ["Mace", "Sword", "Axe", "Bow", "Crossbow", "Throwing Knives", "Staff", "Wand", "Orb"]; // Could have room for permutations
-			final String[] item_name_quality_description = ["Broken", "Inferior", "Common", "Slightly Better", "Ancient", "Legendary", "Actually Broken"];
-			// Ignore this next line for now as each weapon can only specialize in one area at the moment.
-			//final String[] item_name_Modifier_description = ["Warrior", "Hunter", "Wizard", "Bandit", "BattleMage", "Magic-Range Thing whatever", "Balance"] // permutation for each thing
-			for(int i = 0; i < STORE_SIZE; i++)
-				{
-				item_type = item_name_type[(i % 9)]
-				// need to place the parameters for how each item could be created
-				item_array[i] = new Item(name = "" + item_type, 
-					id = null, type = item_type, upgradeCount = 0, strength = 0, agility = 0, magic = 0 );
-				}
-		}*/
-		
-		
-		// if item bought, add to inventory
-		
+        // have store level as well as the items be static so that it is the same each time the player comes back to the 
+        // store unless the player has increased in level
+
+        // if level has changed create a new item inventory for the store
+        // based on some hash function of the character's level
+        if(playerChar.getLevel() != storeLevel)
+        {
+                storeLevel = playerChar.getLevel();
+                storeItems = getStoreInventory(storeLevel, STORE_SIZE);
+
+        }
+                
+	if(startingState != stateEnum.STORE)
+        {
+            printStoreState(out);
+            return stateEnum.STORE;
+        }
+        else
+        {
+            if(request.getParameter(accountName) != null)
+                return stateEnum.DECISION;
+            // for buying items from the store
+            for (int i = 0; i < storeItems.length - 1; i++)
+            {
+                String buyValue = request.getParameter("Buy " + i);
+                if(buyValue != null)
+                {
+                    gold -= storeItems[i].getValue();
+                    // a bad way of deleting an element
+                    storeItems[i] = null;
+                    printStoreState(out);
+                }
+            }
+            // for selling items player's inventory
+            for (int i = 0; i < playerChar.itemsHeld.length - 1; i++){
+                String sellValue = request.getParameter("Sell " + i);
+                if(sellValue != null)
+                {
+                   gold += Math.round((.6) * playerChar.itemsHeld[i].getValue());
+                   
+                   // need to drop the item from the table
+                   printStoreState(out);
+                }
+            }
+            return stateEnum.STORE;
+        }
+
     }
 
     /****************************************************
@@ -1278,5 +1299,139 @@ public class GameInstance {
             }
         }
         out.println(endPart);
+    }
+    
+    public void printStoreState(PrintWriter out)
+    {
+        String item_type_string[] = {"Error", "Weapon", "Armor", "Item"};
+
+			
+			String startPart = "<html>\n" +
+		            "	<head>\n" +
+		            "	<!-- Call normalize.css -->\n" +
+		            "	<link rel=\"stylesheet\" href=\"css/normalize.css\" type=\"text/css\" media=\"screen\">\n" +
+		            "	<!-- Import Font to be used in titles and buttons -->\n" +
+		            "	<link href='http://fonts.googleapis.com/css?family=Sanchez' rel='stylesheet' type='text/css'>\n" +
+		            "	<link href='http://fonts.googleapis.com/css?family=Prosto+One' rel='stylesheet' type='text/css'>\n" +
+		            "	<!-- Call style.css -->\n" +
+		            "	<link rel=\"stylesheet\" href=\"css/grid.css\" type=\"text/css\" media=\"screen\">\n" +
+		            "	<!-- Call style.css -->\n" +
+		            "	<link rel=\"stylesheet\" href=\"css/style.css\" type=\"text/css\" media=\"screen\">\n" +
+		            "	<title> Tarsus </title>\n" +
+		            "	</head>\n" +
+		            "	<body>\n" +
+		            "		<div id=\"header\" class=\"grid10\" align=\"right\">\n" +
+		            "			<input value=\"Character Page\" name=\""  + "\" type=\"submit\" id=\"tarsusTitle\" />\n" +
+		            "			<input class=\"button\" type=\"submit\" value=\"Log Out\" name=\"Log Out\" /> </div>\n" +
+		            "		<div class=\"grid1\"> </div>\n" +
+		            "		<div class=\"grid8 centered\">\n" +
+		            "		<h1 id=\"title\" class=\"centered\">Store</h1>\n" +
+		            "		<table id=\"table\" align=\"center\">\n" +
+		            "			<tr>\n" +
+		            "				<td> </td>\n" +
+		            "				<th> Name </th>\n" +
+		            "				<th> Strength </th>\n" +
+		            "				<th> Magic </th>\n" +
+		            "				<th> Agility </th>\n" +
+		            "				<th> Heal </th>\n" +
+		            "				<th> Type </th>\n" + 
+		            "				<th> Price </th>\n" +
+		            "			</tr>\n" +
+		            "			<tr>";
+			String sellPart = "		</table>\n" +
+                    "		</div>\n" +
+                    "		<div class=\"grid1\"> </div>\n" +
+					"<div class=\"grid1\"> </div>\n" +
+		            "		<div class=\"grid8 centered\">\n" +
+		            "		<h1 id=\"title\" class=\"centered\">Your Items</h1>\n" +
+		            "		<table id=\"table\" align=\"center\">\n" +
+		            "			<tr>\n" +
+		            "				<td> </td>\n" +
+		            "				<th> Name </th>\n" +
+		            "				<th> Strength </th>\n" +
+		            "				<th> Magic </th>\n" +
+		            "				<th> Agility </th>\n" +
+		            "				<th> Heal </th>\n" +
+		            "				<th> Type </th>\n" + 
+		            "				<th> Price </th>\n" +
+		            "			</tr>\n" +
+		            "			<tr>";
+			
+			String buttonPart = ("		</table>\n" +
+	                "		</div>\n" +
+	                "		<div class=\"grid1\"> </div>\n" +
+					"		<div class=\"grid10\" align=\"center\">\n" +
+					"			<input id=\"Form\" type =\"submit\" value=\"Initiate Transaction\" class=frontPageButton /> \n" +
+					"		</div>\n" +
+					"		</form>\n");
+			
+            String endPart = 
+                    "	</body>\n" +
+                    "	\n" +
+                    "</html>";
+            String script = "<script> function getFormValues() {" +
+            "for(var i = 0; i < 20; i++){" +
+                "	var item = document.getElementById('i');" +
+                "	alert(item.getAttribute('name'));" +
+
+                            "} return false;} </script>";
+
+            out.println(startPart);
+
+            out.println("<form name=\"buyItems\" action=\"Tarsus\" onsubmit=\"return getFormValues()\" method=\"post\">\n");
+            for (int i = 0; i < storeItems.length; i++){
+                out.println("<td> <input id =\"" + i + "\" type=\"submit\" value=\"Buy for " + storeItems[i].getValue() + "\" name=\"Buy " + i + "\" class=\"tableButton\"> </td>");
+                out.println("<td>");
+                out.println(storeItems[i].getName());
+                out.println("</td>");
+                out.println("<td>");
+                out.println(storeItems[i].getStrength());
+                out.println("</td>");
+                out.println("<td>");
+                out.println(storeItems[i].getAgility());
+                out.println("</td>");
+                out.println("<td>");
+                out.println(storeItems[i].getMagic());
+                out.println("</td>");
+                out.println("<td>");
+                out.println(storeItems[i].getHeal());
+                out.println("</td>");
+                out.println("<td>");
+                out.println(item_type_string[storeItems[i].getType()]);
+                out.println("</td>");
+                out.println("<td>");
+                out.println(storeItems[i].getValue());
+                out.println("</td>");
+                out.println("</tr>");
+			}
+	out.println(sellPart);
+	for (int i = 0; i < storeItems.length; i++){
+                out.println("<td> <input type=\"submit\" value=\"Sell for " + (int)(0.60 * storeItems[i].getValue()) + "\" name=\"Sell " + i + "\" class=\"tableButton\"> </td>");
+                out.println("<td>");
+                out.println(storeItems[i].getName());
+                out.println("</td>");
+                out.println("<td>");
+                out.println(storeItems[i].getStrength());
+                out.println("</td>");
+                out.println("<td>");
+                out.println(storeItems[i].getAgility());
+                out.println("</td>");
+                out.println("<td>");
+                out.println(storeItems[i].getMagic());
+                out.println("</td>");
+                out.println("<td>");
+                out.println(storeItems[i].getHeal());
+                out.println("</td>");
+                out.println("<td>");
+                out.println(item_type_string[storeItems[i].getType()]);
+                out.println("</td>");
+                out.println("<td>");
+                out.println((int)(0.60 * storeItems[i].getValue()));
+                out.println("</td>");
+                out.println("</tr>");
+			}
+        out.println(buttonPart);
+        out.println(endPart);
+        out.println(script);
     }
 }

@@ -87,5 +87,6 @@ class Item {
     	int value_sum = (sum) * (sum / 10);
     	return value_sum;
     }
+        
     
 }
