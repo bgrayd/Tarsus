@@ -58,9 +58,6 @@ public class PlayerCharacter extends Character {
                     else if(item.getType()==3)
                     {
                         health+=item.getHeal();
-                        strength+=item.getStrength();
-                        agility+=item.getAgility();
-                        magic+=item.getAgility();
                         itemsHeld[i]=null;
                         return actionEnum.USE_ITEM;
                     }
