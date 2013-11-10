@@ -19,6 +19,7 @@ public class GameInstance {
     DBConnections dataSource = null;
     Connection conn = null;
     Statement stat = null;
+    int gold;
 
     
     int constantPtsPerLevel = 5;
@@ -32,6 +33,7 @@ public class GameInstance {
         aresChar = null;
         currentState = stateEnum.INIT;
         accountName = null;
+        int gold = 0;
     }
     
     /****************************************************
