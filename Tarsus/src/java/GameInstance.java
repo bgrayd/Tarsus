@@ -1405,28 +1405,28 @@ public class GameInstance {
                 out.println("</tr>");
 			}
 	out.println(sellPart);
-	for (int i = 0; i < storeItems.length; i++){
+	for (int i = 0; i < playerChar.itemsHeld.length; i++){
                 out.println("<td> <input type=\"submit\" value=\"Sell for " + (int)(0.60 * storeItems[i].getValue()) + "\" name=\"Sell " + i + "\" class=\"tableButton\"> </td>");
                 out.println("<td>");
-                out.println(storeItems[i].getName());
+                out.println(playerChar.itemsHeld[i].getName());
                 out.println("</td>");
                 out.println("<td>");
-                out.println(storeItems[i].getStrength());
+                out.println(playerChar.itemsHeld[i].getStrength());
                 out.println("</td>");
                 out.println("<td>");
-                out.println(storeItems[i].getAgility());
+                out.println(playerChar.itemsHeld[i].getAgility());
                 out.println("</td>");
                 out.println("<td>");
-                out.println(storeItems[i].getMagic());
+                out.println(playerChar.itemsHeld[i].getMagic());
                 out.println("</td>");
                 out.println("<td>");
-                out.println(storeItems[i].getHeal());
+                out.println(playerChar.itemsHeld[i].getHeal());
                 out.println("</td>");
                 out.println("<td>");
-                out.println(item_type_string[storeItems[i].getType()]);
+                out.println(playerChar.itemsHeld[storeItems[i].getType()]);
                 out.println("</td>");
                 out.println("<td>");
-                out.println((int)(0.60 * storeItems[i].getValue()));
+                out.println((int)(0.60 * playerChar.itemsHeld[i].getValue()));
                 out.println("</td>");
                 out.println("</tr>");
 			}
