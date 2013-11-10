@@ -22,6 +22,9 @@ public class GameInstance {
 
     
     int constantPtsPerLevel = 5;
+    int constantWeaponPtsPerLevel = 3;
+    int constantArmorPtsPerLevel = 5;
+    
     
     GameInstance()
     {
@@ -104,7 +107,6 @@ public class GameInstance {
         do
         {
             currentState = nextState;
-            
             switch(currentState)
             {
                 case INIT:
@@ -185,6 +187,50 @@ public class GameInstance {
         throw new UnsupportedOperationException("Not supported yet.");
     }
     
+    
+    /****************************************************
+     * Generates an armor item based on the player 
+     * character's level
+     * @param level the level of the player character
+     * @return an item with a type of armor
+     ***************************************************/
+    Item generateArmor(int level)
+    {
+        //needs to be filled in
+        int Spts=0, Apts=0, Mpts=0;
+        
+        Spts = (int) ((int) level*constantWeaponPtsPerLevel*((Math.random()*.4+.8)));
+        Apts = (int) ((int) level*constantWeaponPtsPerLevel*((Math.random()*.4+.8)));
+        Mpts = (int) ((int) level*constantWeaponPtsPerLevel*((Math.random()*.4+.8)));
+        
+        return new Item("Armor", 0, 2, 0, Spts, Apts, Mpts, 0);
+    }
+    
+    /****************************************************
+     * Generates a weapon item based on the player 
+     * character's level
+     * @param level the level of the player character
+     * @return an item with a type of weapon
+     ***************************************************/
+    Item generateWeapon(int level)
+    {
+        int points, Spts=0, Apts=0, Mpts=0, type;
+        type = ((int) (Math.random()*2+1));
+        
+        //calculate the strength value
+        points = (int) ((int) level*constantWeaponPtsPerLevel*((Math.random()*.4+.8)));
+        
+        if(type == 1)
+            Spts=points;
+        else if(type==2)
+            Apts=points;
+        else if(type==3)
+            Mpts=points;
+        
+        
+        return new Item("Weapon", 0, 1, 0, Spts, Apts, Mpts, 0);
+    }
+    
     /****************************************************
      * Loads a new enemy from the database
      * @param level the players level
@@ -245,24 +291,25 @@ public class GameInstance {
 "	<link rel=\"stylesheet\" href=\"css/style.css\" type=\"text/css\" media=\"screen\">\n" +
 "	<title> Tarsus </title>\n" +
 "	</head>\n" +
-"	<body><form action=\"Tarsus\"> \n" +
+"	<body>\n" +
+"            <form action=\"Tarsus\" method=\"post\">\n" +
 "		<div id=\"header\" class=\"grid10\" align=\"right\">\n" +
-"			<a href=\"index.jsp\" id=\"tarsusTitle\"> TARSUS </a> \n" +
-"			<a class=\"button\" type=\"submit\" value=\"Log In\">  </div>\n" +
+"			<input href=\"index.html\" id=\"tarsusTitle\" /> \n" +
+"			<input class=\"button\" type=\"submit\" value=\"Log in\" name=\"Log in\" /> </div>\n" +
+
 "		<div class=\"grid1\"> </div>\n" +
 "		<div class=\"grid8 centered\">\n" +
 "		<h1 id=\"title\" class=\"centered\">Welcome</h1>\n" +
 "		<p align=\"justify\"> \n" +
 "			Tarsus is a web based Role Playing Game that allows you to create your own character and use it to fight progressively more difficult enemies as you try to make your way to the top. If you already have an account, click the Log In button above. If not, you can make a character using our character maker or your can sign up and start your own adventure.\n" +
 "		</p>\n" +
-"               \n" +
 "		<div align=\"center\">\n" +
-                    "			<input type=\"submit\" value=\"Sign Up\" class=frontPageButton />\n" +
-"			<input type=\"Create a Character\" class=frontPageButton />\n" +
-
+"                    <input type=\"submit\" value=\"Create a Character\" name=\"Create a Character\" class=frontPageButton />\n" +
+"			<input type=\"submit\" value=\"Sign Up\" name=\"Sign Up\" class=frontPageButton />\n" +
 "		</div>\n" +
 "		</div>\n" +
-"		<div class=\"grid1\"> </div>\n </form>" +
+"		<div class=\"grid1\"> </div>\n" +
+"            </form>\n" +
 "	</body>\n" +
 "	\n" +
 "</html>");
@@ -270,20 +317,27 @@ public class GameInstance {
         }
         else
         {
-            String value = request.getParameter("Sign Up");
-            
+            String value1 = request.getParameter("Sign Up");
+            String value2 = request.getParameter("Log in");
+            String value3 = request.getParameter("Create a Character");
             //state changes
-           
-            if(value.equals("Sign Up"))
-                return stateEnum.ACCOUNT_CREATION;
-            if(request.getParameter("Log in").equals("Log in"))
+
+
+          
+            String value = "";
+            if(value1 != null)
+                value = value1;
+            if(value2!=null)
+                value = value2;
+            if(value3!=null)
+                value = value3;
+          
+            if(value.equals("Log in"))
                 return stateEnum.LOGIN;
-            if(request.getParameter("Create a Character").equals("Create a Character"))
-                return stateEnum.UNREGISTERED_CHARACTER_CREATION; 
-            
-             
-                
-            
+            if(value.equals("Create a Character"))
+                return stateEnum.UNREGISTERED_CHARACTER_CREATION;
+            if("Sign Up".equals(value))
+                return stateEnum.ACCOUNT_CREATION; 
         }
        return stateEnum.INIT;
         
@@ -351,25 +405,27 @@ public class GameInstance {
         String StartPage = "<html>\n" +
 "	<head>\n" +
 "	<!-- Call normalize.css -->\n" +
-"	<link rel=\"stylesheet\" href=\"./css/normalize.css\" type=\"text/css\" media=\"screen\">\n" +
+"	<link rel=\"stylesheet\" href=\"css/normalize.css\" type=\"text/css\" media=\"screen\">\n" +
 "	<!-- Import Font to be used in titles and buttons -->\n" +
 "	<link href='http://fonts.googleapis.com/css?family=Sanchez' rel='stylesheet' type='text/css'>\n" +
 "	<link href='http://fonts.googleapis.com/css?family=Prosto+One' rel='stylesheet' type='text/css'>\n" +
 "	<!-- Call style.css -->\n" +
-"	<link rel=\"stylesheet\" href=\"../css/grid.css\" type=\"text/css\" media=\"screen\">\n" +
+"	<link rel=\"stylesheet\" href=\"css/grid.css\" type=\"text/css\" media=\"screen\">\n" +
 "	<!-- Call style.css -->\n" +
-"	<link rel=\"stylesheet\" href=\"../css/style.css\" type=\"text/css\" media=\"screen\">\n" +
+"	<link rel=\"stylesheet\" href=\"css/style.css\" type=\"text/css\" media=\"screen\">\n" +
 "	<title> Tarsus </title>\n" +
 "	</head>\n" +
 "       <script>\n" +
 "		function validateForm()\n" +
 "		{\n" +
 "		\n" +
-"               var maxValue = %f \n" +
+"               var maxValue = ";
+        String secondPart = " \n" +
 "			var strength = parseInt(document.forms[\"createCharacterForm\"][\"strength\"].value); \n" +
 "			var agility = parseInt(document.forms[\"createCharacterForm\"][\"agility\"].value);\n" +
 "			var magic = parseInt(document.forms[\"createCharacterForm\"][\"magic\"].value);\n" +
-"			var total = strength + agility + magic;\n" +
+"                       var health = parseInt(document.forms[\"createCharacterForm\"][\"magic\"].value);\n" +
+"			var total = strength + agility + magic + health;\n" +
 "			alert(\"Total Experience points used: \" + total);\n" +
 "			if(total > maxValue)\n" +
 "			{\n" +
@@ -380,25 +436,27 @@ public class GameInstance {
 "		}\n" +
 "       </script>" + 
 "	<body>\n" +
+                "<form name=\"createCharacterForm\" action=\"Tarsus\" onsubmit=\"return validateForm()\" method=\"post\">\n" +
 "		<div id=\"header\" class=\"grid10\" align=\"right\">\n" +
-"			<a href=\"profile.html\" id=\"tarsusTitle\"> Unregistered User Character Creation </a> \n" +
-"			<a class=\"button\" href=\"../index.html\"> Log Out </a> </div>\n" +
-"		<div class=\"grid1\"> </div>\n" +
+                "<input type=\"Submit\" name=\"Home\" value=\"Home\"  class=\"FrontPageButton\" />" +
+"		<div class=\"grid1\"> </div></div>\n" +
 "		<div class=\"grid8 centered\">\n" +
 "		<h1 id=\"title\" class=\"centered\">Character Creation</h1>\n" +
 "		\n" +
 "		<div class=\"grid2\"> </div>\n" +
-"		<form name=\"createCharacterForm\" action=\"Tarsus\" onsubmit=\"return validateForm()\" method=\"post\">\n" +
-"               <input type = \"hidden\" name = \"level\"> value=\"%f\"/>\n"+
+"               <input type = \"hidden\" name = \"level\" value=\"";
+        String thirdPart = "\"/>\n"+
 "		<div class=\"grid6\" align=\"center\">\n" +
-"			<h3> Level %f </h3>\n" +
-"			<p> Experience Points to Allocate: %f\n" +
+"			<h3> Level ";
+        String fourthPart = " </h3>\n" +
+"			<p> Experience Points to Allocate: ";
+        String fifthPart = "\n" +
 "			</p>\n" +
 "			<p> \n" +
 "				Name: <input type=\"text\" name=\"name\"/>\n" +
 "			</p>\n" +
 "			<p> \n" +
-"				Strength: <input type=\"number\" name=\"name\"min=\"0\" max=\"100\" value=\"0\"/>\n" +
+"				Strength: <input type=\"number\" name=\"strength\"min=\"0\" max=\"100\" value=\"0\"/>\n" +
 "			</p> \n" +
 "			<p> \n" +
 "				Agility: <input type=\"number\" name=\"agility\"min=\"0\" max=\"100\" value=\"0\"/>\n" +
@@ -406,12 +464,16 @@ public class GameInstance {
 "			<p> \n" +
 "				Magic: <input type=\"number\" name=\"magic\" min=\"0\" max=\"100\" value=\"0\"/>\n" +
 "			</p>   \n" +
+"			<p> \n" +
+"				Health: <input type=\"number\" name=\"health\" min=\"0\" max=\"100\" value=\"0\"/>\n" +
+"			</p>   \n" +
 "			<p>\n" +
 "				Biography:<textarea name=\"bio\" cols=\"35\" rows=\"3\" maxlength=\"300\"> </textarea> <br /> <a id=\"bioLimitID\">  (Max of 300 Chars)</a>\n" +
-"			</p>\n" +
-"		</div>\n" +
+"			</p>\n";
+                String lastPart = 
+"		</div>\n"+
 "		<div class=\"grid10\" align=\"center\">\n" +
-"			<a href=\"continuechar.html\" class=frontPageButton>Create Character</a>\n" +
+"			<input type =\"submit\" value=\"Create a Character\" class=frontPageButton /> \n" +
 "		</div>\n" +
 "		</form>\n" +
 "		</div>\n" +
@@ -422,14 +484,50 @@ public class GameInstance {
         if(startingState != stateEnum.UNREGISTERED_CHARACTER_CREATION)
         {
             //create new page for it
-            int level = (int)(Math.random()*50);
+            Integer level = (int)(Math.random()*50);
+            int numItemChoices = 5;
+            Item tempItem;
+            String submitValue;
             
-            out.printf(StartPage, level, level*constantPtsPerLevel, level*constantPtsPerLevel, level);
+            out.printf(StartPage);
+            out.println(((Integer)(level*constantPtsPerLevel)).toString());
+            out.printf(secondPart);
+            out.printf(level.toString());
+            out.printf(thirdPart);
+            out.printf(level.toString());
+            out.printf(fourthPart);
+            out.printf(((Integer)(level*constantPtsPerLevel)).toString());
+            out.printf(fifthPart);
+            out.printf("<input type=\"hidden\" name=\"level\" value=\"%d\" />\n",level);
+            
+            out.println("<table><tr><h2>Weapons</h2></tr><tr><th>Strength</th><th>Agility</th><th>Magic</th><th>select</th><tr>");
+            for(int i=0; i<numItemChoices; i++)
+            {
+                tempItem = generateWeapon(level);
+                submitValue = tempItem.getName()+"="+((Integer)tempItem.itemId).toString()+"+"+((Integer)tempItem.getStrength()).toString()+"-"+((Integer)tempItem.getAgility()).toString()+"*"+((Integer)tempItem.getMagic()).toString()+"_"+((Integer)tempItem.getType()).toString();
+                out.printf("<tr><td>%d</td><td>%d</td><td>%d</td><td><input type=\"radio\" name=\"weapon\" value=\"%s\"></td></tr>\n",tempItem.getStrength(), tempItem.getAgility(), tempItem.getMagic(), submitValue);
+            }
+            out.println("</table>");
+            
+            out.println("<table><tr><h2>Armor</h2></tr><tr><th>Strength</th><th>Agility</th><th>Magic</th><th>select</th><tr>");
+            for(int i=0; i<numItemChoices; i++)
+            {
+                tempItem = generateArmor(level);
+                submitValue = tempItem.getName()+"="+((Integer)tempItem.itemId).toString()+"+"+((Integer)tempItem.getStrength()).toString()+"-"+((Integer)tempItem.getAgility()).toString()+"*"+((Integer)tempItem.getMagic()).toString()+"_"+((Integer)tempItem.getType()).toString();
+                out.printf("<tr><td>%d</td><td>%d</td><td>%d</td><td><input type=\"radio\" name=\"armor\" value=\"%s\"></td></tr>\n",tempItem.getStrength(), tempItem.getAgility(), tempItem.getMagic(), submitValue);
+            }
+            out.println("</table>");
+            out.println(lastPart);
             
             return stateEnum.UNREGISTERED_CHARACTER_CREATION;
         }
         else
         {
+           if(request.getParameter("Home").equals("Home"))
+           {
+               return stateEnum.INIT;
+           }
+
            String name = (String) request.getParameter("name");
            int level = Integer.parseInt(request.getParameter("level"));
            String bio = request.getParameter("bio");
@@ -437,11 +535,34 @@ public class GameInstance {
            int strength = Integer.parseInt(request.getParameter("strength"));
            int agility = Integer.parseInt(request.getParameter("agility"));
            int magic = Integer.parseInt(request.getParameter("magic"));
+           Item[] items = {new Item(request.getParameter("weapon")), new Item(request.getParameter("armor"))};
+
       
            if(isValidString(name) & isValidString(bio))
            {
-               //newCharacter(name, level,bio, health, strength, agility, magic);
-                return stateEnum.INIT;
+               //newCharacter(name, level,bio, health, strength, agility, magic, items);
+               
+               out.println(name);
+               out.printf("level: %d\n",level);
+               out.println(bio);
+               out.printf("health: %d\n",health);
+               out.printf("strength: %d\n",strength);
+               out.printf("agility: %d\n",agility);
+               out.printf("magic: %d\n",magic);
+               out.printf("%s\n",items[0].name);
+               out.printf("%d\n",items[0].itemId);
+               out.printf("%d\n",items[0].strength);
+               out.printf("%d\n",items[0].agility);
+               out.printf("%d\n",items[0].magic);
+               out.printf("%d\n",items[0].type);
+               
+               out.printf("%s\n",items[1].name);
+               out.printf("%d\n",items[1].itemId);
+               out.printf("%d\n",items[1].strength);
+               out.printf("%d\n",items[1].agility);
+               out.printf("%d\n",items[1].magic);
+               out.printf("%d\n",items[1].type);
+               return stateEnum.INIT;
            }
            else
            {
