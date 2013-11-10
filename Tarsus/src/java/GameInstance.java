@@ -32,7 +32,7 @@ public class GameInstance {
         playerChar = null;
         aresChar = null;
         currentState = stateEnum.INIT;
-        accountName = null;
+        accountName = "Unregistered User";
     }
     
     /****************************************************
@@ -393,10 +393,6 @@ public class GameInstance {
             playerChar = new PlayerCharacter("player", "", 1, 10, 1, 2, 3, itemsHeld, itemsHeld[0], itemsHeld[1], 0, 0, 0, 0);
             aresChar = new AresCharacter("enemy", "", 1, 10, 1, 2, 3, itemsHeld, itemsHeld[0], itemsHeld[1], 0, 0, 0, 0);
         }
-        else
-        {
-            //get parameters
-        }
         
         String startPage = "<html>\n" +
 "	<head>\n" +
@@ -485,7 +481,9 @@ public class GameInstance {
 "	\n" +
 "</html>";
         
-        if(startingState != stateEnum.BATTLE)
+        int aresDamage = 0, playerDamage = 0;      
+        
+        if(startingState == stateEnum.BATTLE)
         {
              String value = null, valueAttack=request.getParameter("attack"), valueUse=request.getParameter("use"), valueOK=request.getParameter("OK"), itemName;
             if(valueAttack!=null)
@@ -497,43 +495,43 @@ public class GameInstance {
             }
             if(valueOK!=null)
                 value=valueOK;
-
-            if((value != "decision") || (value!="profile"))
+            
+            if(!value.equals("OK"))
             {
                 actionEnum playerAction = playerChar.requestAction(request);
                 actionEnum aresAction = aresChar.requestAction(request);
-                int aresDamage = 0, playerDamage = 0;
+                
 
                 if(playerAction == actionEnum.ATTACK)
                 {
                     if(playerChar.weapon.getStrength()!=0)
                     {
-                        aresDamage = playerChar.getStrength()+playerChar.weapon.getStrength()-(aresChar.getStrength()*aresChar.armor.getStrength()/100);
+                        aresDamage = (int) ((playerChar.getStrength()+playerChar.weapon.getStrength())*(Math.random()*.4+.8)-(aresChar.getStrength()*aresChar.armor.getStrength()/100));
                     }
 
                     if(playerChar.weapon.getAgility()!=0)
                     {
-                        aresDamage = playerChar.getAgility()+playerChar.weapon.getAgility()-(aresChar.getAgility()*aresChar.armor.getAgility()/100);
+                        aresDamage = (int) ((playerChar.getAgility()+playerChar.weapon.getAgility())*(Math.random()*.4+.8)-(aresChar.getAgility()*aresChar.armor.getAgility()/100));
                     }
 
                     if(playerChar.weapon.getMagic()!=0)
                     {
-                        aresDamage = playerChar.getMagic()+playerChar.weapon.getMagic()-(aresChar.getMagic()*aresChar.armor.getMagic()/100);
+                        aresDamage = (int) ((playerChar.getMagic()+playerChar.weapon.getMagic())*(Math.random()*.4+.8)-(aresChar.getMagic()*aresChar.armor.getMagic()/100));
                     }
                 }
                 if(aresAction == actionEnum.ATTACK)
                 {
                     if(aresChar.weapon.getStrength()!=0)
                     {
-                        playerDamage = aresChar.getStrength()+aresChar.weapon.getStrength()-(playerChar.getStrength()*playerChar.armor.getStrength()/100);
+                        playerDamage = (int) ((aresChar.getStrength()+aresChar.weapon.getStrength())*(Math.random()*.4+.8)-(playerChar.getStrength()*playerChar.armor.getStrength()/100));
                     }
                     if(aresChar.weapon.getMagic()!=0)
                     {
-                        playerDamage = aresChar.getMagic()+aresChar.weapon.getMagic()-(playerChar.getMagic()*playerChar.armor.getMagic()/100);
+                        playerDamage = (int) ((aresChar.getMagic()+aresChar.weapon.getMagic())*(Math.random()*.4+.8)-(playerChar.getMagic()*playerChar.armor.getMagic()/100));
                     }
                     if(aresChar.weapon.getAgility()!=0)
                     {
-                        playerDamage = aresChar.getAgility()+aresChar.weapon.getAgility()-(playerChar.getAgility()*playerChar.armor.getAgility()/100);
+                        playerDamage = (int) ((aresChar.getAgility()+aresChar.weapon.getAgility())*(Math.random()*.4+.8)-(playerChar.getAgility()*playerChar.armor.getAgility()/100));
                     }
                 }
 
@@ -541,10 +539,18 @@ public class GameInstance {
                 aresChar.setHealth(aresChar.getHealth() - playerDamage);
 
             }
+            
+            else if(playerChar.getHealth()<1)
+            {
+                //mark the character as dead in the database debug
+                return stateEnum.IDLING;//needs to be changed to profile wants that state has been made debug
+            }
+            else if(aresChar.getHealth()<1)
+                return stateEnum.DECISION;
         }
         
-        out.printf(startPage,"username");
-        out.printf(statsTable, "testing", playerChar.getHealth(), playerChar.getStrength(), playerChar.getMagic(), playerChar.getAgility());
+        out.printf(startPage,accountName);
+        out.printf(statsTable, playerChar.name, playerChar.getHealth(), playerChar.getStrength(), playerChar.getMagic(), playerChar.getAgility());
         out.printf(equippedTable1, playerChar.weapon.getName(), playerChar.weapon.getStrength(), playerChar.weapon.getMagic(), playerChar.weapon.getAgility());
         out.printf(equippedTable2, playerChar.armor.getName(), playerChar.armor.getStrength(), playerChar.armor.getMagic(), playerChar.armor.getAgility());
         out.printf(betweenCharacters);
@@ -553,7 +559,7 @@ public class GameInstance {
         out.printf(equippedTable2, aresChar.armor.getName(), aresChar.armor.getStrength(), aresChar.armor.getMagic(), aresChar.armor.getAgility());
         out.printf(afterTable);
         
-       
+       out.printf("<div>You have done %d damage to your opponent.\n Your opponent has done %d damage to you.</div>", aresDamage, playerDamage);
         
         if((playerChar.getHealth()>0) && (aresChar.getHealth()>0))
         {
@@ -565,13 +571,20 @@ public class GameInstance {
             out.printf(useButton);
         }
         
+        else if(playerChar.getHealth()<1)
+        {
+            out.printf("The valiant hero has been killed.\n");
+            out.printf("<input type=\"submit\" name=\"OK\" value=\"OK\" class=\"profileButton\" /> \n");
+        }
+            
+        
         else if(aresChar.getHealth()<1)
         {
             int newGold = (int) (constantGoldPerLevel*playerChar.getLevel()*(Math.random()*.4+.8));
             //add newGold to the accounts gold
             playerChar.setHealth(playerChar.getMaxHealth());
             out.printf("Congradulations you beat your enemy.\n You get %d gold.\n", newGold);
-            out.printf("<input type=\"submit\" name=\"OK\" value=\"decision\" class=\"profileButton\" /> \n");
+            out.printf("<input type=\"submit\" name=\"OK\" value=\"OK\" class=\"profileButton\" /> \n");
         }
         out.printf(lastPart);
         return stateEnum.BATTLE;
