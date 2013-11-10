@@ -19,6 +19,7 @@ public class GameInstance {
     DBConnections dataSource = null;
     Connection conn = null;
     Statement stat = null;
+    int gold;
 
     
     int constantPtsPerLevel = 5;
@@ -32,6 +33,7 @@ public class GameInstance {
         aresChar = null;
         currentState = stateEnum.INIT;
         accountName = null;
+        int gold = 0;
     }
     
     /****************************************************
@@ -608,7 +610,25 @@ public class GameInstance {
      * @return the next state
      ***************************************************/
     stateEnum blackSmithState(PrintWriter out, HttpServletRequest request) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if(startingState != stateEnum.BLACKSMITH)
+        {
+            printBlacksmithState(out);
+            return stateEnum.BLACKSMITH;
+        }
+        else
+        {
+            if(request.getParameter(accountName) != null)
+                return stateEnum.DECISION;
+            for (int i = 0; i < playerChar.itemsHeld.length - 1; i++){
+                String tempValue = request.getParameter("Upgrade" + i);
+                if(tempValue != null)
+                {
+                    playerChar.itemsHeld[i].upgradeItem();
+                    printBlacksmithState(out);
+                }
+            }
+            return stateEnum.BLACKSMITH;
+        }
     }
 
     /****************************************************
@@ -841,9 +861,73 @@ public class GameInstance {
         return toBeReturned;
     }
     
-	String maxValueScript(int value)
-	{
-	return ("<script> var maxValue=" + Integer.toString(value) +";</script>");
-	}
-	
+    String maxValueScript(int value)
+    {
+    return ("<script> var maxValue=" + Integer.toString(value) +";</script>");
+    }
+    
+    public void printBlacksmithState(PrintWriter out)
+    {
+        String startPart = "<html>\n" +
+            "	<head>\n" +
+            "	<!-- Call normalize.css -->\n" +
+            "	<link rel=\"stylesheet\" href=\"../css/normalize.css\" type=\"text/css\" media=\"screen\">\n" +
+            "	<!-- Import Font to be used in titles and buttons -->\n" +
+            "	<link href='http://fonts.googleapis.com/css?family=Sanchez' rel='stylesheet' type='text/css'>\n" +
+            "	<link href='http://fonts.googleapis.com/css?family=Prosto+One' rel='stylesheet' type='text/css'>\n" +
+            "	<!-- Call style.css -->\n" +
+            "	<link rel=\"stylesheet\" href=\"../css/grid.css\" type=\"text/css\" media=\"screen\">\n" +
+            "	<!-- Call style.css -->\n" +
+            "	<link rel=\"stylesheet\" href=\"../css/style.css\" type=\"text/css\" media=\"screen\">\n" +
+            "	<title> Tarsus </title>\n" +
+            "	</head>\n" +
+            "	<body>\n" +
+            "		<div id=\"header\" class=\"grid10\" align=\"right\">\n" +
+            "			<input value=\"Character Page\" name=\"" + accountName + "\" type=\"submit\" id=\"tarsusTitle\" />\n" +
+            "			<input class=\"button\" value=\"Log Out\" name=\"Log Out\" /> </div>\n" +
+            "		<div class=\"grid1\"> </div>\n" +
+            "		<div class=\"grid8 centered\">\n" +
+            "		<h1 id=\"title\" class=\"centered\">Blacksmith</h1>\n" +
+            "		<table id=\"table\" align=\"center\">\n" +
+            "			<tr>\n" +
+            "				<td> </td>\n" +
+            "				<th> Name </th>\n" +
+            "				<th> Strength </th>\n" +
+            "				<th> Magic </th>\n" +
+            "				<th> Agility </th>\n" +
+            "				<th> Type </th>\n" +
+            "			</tr>\n" +
+            "			<tr>";
+        String endPart = "		</table>\n" +
+            "		</div>\n" +
+            "		<div class=\"grid1\"> </div>\n" +
+            "	</body>\n" +
+            "	\n" +
+            "</html>";
+        
+        out.println(startPart);
+        for (int i = 0; i < playerChar.itemsHeld.length - 1; i++){
+            if(playerChar.itemsHeld[i].getUpgradeCount() < 3)
+            {
+                out.println("<td> <input value=\"Upgrade" + i + " name=\"Upgrade" + i + " class=\"tableButton\"> /> </td>");
+                out.println("<td>");
+                out.println(playerChar.itemsHeld[i].getName());
+                out.println("</td>");
+                out.println("<td>");
+                out.println(playerChar.itemsHeld[i].getStrength());
+                out.println("</td>");
+                out.println("<td>");
+                out.println(playerChar.itemsHeld[i].getAgility());
+                out.println("</td>");
+                out.println("<td>");
+                out.println(playerChar.itemsHeld[i].getMagic());
+                out.println("</td>");
+                out.println("<td>");
+                out.println(playerChar.itemsHeld[i].getType());
+                out.println("</td>");
+                out.println("</tr>");
+            }
+        }
+        out.println(endPart);
+    }
 }
