@@ -850,7 +850,7 @@ public class GameInstance {
      * @return the next state
      ***************************************************/
     stateEnum unregisteredCharacterCreationState(PrintWriter out, HttpServletRequest request) {
-        String StartPage = "<html>\n" +
+String StartPage = "<html>\n" +
 "        <head>\n" +
 "        <!-- Call normalize.css -->\n" +
 "        <link rel=\"stylesheet\" href=\"css/normalize.css\" type=\"text/css\" media=\"screen\">\n" +
@@ -901,7 +901,7 @@ public class GameInstance {
         String fifthPart = "\n" +
 "                        </p>\n" +
 "                        <p> \n" +
-"                                Name: <input type=\"text\" name=\"charName\"/>\n" +
+"                                Name: <input type=\"text\" name=\"name\"/>\n" +
 "                        </p>\n" +
 "                        <p> \n" +
 "                                Strength: <input type=\"number\" name=\"strength\"min=\"0\" max=\"100\" value=\"0\"/>\n" +
@@ -971,20 +971,21 @@ public class GameInstance {
         }
         else
         {
-           if(request.getParameter("Home").equals("Home"))
+            String value = request.getParameter("Home");
+            
+           
+           if(value=="Home")
            {
                return stateEnum.INIT;
            }
-
-           String name = request.getParameter("charName");
-           int level = Integer.parseInt(request.getParameter("level"));
-           String bio = request.getParameter("bio");
-           int health = Integer.parseInt(request.getParameter("health"));
+           String name = (String) request.getParameter("name");
+            String bio = request.getParameter("bio");
+            int level = Integer.parseInt(request.getParameter("level"));
+            int health = Integer.parseInt(request.getParameter("health"));
            int strength = Integer.parseInt(request.getParameter("strength"));
            int agility = Integer.parseInt(request.getParameter("agility"));
            int magic = Integer.parseInt(request.getParameter("magic"));
            Item[] items = {new Item(request.getParameter("weapon")), new Item(request.getParameter("armor"))};
-
       
            if(isValidString(name) & isValidString(bio))
            {
@@ -1018,6 +1019,7 @@ public class GameInstance {
            }
         }
     }
+
 
     /****************************************************
      * The idling state, logs out after a certain amount of time
