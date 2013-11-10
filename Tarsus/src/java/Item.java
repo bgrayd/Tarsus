@@ -79,5 +79,13 @@ class Item {
     {
         return CONSTANT_potionHeal * health;
     }
+	
+	int getValue()
+    {
+    	// returns a value with a slight exponential increase as items get better
+    	int sum = strength + agility + magic + health;
+    	int value_sum = (sum) * (sum / 10);
+    	return value_sum;
+    }
     
 }
