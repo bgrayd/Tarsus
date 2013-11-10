@@ -19,12 +19,14 @@ public class GameInstance {
     DBConnections dataSource = null;
     Connection conn = null;
     Statement stat = null;
+    int gold;
 
     
     int constantPtsPerLevel = 5;
     int constantWeaponPtsPerLevel = 3;
     int constantArmorPtsPerLevel = 5;
     int constantGoldPerLevel = 20;
+
     
     
     GameInstance()
@@ -33,6 +35,7 @@ public class GameInstance {
         aresChar = null;
         currentState = stateEnum.INIT;
         accountName = "Unregistered User";
+        int gold = 0;
     }
     
     /****************************************************
@@ -49,6 +52,8 @@ public class GameInstance {
      * SQL Commands
      ***************************************************/
     void disconnectDB(){
+
+        DBUtilities.closeStatement(stat);
         dataSource.freeConnection(conn);
     }
     
@@ -65,9 +70,8 @@ public class GameInstance {
              stat = conn.createStatement();
              result = stat.executeQuery(query);
         }catch(Exception ex){
-            
            out.println("Query error:");
-            out.println(ex);
+           out.println(ex);
         }finally{
             disconnectDB();
             return result;
@@ -188,10 +192,254 @@ public class GameInstance {
      ***************************************************/
     Item[] getStoreInventory(int level)
     {
-        throw new UnsupportedOperationException("Not supported yet.");
+        final int STORE_LEVEL = level;
+		final int STORE_SIZE = 20;
+		Item[] storeItems = new Item[STORE_SIZE];
+		
+		final String[] armor_name_type = {"Plate Armor", "Leather Armor", "Robe", "Mail Armor", "Magic-Strength Armor stuff", "Magic-Agility Armor stuff", "Armor"};
+		final String[] weapon_name_type = {"Sword", "Axe", "Mace", "Bow", "Crossbow", "Throwing Knives", "Staff", "Wand", "Orb"}; // Could have room for permutations
+		final String[] item_name_type = {"potion"};
+		final String[] item_name_quality_description = {"Broken", "Inferior", "Common", "Slightly Better", "Ancient", "Legendary", "Actually Broken"};
+		final String[][] general_item_type = {armor_name_type, weapon_name_type, item_name_type};
+		//final String[] item_name_Modifier_description = ["Warrior", "Hunter", "Wizard", "Bandit", "BattleMage", "Magic-Range Thing whatever", "Balance"] // permutation for each thing
+		for(int i = 0; i < STORE_SIZE; i++)
+		{
+			double[] base_stats = {0, 0, 0, 0};
+			
+			//general type index
+			int gi = (int)(Math.round(Math.random() * (general_item_type.length - 1)));
+			//System.out.println(gi);
+			// special type index
+			int si = (int)(Math.round(Math.random() * (general_item_type[gi].length - 1)));
+			//System.out.println(si);
+			
+			// armor case
+			if(gi == 0)
+			{
+				switch (si)
+				{
+				case 0: base_stats[0] = 1;
+						base_stats[1] = 0;
+						base_stats[2] = 0;
+						break;
+				case 1: base_stats[0] = 0;
+						base_stats[1] = 1;
+						base_stats[2] = 0;
+						break;
+				case 2: base_stats[0] = 0;
+						base_stats[1] = 0;
+						base_stats[2] = 1;
+						break;
+				case 3: base_stats[0] = .5;
+						base_stats[1] = .5;
+						base_stats[2] = 0;
+						break;
+				case 4: base_stats[0] = .5;
+						base_stats[1] = 0;
+						base_stats[2] = .5;
+						break;
+				case 5: base_stats[0] = 0;
+						base_stats[1] = .5;
+						base_stats[2] = .5;
+						break;
+				case 6: base_stats[0] = 0.3333;
+						base_stats[1] = 0.3333;
+						base_stats[2] = 0.3333;
+						break;
+				
+				}
+			}
+			// weapon case
+			else if(gi == 1)
+			{
+				if((si % 9) < 3)
+				{
+					base_stats[0] = 1;
+				}
+				else if((si % 9) < 6)
+				{
+					base_stats[1] = 1;
+				}
+				else if((si % 9) < 9)
+				{
+					base_stats[2] = 1;
+				}
+			}
+			// item case
+			else if(gi == 2)
+			{
+				switch(si)
+				{
+				// potions have an abitrary larger base value thing
+				case 0: base_stats[3] = 2;
+						break;
+				}
+				
+			}
+			// Higher levels will have a more balance distribution of items
+			// e.g. Cannot possibly find a legendary item until at least level 9
+			
+			double quality = getQuality(STORE_LEVEL);
+			int index = (int) Math.round(quality * ((item_name_quality_description.length) - 1));
+			String item_quality = item_name_quality_description[index];
+			
+			String item_type = general_item_type[gi][si];
+			
+			// Get the base damage of each stat
+			// will only affect one stat at the moment
+			
+			int value_sum = 0;
+			for(int j = 0; j < 4; j++)
+			{
+				// multiples the base stat for cases where the base stat is split up in proportions
+				base_stats[j] *=(((quality) * 100) + 20);
+				base_stats[j] = Math.round(base_stats[j]);
+				value_sum += base_stats[j];
+				//base_stats[j] *= ((quality * .4) + .8) * LEVEL * PPL;
+			}
+			if(gi == 2)
+			{
+				value_sum = value_sum; // redundant for the moment
+			}
+			else
+			{
+				// some slightly exponential increase for cost of the item
+				value_sum = (value_sum) * (value_sum / 10);
+				// An idea of maybe multiplying the value times the character level
+				// to be extra cruel. Maybe use the quality function
+			}
+		String item_name = item_quality + " " + item_type;
+		//System.out.println(item_name);
+		//System.out.println(Arrays.toString(base_stats));
+		//System.out.println("Cost: " + (value_sum));
+		//System.out.println();
+		storeItems[i] = new Item(item_name, 0, gi, 0, (int)base_stats[0], (int)base_stats[1],(int)base_stats[2], (int)base_stats[3]);
+		}
+		
+		return storeItems;
     }
     
-    
+    Item generateItem(int type, int Level)
+	{
+		final String[] armor_name_type = {"Plate Armor", "Leather Armor", "Robe", "Mail Armor", "Magic-Strength Armor stuff", "Magic-Agility Armor stuff", "Armor"};
+		final String[] weapon_name_type = {"Sword", "Axe", "Mace", "Bow", "Crossbow", "Throwing Knives", "Staff", "Wand", "Orb"}; // Could have room for permutations
+		final String[] item_name_type = {"potion"};
+		final String[] item_name_quality_description = {"Broken", "Inferior", "Common", "Slightly Better", "Ancient", "Legendary", "Actually Broken"};
+		final String[][] general_item_type = {armor_name_type, weapon_name_type, item_name_type};
+		//final String[] item_name_Modifier_description = ["Warrior", "Hunter", "Wizard", "Bandit", "BattleMage", "Magic-Range Thing whatever", "Balance"] // permutation for each thing
+		double base_stats[] = {0, 0, 0, 0};
+                //general type index
+			int gi = type;
+			//System.out.println(gi);
+			// special type index
+			int si = (int)(Math.round(Math.random() * (general_item_type[gi].length - 1)));
+			//System.out.println(si);
+			
+			// armor case
+			if(gi == 0)
+			{
+				switch (si)
+				{
+				case 0: base_stats[0] = 1;
+						base_stats[1] = 0;
+						base_stats[2] = 0;
+						break;
+				case 1: base_stats[0] = 0;
+						base_stats[1] = 1;
+						base_stats[2] = 0;
+						break;
+				case 2: base_stats[0] = 0;
+						base_stats[1] = 0;
+						base_stats[2] = 1;
+						break;
+				case 3: base_stats[0] = .5;
+						base_stats[1] = .5;
+						base_stats[2] = 0;
+						break;
+				case 4: base_stats[0] = .5;
+						base_stats[1] = 0;
+						base_stats[2] = .5;
+						break;
+				case 5: base_stats[0] = 0;
+						base_stats[1] = .5;
+						base_stats[2] = .5;
+						break;
+				case 6: base_stats[0] = 0.3333;
+						base_stats[1] = 0.3333;
+						base_stats[2] = 0.3333;
+						break;
+				
+				}
+			}
+			// weapon case
+			else if(gi == 1)
+			{
+				if((si % 9) < 3)
+				{
+					base_stats[0] = 1;
+				}
+				else if((si % 9) < 6)
+				{
+					base_stats[1] = 1;
+				}
+				else if((si % 9) < 9)
+				{
+					base_stats[2] = 1;
+				}
+			}
+			// item case
+			else if(gi == 2)
+			{
+				switch(si)
+				{
+				// potions have an abitrary larger base value thing
+				case 0: base_stats[3] = 2;
+						break;
+				}
+				
+			}
+			// Higher levels will have a more balance distribution of items
+			// e.g. Cannot possibly find a legendary item until at least level 9
+			
+			double quality = getQuality(Level);
+			int index = (int) Math.round(quality * ((item_name_quality_description.length) - 1));
+			String item_quality = item_name_quality_description[index];
+			
+			String item_type = general_item_type[gi][si];
+			
+			// Get the base damage of each stat
+			// will only affect one stat at the moment
+			
+			int value_sum = 0;
+			for(int j = 0; j < 4; j++)
+			{
+				// multiples the base stat for cases where the base stat is split up in proportions
+				base_stats[j] *=(((quality) * 100) + 20);
+				base_stats[j] = Math.round(base_stats[j]);
+				value_sum += base_stats[j];
+				//base_stats[j] *= ((quality * .4) + .8) * LEVEL * PPL;
+			}
+			if(gi == 2)
+			{
+				value_sum = value_sum; // redundant for the moment
+			}
+			else
+			{
+				// some slightly exponential increase for cost of the item
+				value_sum = (value_sum) * (value_sum / 10);
+				// An idea of maybe multiplying the value times the character level
+				// to be extra cruel. Maybe use the quality function
+			}
+		String item_name = item_quality + " " + item_type;
+		//System.out.println(item_name);
+		//System.out.println(Arrays.toString(base_stats));
+		//System.out.println("Cost: " + (value_sum));
+		//System.out.println();
+		Item item = new Item(item_name, 0, gi, 0, (int)base_stats[0], (int)base_stats[1],(int)base_stats[2], (int)base_stats[3]);
+		return item;
+
+	
+	}
     /****************************************************
      * Generates an armor item based on the player 
      * character's level
@@ -200,14 +448,7 @@ public class GameInstance {
      ***************************************************/
     Item generateArmor(int level)
     {
-        //needs to be filled in
-        int Spts=0, Apts=0, Mpts=0;
-        
-        Spts = (int) (level*constantWeaponPtsPerLevel*((Math.random()*.4+.8)));
-        Apts = (int) (level*constantWeaponPtsPerLevel*((Math.random()*.4+.8)));
-        Mpts = (int) (level*constantWeaponPtsPerLevel*((Math.random()*.4+.8)));
-        
-        return new Item("Armor", 0, 2, 0, Spts, Apts, Mpts, 0);
+        return generateItem(2, level);
     }
     
     /****************************************************
@@ -218,21 +459,7 @@ public class GameInstance {
      ***************************************************/
     Item generateWeapon(int level)
     {
-        int points, Spts=0, Apts=0, Mpts=0, type;
-        type = ((int) (Math.random()*2+1));
-        
-        //calculate the strength value
-        points = (int) (level*constantWeaponPtsPerLevel*((Math.random()*.4+.8)));
-        
-        if(type == 1)
-            Spts=points;
-        else if(type==2)
-            Apts=points;
-        else if(type==3)
-            Mpts=points;
-        
-        
-        return new Item("Weapon", 0, 1, 0, Spts, Apts, Mpts, 0);
+        return generateItem(1,level);
     }
     
     /****************************************************
@@ -298,7 +525,6 @@ public class GameInstance {
 "	<body>\n" +
 "            <form action=\"Tarsus\" method=\"post\">\n" +
 "		<div id=\"header\" class=\"grid10\" align=\"right\">\n" +
-
 "			<input href=\"index.html\" id=\"tarsusTitle\" /> \n" +
 "			<input class=\"button\" type=\"submit\" value=\"Log in\" name=\"Log in\" /> </div>\n" +
 
@@ -359,8 +585,10 @@ public class GameInstance {
 		/*
 		// have store level as well as the items be static so that it is the same each time the player comes back to the 
 		// store unless the player has increased in level
+		
+		
 		static store_level = 1;
-		const int STORE_SIZE = 20;
+		final int STORE_SIZE = 20;
 		static item[] item_array = new item[STORE_SIZE];
 		
 		// if level has changed create a new item inventory for the store
@@ -368,16 +596,23 @@ public class GameInstance {
 		if(playerChar.getLevel() != store_level)
 		{
 			store_level = playerChar.getLevel();
+			
+			final String[] item_name_type = ["Mace", "Sword", "Axe", "Bow", "Crossbow", "Throwing Knives", "Staff", "Wand", "Orb"]; // Could have room for permutations
+			final String[] item_name_quality_description = ["Broken", "Inferior", "Common", "Slightly Better", "Ancient", "Legendary", "Actually Broken"];
+			// Ignore this next line for now as each weapon can only specialize in one area at the moment.
+			//final String[] item_name_Modifier_description = ["Warrior", "Hunter", "Wizard", "Bandit", "BattleMage", "Magic-Range Thing whatever", "Balance"] // permutation for each thing
 			for(int i = 0; i < STORE_SIZE; i++)
 				{
+				item_type = item_name_type[(i % 9)]
 				// need to place the parameters for how each item could be created
-				item_array[i] = new Item(name = "", id = null, type = (i % 9), upgradeCount = 0, strength = 0, agility = 0, magic = 0 );
+				item_array[i] = new Item(name = "" + item_type, 
+					id = null, type = item_type, upgradeCount = 0, strength = 0, agility = 0, magic = 0 );
 				}
-		}
+		}*/
 		
 		
 		// if item bought, add to inventory
-		*/
+		
     }
 
     /****************************************************
@@ -694,8 +929,7 @@ public class GameInstance {
             Integer level = (int)(Math.random()*50);
             int numItemChoices = 5;
             Item tempItem;
-            String submitValue;
-            
+            String submitValue;     
             out.printf(StartPage);
             out.println(((Integer)(level*constantPtsPerLevel)).toString());
             out.printf(secondPart);
@@ -706,7 +940,7 @@ public class GameInstance {
             out.printf(((Integer)(level*constantPtsPerLevel)).toString());
             out.printf(fifthPart);
             out.printf("<input type=\"hidden\" name=\"level\" value=\"%d\" />\n",level);
-            
+
             out.println("<table><tr><h2>Weapons</h2></tr><tr><th>Strength</th><th>Agility</th><th>Magic</th><th>select</th><tr>");
             for(int i=0; i<numItemChoices; i++)
             {
@@ -841,7 +1075,25 @@ public class GameInstance {
      * @return the next state
      ***************************************************/
     stateEnum blackSmithState(PrintWriter out, HttpServletRequest request) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if(startingState != stateEnum.BLACKSMITH)
+        {
+            printBlacksmithState(out);
+            return stateEnum.BLACKSMITH;
+        }
+        else
+        {
+            if(request.getParameter(accountName) != null)
+                return stateEnum.DECISION;
+            for (int i = 0; i < playerChar.itemsHeld.length - 1; i++){
+                String tempValue = request.getParameter("Upgrade" + i);
+                if(tempValue != null)
+                {
+                    playerChar.itemsHeld[i].upgradeItem();
+                    printBlacksmithState(out);
+                }
+            }
+            return stateEnum.BLACKSMITH;
+        }
     }
 
     /****************************************************
@@ -1004,11 +1256,13 @@ public class GameInstance {
                 }
                 
             }catch(Exception ex){
-                out.println("username fail");
+                out.println("username check failure");  //Test Check
                 out.println(ex);
-                alreadyExists=false;
+                alreadyExists=true;
             }
             
+            DBUtilities.closeStatement(stat);
+            disconnectDB();
             // Check to see if the username is valid
             if(!isValidString(username) || alreadyExists)
             {
@@ -1031,7 +1285,9 @@ public class GameInstance {
             
             try{
             if(sqlCommand(command, out))
-            {
+            {                
+                DBUtilities.closeStatement(stat);
+                disconnectDB();
                 return stateEnum.LOGIN;
              
             } 
@@ -1069,9 +1325,80 @@ public class GameInstance {
         return toBeReturned;
     }
     
-	String maxValueScript(int value)
-	{
-	return ("<script> var maxValue=" + Integer.toString(value) +";</script>");
-	}
+    String maxValueScript(int value)
+    {
+    return ("<script> var maxValue=" + Integer.toString(value) +";</script>");
+    }
 	
+    double getQuality(int level)
+    {
+        double ratio = ((double)level) / ((double)level + 1.0);
+	double quality = Math.random() * ratio;
+	return quality;
+    }
+    
+    public void printBlacksmithState(PrintWriter out)
+    {
+        String startPart = "<html>\n" +
+            "	<head>\n" +
+            "	<!-- Call normalize.css -->\n" +
+            "	<link rel=\"stylesheet\" href=\"../css/normalize.css\" type=\"text/css\" media=\"screen\">\n" +
+            "	<!-- Import Font to be used in titles and buttons -->\n" +
+            "	<link href='http://fonts.googleapis.com/css?family=Sanchez' rel='stylesheet' type='text/css'>\n" +
+            "	<link href='http://fonts.googleapis.com/css?family=Prosto+One' rel='stylesheet' type='text/css'>\n" +
+            "	<!-- Call style.css -->\n" +
+            "	<link rel=\"stylesheet\" href=\"../css/grid.css\" type=\"text/css\" media=\"screen\">\n" +
+            "	<!-- Call style.css -->\n" +
+            "	<link rel=\"stylesheet\" href=\"../css/style.css\" type=\"text/css\" media=\"screen\">\n" +
+            "	<title> Tarsus </title>\n" +
+            "	</head>\n" +
+            "	<body>\n" +
+            "		<div id=\"header\" class=\"grid10\" align=\"right\">\n" +
+            "			<input value=\"Character Page\" name=\"" + accountName + "\" type=\"submit\" id=\"tarsusTitle\" />\n" +
+            "			<input class=\"button\" value=\"Log Out\" name=\"Log Out\" /> </div>\n" +
+            "		<div class=\"grid1\"> </div>\n" +
+            "		<div class=\"grid8 centered\">\n" +
+            "		<h1 id=\"title\" class=\"centered\">Blacksmith</h1>\n" +
+            "		<table id=\"table\" align=\"center\">\n" +
+            "			<tr>\n" +
+            "				<td> </td>\n" +
+            "				<th> Name </th>\n" +
+            "				<th> Strength </th>\n" +
+            "				<th> Magic </th>\n" +
+            "				<th> Agility </th>\n" +
+            "				<th> Type </th>\n" +
+            "			</tr>\n" +
+            "			<tr>";
+        String endPart = "		</table>\n" +
+            "		</div>\n" +
+            "		<div class=\"grid1\"> </div>\n" +
+            "	</body>\n" +
+            "	\n" +
+            "</html>";
+        
+        out.println(startPart);
+        for (int i = 0; i < playerChar.itemsHeld.length - 1; i++){
+            if(playerChar.itemsHeld[i].getUpgradeCount() < 3)
+            {
+                out.println("<td> <input value=\"Upgrade" + i + " name=\"Upgrade" + i + " class=\"tableButton\"> /> </td>");
+                out.println("<td>");
+                out.println(playerChar.itemsHeld[i].getName());
+                out.println("</td>");
+                out.println("<td>");
+                out.println(playerChar.itemsHeld[i].getStrength());
+                out.println("</td>");
+                out.println("<td>");
+                out.println(playerChar.itemsHeld[i].getAgility());
+                out.println("</td>");
+                out.println("<td>");
+                out.println(playerChar.itemsHeld[i].getMagic());
+                out.println("</td>");
+                out.println("<td>");
+                out.println(playerChar.itemsHeld[i].getType());
+                out.println("</td>");
+                out.println("</tr>");
+            }
+        }
+        out.println(endPart);
+    }
 }

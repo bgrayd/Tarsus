@@ -38,6 +38,14 @@ class Item {
         type =  Integer.parseInt(input.substring(underscore+1));
     }
 
+    void upgradeItem()
+    {
+        upgradeCount = upgradeCount + 1;
+        
+    }
+    
+    
+    
     String getName()
     {
         return name;
@@ -70,6 +78,14 @@ class Item {
     int getHeal()
     {
         return CONSTANT_potionHeal * health;
+    }
+	
+	int getValue()
+    {
+    	// returns a value with a slight exponential increase as items get better
+    	int sum = strength + agility + magic + health;
+    	int value_sum = (sum) * (sum / 10);
+    	return value_sum;
     }
     
 }
