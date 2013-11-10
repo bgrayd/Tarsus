@@ -966,7 +966,7 @@ public class GameInstance {
         {
            if(request.getParameter("Home").equals("Home"))
            {
-               return stateEnum.BATTLE; //debug
+               return stateEnum.INIT; //debug
            }
 
            String name = (String) request.getParameter("name");
