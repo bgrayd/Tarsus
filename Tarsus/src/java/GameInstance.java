@@ -1318,7 +1318,7 @@ public class GameInstance {
         }
     }
     
-    stateEnum profileState(PrintWriter out, HttpServletRequest request)  throws SQLException {
+    stateEnum profileState(PrintWriter out, HttpServletRequest request) throws SQLException {
         if(startingState != stateEnum.PROFILE)
         {
             printProfileState(out);
@@ -1562,7 +1562,6 @@ public class GameInstance {
         out.println(endPart);
     }
     
-<<<<<<< HEAD
     void printProfileState(PrintWriter out)
     {
         out.println("<html>\n" +
@@ -1597,140 +1596,6 @@ public class GameInstance {
             "	</body>\n" +
             "	\n" +
             "</html>");
-=======
-    public void printStoreState(PrintWriter out)
-    {
-        String item_type_string[] = {"Error", "Weapon", "Armor", "Item"};
-
-			
-			String startPart = "<html>\n" +
-		            "	<head>\n" +
-		            "	<!-- Call normalize.css -->\n" +
-		            "	<link rel=\"stylesheet\" href=\"css/normalize.css\" type=\"text/css\" media=\"screen\">\n" +
-		            "	<!-- Import Font to be used in titles and buttons -->\n" +
-		            "	<link href='http://fonts.googleapis.com/css?family=Sanchez' rel='stylesheet' type='text/css'>\n" +
-		            "	<link href='http://fonts.googleapis.com/css?family=Prosto+One' rel='stylesheet' type='text/css'>\n" +
-		            "	<!-- Call style.css -->\n" +
-		            "	<link rel=\"stylesheet\" href=\"css/grid.css\" type=\"text/css\" media=\"screen\">\n" +
-		            "	<!-- Call style.css -->\n" +
-		            "	<link rel=\"stylesheet\" href=\"css/style.css\" type=\"text/css\" media=\"screen\">\n" +
-		            "	<title> Tarsus </title>\n" +
-		            "	</head>\n" +
-		            "	<body>\n" +
-		            "		<div id=\"header\" class=\"grid10\" align=\"right\">\n" +
-		            "			<input value=\"Character Page\" name=\""  + "\" type=\"submit\" id=\"tarsusTitle\" />\n" +
-		            "			<input class=\"button\" type=\"submit\" value=\"Log Out\" name=\"Log Out\" /> </div>\n" +
-		            "		<div class=\"grid1\"> </div>\n" +
-		            "		<div class=\"grid8 centered\">\n" +
-		            "		<h1 id=\"title\" class=\"centered\">Store</h1>\n" +
-		            "		<table id=\"table\" align=\"center\">\n" +
-		            "			<tr>\n" +
-		            "				<td> </td>\n" +
-		            "				<th> Name </th>\n" +
-		            "				<th> Strength </th>\n" +
-		            "				<th> Magic </th>\n" +
-		            "				<th> Agility </th>\n" +
-		            "				<th> Heal </th>\n" +
-		            "				<th> Type </th>\n" + 
-		            "				<th> Price </th>\n" +
-		            "			</tr>\n" +
-		            "			<tr>";
-			String sellPart = "		</table>\n" +
-                    "		</div>\n" +
-                    "		<div class=\"grid1\"> </div>\n" +
-					"<div class=\"grid1\"> </div>\n" +
-		            "		<div class=\"grid8 centered\">\n" +
-		            "		<h1 id=\"title\" class=\"centered\">Your Items</h1>\n" +
-		            "		<table id=\"table\" align=\"center\">\n" +
-		            "			<tr>\n" +
-		            "				<td> </td>\n" +
-		            "				<th> Name </th>\n" +
-		            "				<th> Strength </th>\n" +
-		            "				<th> Magic </th>\n" +
-		            "				<th> Agility </th>\n" +
-		            "				<th> Heal </th>\n" +
-		            "				<th> Type </th>\n" + 
-		            "				<th> Price </th>\n" +
-		            "			</tr>\n" +
-		            "			<tr>";
-			
-			String buttonPart = ("		</table>\n" +
-	                "		</div>\n" +
-	                "		<div class=\"grid1\"> </div>\n" +
-					"		<div class=\"grid10\" align=\"center\">\n" +
-					"			<input id=\"Form\" type =\"submit\" value=\"Initiate Transaction\" class=frontPageButton /> \n" +
-					"		</div>\n" +
-					"		</form>\n");
-			
-            String endPart = 
-                    "	</body>\n" +
-                    "	\n" +
-                    "</html>";
-            String script = "<script> function getFormValues() {" +
-            "for(var i = 0; i < 20; i++){" +
-                "	var item = document.getElementById('i');" +
-                "	alert(item.getAttribute('name'));" +
-
-                            "} return false;} </script>";
-
-            out.println(startPart);
-
-            out.println("<form name=\"buyItems\" action=\"Tarsus\" onsubmit=\"return getFormValues()\" method=\"post\">\n");
-            for (int i = 0; i < storeItems.length; i++){
-                out.println("<td> <input id =\"" + i + "\" type=\"submit\" value=\"Buy for " + storeItems[i].getValue() + "\" name=\"Buy " + i + "\" class=\"tableButton\"> </td>");
-                out.println("<td>");
-                out.println(storeItems[i].getName());
-                out.println("</td>");
-                out.println("<td>");
-                out.println(storeItems[i].getStrength());
-                out.println("</td>");
-                out.println("<td>");
-                out.println(storeItems[i].getAgility());
-                out.println("</td>");
-                out.println("<td>");
-                out.println(storeItems[i].getMagic());
-                out.println("</td>");
-                out.println("<td>");
-                out.println(storeItems[i].getHeal());
-                out.println("</td>");
-                out.println("<td>");
-                out.println(item_type_string[storeItems[i].getType()]);
-                out.println("</td>");
-                out.println("<td>");
-                out.println(storeItems[i].getValue());
-                out.println("</td>");
-                out.println("</tr>");
-			}
-	out.println(sellPart);
-	for (int i = 0; i < playerChar.itemsHeld.length; i++){
-                out.println("<td> <input type=\"submit\" value=\"Sell for " + (int)(0.60 * storeItems[i].getValue()) + "\" name=\"Sell " + i + "\" class=\"tableButton\"> </td>");
-                out.println("<td>");
-                out.println(playerChar.itemsHeld[i].getName());
-                out.println("</td>");
-                out.println("<td>");
-                out.println(playerChar.itemsHeld[i].getStrength());
-                out.println("</td>");
-                out.println("<td>");
-                out.println(playerChar.itemsHeld[i].getAgility());
-                out.println("</td>");
-                out.println("<td>");
-                out.println(playerChar.itemsHeld[i].getMagic());
-                out.println("</td>");
-                out.println("<td>");
-                out.println(playerChar.itemsHeld[i].getHeal());
-                out.println("</td>");
-                out.println("<td>");
-                out.println(playerChar.itemsHeld[storeItems[i].getType()]);
-                out.println("</td>");
-                out.println("<td>");
-                out.println((int)(0.60 * playerChar.itemsHeld[i].getValue()));
-                out.println("</td>");
-                out.println("</tr>");
-			}
-        out.println(buttonPart);
-        out.println(endPart);
-        out.println(script);
->>>>>>> origin/master
     }
     
     public void printStoreState(PrintWriter out)
