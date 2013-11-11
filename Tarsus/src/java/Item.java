@@ -4,8 +4,10 @@
 class Item {
     String name;
     int itemId, type, upgradeCount, strength, agility, magic, health;
-    int CONSTANT_upgradeMax = 3;
-    int CONSTANT_potionHeal = 20; //scalar
+    final int CONSTANT_weaponUpgrade = 5;
+    final int CONSTANT_armorUpgrade = 7;
+    final int CONSTANT_upgradeMax = 3;
+    final int CONSTANT_potionHeal = 20;
     
     Item(String name, int itemId, int type, int upgradeCount, int strength, int agility, int magic, int health)
     {
@@ -22,7 +24,7 @@ class Item {
     Item(String input)
     {
         //constructor that takes a string of the format name=id+strength-agility*magic_type
-        //assumes health = 0
+
         int equals = input.indexOf("=");
         int plus = input.indexOf("+");
         int minus = input.indexOf("-");
@@ -36,19 +38,23 @@ class Item {
         agility =  Integer.parseInt(input.substring(minus+1,star));
         magic =  Integer.parseInt(input.substring(star+1,underscore));
         type =  Integer.parseInt(input.substring(underscore+1));
+        //assumes health = 0
+        health = 0;
     }
-
+    
     void upgradeItem()
     {
         upgradeCount = upgradeCount + 1;
-        
     }
-    
-    
     
     String getName()
     {
         return name;
+    }
+    
+    int getItemId()
+    {
+        return itemId;
     }
     
     int getType()
@@ -87,5 +93,6 @@ class Item {
     	int value_sum = (sum) * (sum / 10);
     	return value_sum;
     }
+        
     
 }

@@ -12,6 +12,8 @@ public enum stateEnum {
     DECISION,
     LOGIN,
     ACCOUNT_CREATION,
-    LEVEL_UP
-    
+    LEVEL_UP,
+    PROFILE,
+    PAST_CHARACTERS,
+    LOGOUT
 }
