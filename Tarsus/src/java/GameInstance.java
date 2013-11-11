@@ -20,7 +20,7 @@ public class GameInstance {
     Connection conn = null;
     Statement stat = null;
     int gold;
-
+    String error;
     
     int constantPtsPerLevel = 5;
     int constantWeaponPtsPerLevel = 3;
@@ -40,6 +40,7 @@ public class GameInstance {
         currentState = stateEnum.INIT;
         accountName = "Unregistered User";
         gold = 0;
+        error = null;
     }
     
     /****************************************************
@@ -187,7 +188,7 @@ public class GameInstance {
                     initState(out, request);
                     break;
             }
-        }while(currentState != nextState);
+        }while((currentState != nextState)|(error!=null));
     }
     
     
@@ -839,7 +840,35 @@ public class GameInstance {
      * @return the next state
      ***************************************************/
     stateEnum registeredCharacterCreationState(PrintWriter out, HttpServletRequest request) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+     if(startingState != stateEnum.REGISTERED_CHARACTER_CREATION)
+        {
+            //create new page for it
+            Integer level = (int)(Math.random()*49+1);
+            printCharacterCreation(level, out);   
+            return stateEnum.REGISTERED_CHARACTER_CREATION;
+        }
+        else
+        {
+             stateEnum state;
+            try
+            {
+                if(checkHome(request))
+                {
+                    return stateEnum.INIT;
+                }
+            }
+            catch(Exception e)
+            {
+                state = charCreationParameters(out, request);
+                if(state == stateEnum.UNREGISTERED_CHARACTER_CREATION)
+                    return stateEnum.REGISTERED_CHARACTER_CREATION;
+                return state;
+            }
+            state = charCreationParameters(out, request);
+            if(state == stateEnum.UNREGISTERED_CHARACTER_CREATION)
+                return stateEnum.REGISTERED_CHARACTER_CREATION;
+            return state;
+        }
     }
     
     /****************************************************
@@ -850,7 +879,7 @@ public class GameInstance {
      ***************************************************/
     stateEnum unregisteredCharacterCreationState(PrintWriter out, HttpServletRequest request) {
 
-    if(startingState != stateEnum.UNREGISTERED_CHARACTER_CREATION)
+    if((startingState != stateEnum.UNREGISTERED_CHARACTER_CREATION)|(error!=null))
     {
         //create new page for it
         Integer level = (int)(Math.random()*49+1);
@@ -1441,8 +1470,10 @@ public class GameInstance {
             }
             out.println("</table>");
             out.println(lastPart);
-            
-                
+            if(error!=null)
+                out.printf("<script>alert(\"%s\");</script>",error);
+            error = null;
+           
     }
 
     private boolean checkHome(HttpServletRequest request)
@@ -1490,6 +1521,7 @@ public class GameInstance {
         }
         else
         {
+            error = "The character name or bio is invalid or there was a database error";
             return stateEnum.UNREGISTERED_CHARACTER_CREATION;
         }
     }
