@@ -1,3 +1,6 @@
+
+import javax.servlet.http.HttpServletRequest;
+
 /*******************************************************
 * Abstract character class
 *   the requestAction function needs to be implemented 
@@ -32,7 +35,7 @@ public abstract class Character {
      * Abstracted function for getting the action
      * @return an actionEnum for the next move
      ***************************************************/
-    abstract actionEnum requestAction();
+    abstract actionEnum requestAction(HttpServletRequest request);
     
     
     /***************************************************
