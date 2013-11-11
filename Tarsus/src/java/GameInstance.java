@@ -30,6 +30,7 @@ public class GameInstance {
     int constantStrengthPerLevel = 10;
     int constantAgilityPerLevel = 10;
     int constantMagicPerLevel = 10;
+    int constantHealthBase = 200;
 
     
     
@@ -1187,7 +1188,7 @@ public class GameInstance {
     
     String maxValueScript(int value)
     {
-    return ("<script> var maxValue=" + Integer.toString(value) +";</script>");
+        return ("<script> var maxValue=" + Integer.toString(value) +";</script>");
     }
 	
     double getQuality(int level)
@@ -1487,10 +1488,10 @@ public class GameInstance {
         String name = (String) request.getParameter("name");
         String bio = request.getParameter("bio");
         int level = Integer.parseInt(request.getParameter("level"));
-        int health = Integer.parseInt(request.getParameter("health"));
-        int strength = Integer.parseInt(request.getParameter("strength"));
-        int agility = Integer.parseInt(request.getParameter("agility"));
-        int magic = Integer.parseInt(request.getParameter("magic"));
+        int health = (Integer.parseInt(request.getParameter("health"))*constantHealthPerLevel + constantHealthBase);
+        int strength = (Integer.parseInt(request.getParameter("strength"))*constantStrengthPerLevel);
+        int agility = (Integer.parseInt(request.getParameter("agility"))*constantAgilityPerLevel);
+        int magic = (Integer.parseInt(request.getParameter("magic"))*constantMagicPerLevel);
         Item[] items = {new Item(request.getParameter("weapon")), new Item(request.getParameter("armor"))};
 
         if(isValidString(name) & isValidString(bio))
