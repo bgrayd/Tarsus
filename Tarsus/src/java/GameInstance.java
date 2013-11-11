@@ -610,7 +610,6 @@ public class GameInstance {
     stateEnum decisionState(PrintWriter out, HttpServletRequest request) {
         if (startingState != stateEnum.DECISION)
         {
-            String characterName = ""; //need to get SQL query
             out.println("<html>\n" +
                         "	<head>\n" +
                         "	<!-- Call normalize.css -->\n" +
@@ -702,6 +701,32 @@ public class GameInstance {
                     if(tempValue != null)
                     {
                         playerChar.itemsHeld[i].upgradeItem();
+                        String query = "UPDATE Items SET upgradeCount=upgradeCount+1, ";
+                        if(playerChar.itemsHeld[i].getType() == 1)
+                        {
+                            if(playerChar.itemsHeld[i].getStrength() > 0)
+                            {
+                                query = query + "strengthVal=strengthVal+'" + playerChar.itemsHeld[i].CONSTANT_weaponUpgrade;
+                            }
+                            if(playerChar.itemsHeld[i].getAgility() > 0)
+                            {
+                                query = query + "agilityVal=alilityVal+'" + playerChar.itemsHeld[i].CONSTANT_weaponUpgrade;
+                            }
+                            if(playerChar.itemsHeld[i].getMagic() > 0)
+                            {
+                                query = query + "magicVal=magicVal+'" + playerChar.itemsHeld[i].CONSTANT_weaponUpgrade;
+                            }
+                        }
+                        else //playerChar.itemsHeld[i].getType() == 2
+                        {
+                            query = query + "strengthVal=strengthVal+'" + playerChar.itemsHeld[i].CONSTANT_armorUpgrade + 
+                                    "', agilityVal=alilityVal+'" + playerChar.itemsHeld[i].CONSTANT_armorUpgrade + 
+                                    "', magicVal=magicVal+'" + playerChar.itemsHeld[i].CONSTANT_armorUpgrade;
+                        }
+                        query = query + "' WHERE itemId='" + playerChar.itemsHeld[i].getItemId() + "';";
+                        connectDB();
+                        sqlCommand(query, out);
+                        disconnectDB();
                         printBlacksmithState(out);
                         break;
                     }
@@ -896,7 +921,7 @@ public class GameInstance {
                 return stateEnum.ACCOUNT_CREATION;  
             }
             String command = "INSERT INTO Login VALUES ('" + username + "', MD5('"
-                    + password +"'));";
+                    + password +"'), gold=0);";
             
             try{
             if(sqlCommand(command, out))
@@ -975,12 +1000,20 @@ public class GameInstance {
                     int equipArmorId = result.getInt("equippedArmor");
                     disconnectDB();
                     
-                    //creating the itemsHeld array
-                    Item[] itemsHeld = null;
+                    //getting the length for itemsHeld
+                    connectDB();
+                    String search2 = "SELECT COUNT(I.itemId) AS rows FROM Items I, CharacterHasItem C WHERE I.itemId=C.itemId AND C.charName='" + name + "';";
+                    result = sqlQuery(search2, out);
+                    result.next();
+                    int rows = result.getInt("rows");
+                    disconnectDB();
+                    
+                    Item[] itemsHeld = new Item[rows];
                     Item weapon = null;
                     Item armor = null;
+                    String search3 = "SELECT * FROM Items I, CharacterHasItem C WHERE I.itemId=C.itemId AND C.charName='" + name + "';";
                     connectDB();
-                    String search2 = "SELECT * FROM Items I, CharacterHasItem C WHERE I.itemId=C.itemId AND C.charName='" + name + "';";
+                    result = sqlQuery(search3, out);
                     //temp varible
                     int i = 0;
                     while (result.next())
@@ -992,12 +1025,13 @@ public class GameInstance {
                         int strengthVal= result.getInt("strengthVal");
                         int agilityVal = result.getInt("agilityVal");
                         int magicVal = result.getInt("magicVal");
-                        itemsHeld[i] = new Item(iName, itemId, type, upgradeCount, strengthVal, agilityVal, magicVal, 0);
+                        Item item = new Item(iName, itemId, type, upgradeCount, strengthVal, agilityVal, magicVal, 0);
+                        itemsHeld[i] = item;
                         if (equipWeaponId == itemId)
                         {
                             weapon = new Item(iName, itemId, type, upgradeCount, strengthVal, agilityVal, magicVal, 0);
                         }
-                        else if(equipArmorId == itemId)
+                        if (equipArmorId == itemId)
                         {
                             armor = new Item(iName, itemId, type, upgradeCount, strengthVal, agilityVal, magicVal, 0);
                         }
@@ -1010,6 +1044,7 @@ public class GameInstance {
                 else
                 {
                     out.println("No Valid Character");
+                    printProfileState(out);
                     return stateEnum.PROFILE;
                 }
             }
@@ -1083,9 +1118,9 @@ public class GameInstance {
             "				<th> Magic </th>\n" +
             "				<th> Agility </th>\n" +
             "				<th> Type </th>\n" +
-            "			</tr>\n" +
-            "			<tr>";
-        String endPart = "		</table>\n" +
+            "                           <th> Times Upgraded </th>\n" +
+            "			</tr>\n";
+        String endPart = "</table>\n" +
             "		</div>\n" +
             "		<div class=\"grid1\"> </div>\n" +
             "       </form>" +
@@ -1094,26 +1129,55 @@ public class GameInstance {
             "</html>";
         
         out.println(startPart);
-        for (int i = 0; i < playerChar.itemsHeld.length - 1; i++){
-            if(playerChar.itemsHeld[i].getUpgradeCount() < 3)
-            {
-                out.println("<td> <input value=\"Upgrade" + i + " name=\"Upgrade" + i + " class=\"tableButton\"> /> </td>");
-                out.println("<td>");
-                out.println(playerChar.itemsHeld[i].getName());
-                out.println("</td>");
-                out.println("<td>");
-                out.println(playerChar.itemsHeld[i].getStrength());
-                out.println("</td>");
-                out.println("<td>");
-                out.println(playerChar.itemsHeld[i].getAgility());
-                out.println("</td>");
-                out.println("<td>");
-                out.println(playerChar.itemsHeld[i].getMagic());
-                out.println("</td>");
-                out.println("<td>");
-                out.println(playerChar.itemsHeld[i].getType());
-                out.println("</td>");
-                out.println("</tr>");
+        boolean noItems;
+        if(playerChar.itemsHeld.length > 0)
+        {
+            noItems = false;
+        }
+        else
+        {
+            noItems = true;
+        }
+
+        if(noItems)
+        {
+            out.println("<tr>");
+            out.println("<td> </td>\n" +
+                        "<th></th>\n" +
+                        "<th></th>\n" +
+                        "<th></th>\n" +
+                        "<th></th>\n" +
+                        "<th></th>\n" +
+                        "<th></th>\n");
+            out.println("</tr>");
+        }
+        else //there are one or more items
+        {
+            for (int i = 0; i < playerChar.itemsHeld.length; i++){
+                if(playerChar.itemsHeld[i].getUpgradeCount() < 3)
+                {
+                    out.println("<tr>\n");
+                    out.println("<td> <input value=\"Upgrade\" name=\"Upgrade" + i + "\" type=\"submit\" class=\"tableButton\" /> </td>");
+                    out.println("<td>");
+                    out.println(playerChar.itemsHeld[i].getName());
+                    out.println("</td>");
+                    out.println("<td>");
+                    out.println(playerChar.itemsHeld[i].getStrength());
+                    out.println("</td>");
+                    out.println("<td>");
+                    out.println(playerChar.itemsHeld[i].getAgility());
+                    out.println("</td>");
+                    out.println("<td>");
+                    out.println(playerChar.itemsHeld[i].getMagic());
+                    out.println("</td>");
+                    out.println("<td>");
+                    out.println(playerChar.itemsHeld[i].getType());
+                    out.println("</td>");
+                    out.println("<td>");
+                    out.println(playerChar.itemsHeld[i].getUpgradeCount());
+                    out.println("</td>");
+                    out.println("</tr>\n");
+                }
             }
         }
         out.println(endPart);
