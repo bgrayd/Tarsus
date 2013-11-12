@@ -1456,6 +1456,7 @@ public class GameInstance {
         out.println(endPart);
     }
     
+
     void printProfileState(PrintWriter out)
     {
         out.println("<html>\n" +
@@ -1491,6 +1492,7 @@ public class GameInstance {
             "	\n" +
             "</html>");
     }
+
     
     public void printStoreState(PrintWriter out)
     {
