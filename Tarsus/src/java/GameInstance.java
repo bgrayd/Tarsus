@@ -85,7 +85,6 @@ public class GameInstance {
            out.println("Query error:");
            out.println(ex);
         }finally{
-            disconnectDB();
             return result;
         } 
     }
@@ -108,8 +107,6 @@ public class GameInstance {
             out.println(ex);
             
         }finally{
-            DBUtilities.closeStatement(stat);
-            disconnectDB();
             return result;
         } 
     }
@@ -403,7 +400,7 @@ public class GameInstance {
      ***************************************************/
     Boolean newCharacter(Character chrct, Boolean isDead, PrintWriter out)
     {
-        String query = "INSERT into Characters (name, level, bio, creator, strength, health, isDead, magic, agility, timesAttacketed, timesSwitchedToStrength, timesSwitchedToAgility, timesSwitchedToMagic, equippedWeapon, equippedArmor) VALUES ('"+chrct.getName()+"', '"+(((Integer)chrct.getLevel()).toString())+"', '"+chrct.getBio()+"', '"+accountName+"', '"+((Integer)(chrct.getStrength())).toString()+"', '"+((Integer)chrct.getMaxHealth()).toString()+"', '"+(isDead.toString())+"', '"+((Integer)chrct.getMagic()).toString()+"', '"+((Integer)chrct.getAgility()).toString()+"', '"+((Integer)chrct.timesAttacked).toString()+"', '"+((Integer)chrct.timesSwitchedToStrength).toString()+"', '"+((Integer)chrct.timesSwitchedToAgility).toString()+"', '"+((Integer)chrct.timesSwitchedToMagic).toString()+"', '"+((Integer)chrct.weapon.getItemId()).toString()+"', '"+((Integer)chrct.armor.getItemId()).toString()+"');";
+        String query = "INSERT into Characters (name, level, bio, creator, strength, health, isDead, magic, agility, timesAttacked, timesSwitchedToStrength, timesSwitchedToAgility, timesSwitchedToMagic, equippedWeapon, equippedArmor) VALUES ('"+chrct.getName()+"', '"+(((Integer)chrct.getLevel()).toString())+"', '"+chrct.getBio()+"', '"+accountName+"', '"+((Integer)(chrct.getStrength())).toString()+"', '"+((Integer)chrct.getMaxHealth()).toString()+"', '"+(isDead.toString())+"', '"+((Integer)chrct.getMagic()).toString()+"', '"+((Integer)chrct.getAgility()).toString()+"', '"+((Integer)chrct.timesAttacked).toString()+"', '"+((Integer)chrct.timesSwitchedToStrength).toString()+"', '"+((Integer)chrct.timesSwitchedToAgility).toString()+"', '"+((Integer)chrct.timesSwitchedToMagic).toString()+"', '"+((Integer)chrct.weapon.getItemId()).toString()+"', '"+((Integer)chrct.armor.getItemId()).toString()+"');";
         return sqlCommand(query,out);
     }
 
@@ -441,13 +438,11 @@ public class GameInstance {
         String query="SELECT * FROM Items;";
         int max = 0;
         ResultSet result = sqlQuery(query, out);
-        out.printf("middle nextItemId");
         while(result.next()){
-            out.printf("start of while in nextItemId");
             if(result.getInt("itemId")>max)
                 max=result.getInt("itemId");
         }
-        
+        disconnectDB();
         return max+1;
     }
     
@@ -1865,11 +1860,8 @@ public class GameInstance {
         try{
             if(isValidString(name) & isValidString(bio))
             {
-               out.printf("made it here 2");
                newItem(items[0], out);
-               out.printf("made it here 3");
                newItem(items[1], out);
-               out.printf("made it here");
                PlayerCharacter chrct = new PlayerCharacter(name,bio, level, health, strength, agility, magic, items,items[0],items[1],0,0,0,0);
 
                newCharacter(chrct,isUnReg, out);
