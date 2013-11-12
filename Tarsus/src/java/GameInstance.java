@@ -396,21 +396,60 @@ public class GameInstance {
     
     /****************************************************
      * Adds a newly created character to the database
-     * @param name the character's name
-     * @param level the level of the character
-     * @param bio  a biography about the character
-     * @param health the health of the character
-     * @param strength the strength of the character
-     * @param agility the agility of the character
-     * @param magic  the magic of the character
-     * @param itemsHeld the items held by the character
+     * @param chrct character object to add to the database
+     * @param isDead Boolean, whether or not the character is dead
+     * @param out PrintWriter for the page
      * @return did it work
      ***************************************************/
-    Boolean newCharacter(String name, int level, String bio, int health, int strength, int agility, int magic,Item[] itemsHeld)
+    Boolean newCharacter(Character chrct, Boolean isDead, PrintWriter out)
     {
-        return false;
+        String query = "INSERT into Characters (name, level, bio, creator, strength, health, isDead, magic, agility, timesAttacketed, timesSwitchedToStrength, timesSwitchedToAgility, timesSwitchedToMagic, equippedWeapon, equippedArmor) VALUES ('"+chrct.getName()+"', '"+(((Integer)chrct.getLevel()).toString())+"', '"+chrct.getBio()+"', '"+accountName+"', '"+((Integer)(chrct.getStrength())).toString()+"', '"+((Integer)chrct.getMaxHealth()).toString()+"', '"+(isDead.toString())+"', '"+((Integer)chrct.getMagic()).toString()+"', '"+((Integer)chrct.getAgility()).toString()+"', '"+((Integer)chrct.timesAttacked).toString()+"', '"+((Integer)chrct.timesSwitchedToStrength).toString()+"', '"+((Integer)chrct.timesSwitchedToAgility).toString()+"', '"+((Integer)chrct.timesSwitchedToMagic).toString()+"', '"+((Integer)chrct.weapon.getItemId()).toString()+"', '"+((Integer)chrct.armor.getItemId()).toString()+"');";
+        return sqlCommand(query,out);
     }
 
+    
+    /****************************************************
+     * update created character to the database
+     * @param chrct character object to update in the database
+     * @param isDead Boolean, whether or not the character is dead
+     * @param out PrintWriter for the page
+     * @return did it work
+     ***************************************************/
+    Boolean updateCharacter(Character chrct, Boolean isDead, PrintWriter out)
+    {
+        String query = "UPDATE Characters SET level='"+(((Integer)chrct.getLevel()).toString())+"', bio='"+chrct.getBio()+"', strength='"+((Integer)(chrct.getStrength())).toString()+"', health='"+((Integer)chrct.getMaxHealth()).toString()+"', isDead='"+(isDead.toString())+"', magic='"+((Integer)chrct.getMagic()).toString()+"', agility='"+((Integer)chrct.getAgility()).toString()+"', timesAttacked='"+((Integer)chrct.timesAttacked).toString()+"', timesSwitchedToStrength='"+((Integer)chrct.timesSwitchedToStrength).toString()+"', timesSwitchedToAgility='"+((Integer)chrct.timesSwitchedToAgility).toString()+"', timesSwitchedToMagic='"+((Integer)chrct.timesSwitchedToMagic).toString()+"', equippedWeapon='"+((Integer)chrct.weapon.getItemId()).toString()+"', equippedArmor='"+((Integer)chrct.armor.getItemId()).toString()+"' WHERE name='"+chrct.getName()+"');";
+        return sqlCommand(query,out);
+    }
+    
+    /****************************************************
+     * Adds new item to the database
+     * @param item item object to add to the database
+     * @param out PrintWriter for the page
+     * @return did it work
+     ***************************************************/
+    Boolean newItem(Item item, PrintWriter out) throws SQLException
+    {
+        if(item.getItemId()==0)
+            item.itemId=nextItemId(out);
+        out.printf("middle of newItem");
+        String query = "Insert into Items (itemId, name, type, strengthVal, healthVal, upgradeCount, magicVal, agilityVal) VALUES ('"+((Integer)item.getItemId()).toString()+"', '"+item.getName()+"', '"+((Integer)item.getType()).toString()+"', '"+((Integer)item.getStrength()).toString()+"', '"+((Integer)item.getHeal()).toString()+"', '"+((Integer)item.getUpgradeCount()).toString()+"', '"+((Integer)item.getMagic()).toString()+"', '"+((Integer)item.getAgility()).toString()+"');";
+        return sqlCommand(query,out);
+    }
+    
+    int nextItemId(PrintWriter out) throws SQLException
+    {
+        String query="SELECT * FROM Items;";
+        int max = 0;
+        ResultSet result = sqlQuery(query, out);
+        out.printf("middle nextItemId");
+        while(result.next()){
+            out.printf("start of while in nextItemId");
+            if(result.getInt("itemId")>max)
+                max=result.getInt("itemId");
+        }
+        
+        return max+1;
+    }
     
     /****************************************************
      * The initial state
@@ -705,7 +744,8 @@ public class GameInstance {
             else if(playerChar.getHealth()<1)
             {
                 //mark the character as dead in the database debug
-                return stateEnum.IDLING;//needs to be changed to profile wants that state has been made debug
+                updateCharacter(playerChar, true, out);
+                return stateEnum.PROFILE;
             }
             else if(aresChar.getHealth()<1)
                 return stateEnum.LEVEL_UP;
@@ -721,7 +761,7 @@ public class GameInstance {
         out.printf(equippedTable2, aresChar.armor.getName(), aresChar.armor.getStrength(), aresChar.armor.getMagic(), aresChar.armor.getAgility());
         out.printf(afterTable);
         
-       out.printf("<div>You have done %d damage to your opponent.\n Your opponent has done %d damage to you.</div>", aresDamage, playerDamage);
+        out.printf("<div>You have done %d damage to your opponent.\n Your opponent has done %d damage to you.</div>", aresDamage, playerDamage);
         
         if((playerChar.getHealth()>0) && (aresChar.getHealth()>0))
         {
@@ -778,14 +818,10 @@ public class GameInstance {
             }
             catch(Exception e)
             {
-                state = charCreationParameters(out, request);
-                if(state == stateEnum.UNREGISTERED_CHARACTER_CREATION)
-                    return stateEnum.REGISTERED_CHARACTER_CREATION;
+                state = charCreationParameters(out, request, false);
                 return state;
             }
-            state = charCreationParameters(out, request);
-            if(state == stateEnum.UNREGISTERED_CHARACTER_CREATION)
-                return stateEnum.REGISTERED_CHARACTER_CREATION;
+            state = charCreationParameters(out, request, false);
             return state;
         }
     }
@@ -819,9 +855,9 @@ public class GameInstance {
         }
         catch(Exception e)
         {
-            return charCreationParameters(out, request);
+            return charCreationParameters(out, request, true);
         }
-        return charCreationParameters(out, request);
+        return charCreationParameters(out, request, true);
     }
 }
 
@@ -1683,7 +1719,7 @@ public class GameInstance {
             playerChar.setMagic(playerChar.getMagic()+magic*constantMagicPerLevel);
                         
             //update database
-            
+            updateCharacter(playerChar, false, out);
             return stateEnum.DECISION;
         }
     }
@@ -1815,7 +1851,7 @@ public class GameInstance {
         return value.equals("Home");
     }
 
-    private stateEnum charCreationParameters(PrintWriter out, HttpServletRequest request) {
+    private stateEnum charCreationParameters(PrintWriter out, HttpServletRequest request, Boolean isUnReg) {
         
         String name = (String) request.getParameter("name");
         String bio = request.getParameter("bio");
@@ -1825,37 +1861,57 @@ public class GameInstance {
         int agility = (Integer.parseInt(request.getParameter("agility"))*constantAgilityPerLevel);
         int magic = (Integer.parseInt(request.getParameter("magic"))*constantMagicPerLevel);
         Item[] items = {new Item(request.getParameter("weapon")), new Item(request.getParameter("armor"))};
+        
+        try{
+            if(isValidString(name) & isValidString(bio))
+            {
+               out.printf("made it here 2");
+               newItem(items[0], out);
+               out.printf("made it here 3");
+               newItem(items[1], out);
+               out.printf("made it here");
+               PlayerCharacter chrct = new PlayerCharacter(name,bio, level, health, strength, agility, magic, items,items[0],items[1],0,0,0,0);
 
-        if(isValidString(name) & isValidString(bio))
-        {
-           //newCharacter(name, level,bio, health, strength, agility, magic, items);
+               newCharacter(chrct,isUnReg, out);
+               /*
+               out.println(name);
+               out.printf("level: %d\n",level);
+               out.println(bio);
+               out.printf("health: %d\n",health);
+               out.printf("strength: %d\n",strength);
+               out.printf("agility: %d\n",agility);
+               out.printf("magic: %d\n",magic);
+               out.printf("%s\n",items[0].name);
+               out.printf("%d\n",items[0].itemId);
+               out.printf("%d\n",items[0].strength);
+               out.printf("%d\n",items[0].agility);
+               out.printf("%d\n",items[0].magic);
+               out.printf("%d\n",items[0].type);
 
-           out.println(name);
-           out.printf("level: %d\n",level);
-           out.println(bio);
-           out.printf("health: %d\n",health);
-           out.printf("strength: %d\n",strength);
-           out.printf("agility: %d\n",agility);
-           out.printf("magic: %d\n",magic);
-           out.printf("%s\n",items[0].name);
-           out.printf("%d\n",items[0].itemId);
-           out.printf("%d\n",items[0].strength);
-           out.printf("%d\n",items[0].agility);
-           out.printf("%d\n",items[0].magic);
-           out.printf("%d\n",items[0].type);
-
-           out.printf("%s\n",items[1].name);
-           out.printf("%d\n",items[1].itemId);
-           out.printf("%d\n",items[1].strength);
-           out.printf("%d\n",items[1].agility);
-           out.printf("%d\n",items[1].magic);
-           out.printf("%d\n",items[1].type);
-           return stateEnum.INIT;
+               out.printf("%s\n",items[1].name);
+               out.printf("%d\n",items[1].itemId);
+               out.printf("%d\n",items[1].strength);
+               out.printf("%d\n",items[1].agility);
+               out.printf("%d\n",items[1].magic);
+               out.printf("%d\n",items[1].type);*/
+               if(isUnReg)
+                    return stateEnum.INIT;
+               return stateEnum.DECISION;
+            }
+            else
+            {
+                error = "The character name or bio is invalid or there was a database error";
+                if(isUnReg)
+                    return stateEnum.UNREGISTERED_CHARACTER_CREATION;
+                return stateEnum.REGISTERED_CHARACTER_CREATION;
+            }
         }
-        else
+        catch(Exception e)
         {
             error = "The character name or bio is invalid or there was a database error";
-            return stateEnum.UNREGISTERED_CHARACTER_CREATION;
+            if(isUnReg)
+                return stateEnum.UNREGISTERED_CHARACTER_CREATION;
+            return stateEnum.REGISTERED_CHARACTER_CREATION;
         }
     }
 }
