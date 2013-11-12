@@ -1559,10 +1559,7 @@ public class GameInstance {
         out.println(endPart);
     }
     
-<<<<<<< HEAD
 
-=======
->>>>>>> f69782ec3e14895fdbb1db1f2a4d5f3e665c2e59
     void printProfileState(PrintWriter out)
     {
         out.println("<html>\n" +
