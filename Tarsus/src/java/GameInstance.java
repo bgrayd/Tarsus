@@ -78,7 +78,6 @@ public class GameInstance {
         
         ResultSet result = null;
         try{
-            connectDB();
              stat = conn.createStatement();
              result = stat.executeQuery(query);
         }catch(Exception ex){
@@ -97,7 +96,6 @@ public class GameInstance {
     Boolean sqlCommand(String command, PrintWriter out){
         Boolean result = false;
         try{
-            connectDB();
              stat = conn.createStatement();
              stat.execute(command);
              result = true;
@@ -400,7 +398,11 @@ public class GameInstance {
      ***************************************************/
     Boolean newCharacter(Character chrct, Boolean isDead, PrintWriter out)
     {
-        String query = "INSERT into Characters (name, level, bio, creator, strength, health, isDead, magic, agility, timesAttacked, timesSwitchedToStrength, timesSwitchedToAgility, timesSwitchedToMagic, equippedWeapon, equippedArmor) VALUES ('"+chrct.getName()+"', '"+(((Integer)chrct.getLevel()).toString())+"', '"+chrct.getBio()+"', '"+accountName+"', '"+((Integer)(chrct.getStrength())).toString()+"', '"+((Integer)chrct.getMaxHealth()).toString()+"', '"+(isDead.toString())+"', '"+((Integer)chrct.getMagic()).toString()+"', '"+((Integer)chrct.getAgility()).toString()+"', '"+((Integer)chrct.timesAttacked).toString()+"', '"+((Integer)chrct.timesSwitchedToStrength).toString()+"', '"+((Integer)chrct.timesSwitchedToAgility).toString()+"', '"+((Integer)chrct.timesSwitchedToMagic).toString()+"', '"+((Integer)chrct.weapon.getItemId()).toString()+"', '"+((Integer)chrct.armor.getItemId()).toString()+"');";
+        Integer dead=0;
+        if(isDead)
+            dead=1;
+        connectDB();
+        String query = "INSERT into Characters (name, level, bio, creator, strength, health, isDead, magic, agility, timesAttacked, timesSwitchedToStrength, timesSwitchedToAgility, timesSwitchedToMagic, equippedWeapon, equippedArmor) VALUES ('"+chrct.getName()+"', '"+(((Integer)chrct.getLevel()).toString())+"', '"+chrct.getBio()+"', '"+accountName+"', '"+((Integer)(chrct.getStrength())).toString()+"', '"+((Integer)chrct.getMaxHealth()).toString()+"', '"+dead.toString()+"', '"+((Integer)chrct.getMagic()).toString()+"', '"+((Integer)chrct.getAgility()).toString()+"', '"+((Integer)chrct.timesAttacked).toString()+"', '"+((Integer)chrct.timesSwitchedToStrength).toString()+"', '"+((Integer)chrct.timesSwitchedToAgility).toString()+"', '"+((Integer)chrct.timesSwitchedToMagic).toString()+"', '"+((Integer)chrct.weapon.getItemId()).toString()+"', '"+((Integer)chrct.armor.getItemId()).toString()+"');";
         return sqlCommand(query,out);
     }
 
@@ -414,7 +416,11 @@ public class GameInstance {
      ***************************************************/
     Boolean updateCharacter(Character chrct, Boolean isDead, PrintWriter out)
     {
-        String query = "UPDATE Characters SET level='"+(((Integer)chrct.getLevel()).toString())+"', bio='"+chrct.getBio()+"', strength='"+((Integer)(chrct.getStrength())).toString()+"', health='"+((Integer)chrct.getMaxHealth()).toString()+"', isDead='"+(isDead.toString())+"', magic='"+((Integer)chrct.getMagic()).toString()+"', agility='"+((Integer)chrct.getAgility()).toString()+"', timesAttacked='"+((Integer)chrct.timesAttacked).toString()+"', timesSwitchedToStrength='"+((Integer)chrct.timesSwitchedToStrength).toString()+"', timesSwitchedToAgility='"+((Integer)chrct.timesSwitchedToAgility).toString()+"', timesSwitchedToMagic='"+((Integer)chrct.timesSwitchedToMagic).toString()+"', equippedWeapon='"+((Integer)chrct.weapon.getItemId()).toString()+"', equippedArmor='"+((Integer)chrct.armor.getItemId()).toString()+"' WHERE name='"+chrct.getName()+"');";
+        Integer dead=0;
+        if(isDead)
+            dead=1;
+        connectDB();
+        String query = "UPDATE Characters SET level='"+(((Integer)chrct.getLevel()).toString())+"', bio='"+chrct.getBio()+"', strength='"+((Integer)(chrct.getStrength())).toString()+"', health='"+((Integer)chrct.getMaxHealth()).toString()+"', isDead='"+(dead.toString())+"', magic='"+((Integer)chrct.getMagic()).toString()+"', agility='"+((Integer)chrct.getAgility()).toString()+"', timesAttacked='"+((Integer)chrct.timesAttacked).toString()+"', timesSwitchedToStrength='"+((Integer)chrct.timesSwitchedToStrength).toString()+"', timesSwitchedToAgility='"+((Integer)chrct.timesSwitchedToAgility).toString()+"', timesSwitchedToMagic='"+((Integer)chrct.timesSwitchedToMagic).toString()+"', equippedWeapon='"+((Integer)chrct.weapon.getItemId()).toString()+"', equippedArmor='"+((Integer)chrct.armor.getItemId()).toString()+"' WHERE name='"+chrct.getName()+"');";
         return sqlCommand(query,out);
     }
     
@@ -428,7 +434,7 @@ public class GameInstance {
     {
         if(item.getItemId()==0)
             item.itemId=nextItemId(out);
-        out.printf("middle of newItem");
+        connectDB();
         String query = "Insert into Items (itemId, name, type, strengthVal, healthVal, upgradeCount, magicVal, agilityVal) VALUES ('"+((Integer)item.getItemId()).toString()+"', '"+item.getName()+"', '"+((Integer)item.getType()).toString()+"', '"+((Integer)item.getStrength()).toString()+"', '"+((Integer)item.getHeal()).toString()+"', '"+((Integer)item.getUpgradeCount()).toString()+"', '"+((Integer)item.getMagic()).toString()+"', '"+((Integer)item.getAgility()).toString()+"');";
         return sqlCommand(query,out);
     }
@@ -437,6 +443,7 @@ public class GameInstance {
     {
         String query="SELECT * FROM Items;";
         int max = 0;
+        connectDB();
         ResultSet result = sqlQuery(query, out);
         while(result.next()){
             if(result.getInt("itemId")>max)
@@ -1052,6 +1059,7 @@ public class GameInstance {
             }
             String search = "SELECT * FROM Login WHERE username='" + username +
                     "' AND password= MD5('" + password+  "');";
+            connectDB();
             ResultSet result = sqlQuery(search, out);
             try{
             if(result.isBeforeFirst()){
