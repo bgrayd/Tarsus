@@ -71,14 +71,12 @@ public class GameInstance {
         
         ResultSet result = null;
         try{
-            connectDB();
              stat = conn.createStatement();
              result = stat.executeQuery(query);
         }catch(Exception ex){
            out.println("Query error:");
            out.println(ex);
         }finally{
-            disconnectDB();
             return result;
         } 
     }
@@ -91,7 +89,6 @@ public class GameInstance {
     Boolean sqlCommand(String command, PrintWriter out){
         Boolean result = false;
         try{
-            connectDB();
              stat = conn.createStatement();
              stat.execute(command);
              result = true;
@@ -102,7 +99,6 @@ public class GameInstance {
             
         }finally{
             DBUtilities.closeStatement(stat);
-            disconnectDB();
             return result;
         } 
     }
@@ -154,6 +150,7 @@ public class GameInstance {
 
                 case DECISION:
                     //this state is for asking what to do next
+                    out.println("Decision");
                     nextState = decisionState(out, request);
                     break;
 
