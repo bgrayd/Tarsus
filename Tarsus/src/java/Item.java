@@ -20,9 +20,7 @@ class Item {
         this.magic = magic;
         this.health = health;
     }
-<<<<<<< HEAD
 
-=======
     
     Item(String input)
     {
@@ -50,7 +48,6 @@ class Item {
         upgradeCount = upgradeCount + 1;
     }
     
->>>>>>> master
     String getName()
     {
         return name;
@@ -89,8 +86,6 @@ class Item {
     {
         return CONSTANT_potionHeal * health;
     }
-<<<<<<< HEAD
-=======
 	
 	int getValue()
     {
@@ -100,6 +95,5 @@ class Item {
     	return value_sum;
     }
         
->>>>>>> master
     
 }
