@@ -481,7 +481,7 @@ public class GameInstance {
 "	<body>\n" +
 "            <form action=\"Tarsus\" method=\"post\">\n" +
 "		<div id=\"header\" class=\"grid10\" align=\"right\">\n" +
-"			<input href=\"index.html\" id=\"tarsusTitle\" /> \n" +
+"			<input href=\"index.jsp\" id=\"tarsusTitle\" /> \n" +
 "			<input class=\"button\" type=\"submit\" value=\"Log In\" name=\"Log In\" /> </div>\n" +
 
 "		<div class=\"grid1\"> </div>\n" +
