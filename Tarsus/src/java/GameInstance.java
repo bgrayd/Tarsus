@@ -19,12 +19,13 @@ public class GameInstance {
     DBConnections dataSource = null;
     Connection conn = null;
     Statement stat = null;
-
     final int STORE_SIZE = 20;    
     int gold;
     String error;
     int storeLevel;
     Item[] storeItems;
+
+    
     int constantPtsPerLevel = 5;
     int constantWeaponPtsPerLevel = 3;
     int constantArmorPtsPerLevel = 5;
@@ -42,11 +43,7 @@ public class GameInstance {
         playerChar = null;
         aresChar = null;
         currentState = stateEnum.INIT;
-        accountName = null;
         accountName = "Unregistered User";
-
-        int gold = 0;
-
         gold = 0;
         error = null;
         int storeLevel = 0;
@@ -81,7 +78,6 @@ public class GameInstance {
         
         ResultSet result = null;
         try{
-
              stat = conn.createStatement();
              result = stat.executeQuery(query);
         }catch(Exception ex){
@@ -126,7 +122,6 @@ public class GameInstance {
         do
         {
             currentState = nextState;
-            
             switch(currentState)
             {
                 case INIT:
@@ -228,7 +223,6 @@ public class GameInstance {
      ***************************************************/
     Item[] getStoreInventory(int level, int size)
     {
-        //throw new UnsupportedOperationException("Not supported yet.");
         final int STORE_LEVEL = level;
 	final int STORE_SIZE = size;
 	Item[] storeItems = new Item[STORE_SIZE];
@@ -484,24 +478,25 @@ public class GameInstance {
 "	<link rel=\"stylesheet\" href=\"css/style.css\" type=\"text/css\" media=\"screen\">\n" +
 "	<title> Tarsus </title>\n" +
 "	</head>\n" +
-"	<body><form action=\"Tarsus\"> \n" +
+"	<body>\n" +
+"            <form action=\"Tarsus\" method=\"post\">\n" +
 "		<div id=\"header\" class=\"grid10\" align=\"right\">\n" +
-"			<a href=\"index.jsp\" id=\"tarsusTitle\"> TARSUS </a> \n" +
-"			<a class=\"button\" type=\"submit\" value=\"Log In\">  </div>\n" +
+"			<input href=\"index.html\" id=\"tarsusTitle\" /> \n" +
+"			<input class=\"button\" type=\"submit\" value=\"Log in\" name=\"Log in\" /> </div>\n" +
+
 "		<div class=\"grid1\"> </div>\n" +
 "		<div class=\"grid8 centered\">\n" +
 "		<h1 id=\"title\" class=\"centered\">Welcome</h1>\n" +
 "		<p align=\"justify\"> \n" +
 "			Tarsus is a web based Role Playing Game that allows you to create your own character and use it to fight progressively more difficult enemies as you try to make your way to the top. If you already have an account, click the Log In button above. If not, you can make a character using our character maker or your can sign up and start your own adventure.\n" +
 "		</p>\n" +
-"               \n" +
 "		<div align=\"center\">\n" +
-                    "			<input type=\"submit\" value=\"Sign Up\" class=frontPageButton />\n" +
-"			<input type=\"Create a Character\" class=frontPageButton />\n" +
-
+"                    <input type=\"submit\" value=\"Create a Character\" name=\"Create a Character\" class=frontPageButton />\n" +
+"			<input type=\"submit\" value=\"Sign Up\" name=\"Sign Up\" class=frontPageButton />\n" +
 "		</div>\n" +
 "		</div>\n" +
-"		<div class=\"grid1\"> </div>\n </form>" +
+"		<div class=\"grid1\"> </div>\n" +
+"            </form>\n" +
 "	</body>\n" +
 "	\n" +
 "</html>");
@@ -509,27 +504,11 @@ public class GameInstance {
         }
         else
         {
-
-            String value = request.getParameter("Sign Up");
-            
-            //state changes
-           
-            if(value.equals("Sign Up"))
-                return stateEnum.ACCOUNT_CREATION;
-            if(request.getParameter("Log in").equals("Log in"))
-                return stateEnum.LOGIN;
-            if(request.getParameter("Create a Character").equals("Create a Character"))
-                return stateEnum.UNREGISTERED_CHARACTER_CREATION; 
-            
-             
-                
-            
-
             String value1 = request.getParameter("Sign Up");
             String value2 = request.getParameter("Log in");
             String value3 = request.getParameter("Create a Character");
 
-            value = "";
+            String value = "";
             if(value1 != null)
                 value = value1;
             if(value2!=null)
@@ -543,7 +522,6 @@ public class GameInstance {
                 return stateEnum.UNREGISTERED_CHARACTER_CREATION;
             if(value.equals("Sign Up"))
                 return stateEnum.ACCOUNT_CREATION; 
-
         }
        return stateEnum.INIT;
         
@@ -556,31 +534,6 @@ public class GameInstance {
      * @return the next state
      ***************************************************/
     private stateEnum storeState(PrintWriter out, HttpServletRequest request) {
-
-        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-		/*
-		// have store level as well as the items be static so that it is the same each time the player comes back to the 
-		// store unless the player has increased in level
-		static store_level = 1;
-		const int STORE_SIZE = 20;
-		static item[] item_array = new item[STORE_SIZE];
-		
-		// if level has changed create a new item inventory for the store
-		// based on some hash function of the character's level
-		if(playerChar.getLevel() != store_level)
-		{
-			store_level = playerChar.getLevel();
-			for(int i = 0; i < STORE_SIZE; i++)
-				{
-				// need to place the parameters for how each item could be created
-				item_array[i] = new Item(name = "", id = null, type = (i % 9), upgradeCount = 0, strength = 0, agility = 0, magic = 0 );
-				}
-		}*/
-		
-		
-		// if item bought, add to inventory
-		
-
 		
         // have store level as well as the items be static so that it is the same each time the player comes back to the 
         // store unless the player has increased in level
@@ -628,7 +581,6 @@ public class GameInstance {
             }
             return stateEnum.STORE;
         }
-
 
     }
 
@@ -885,101 +837,6 @@ public class GameInstance {
      ***************************************************/
     stateEnum unregisteredCharacterCreationState(PrintWriter out, HttpServletRequest request) {
 
-        String StartPage = "<html>\n" +
-"	<head>\n" +
-"	<!-- Call normalize.css -->\n" +
-"	<link rel=\"stylesheet\" href=\"./css/normalize.css\" type=\"text/css\" media=\"screen\">\n" +
-"	<!-- Import Font to be used in titles and buttons -->\n" +
-"	<link href='http://fonts.googleapis.com/css?family=Sanchez' rel='stylesheet' type='text/css'>\n" +
-"	<link href='http://fonts.googleapis.com/css?family=Prosto+One' rel='stylesheet' type='text/css'>\n" +
-"	<!-- Call style.css -->\n" +
-"	<link rel=\"stylesheet\" href=\"../css/grid.css\" type=\"text/css\" media=\"screen\">\n" +
-"	<!-- Call style.css -->\n" +
-"	<link rel=\"stylesheet\" href=\"../css/style.css\" type=\"text/css\" media=\"screen\">\n" +
-"	<title> Tarsus </title>\n" +
-"	</head>\n" +
-"       <script>\n" +
-"		function validateForm()\n" +
-"		{\n" +
-"		\n" +
-"               var maxValue = %f \n" +
-"			var strength = parseInt(document.forms[\"createCharacterForm\"][\"strength\"].value); \n" +
-"			var agility = parseInt(document.forms[\"createCharacterForm\"][\"agility\"].value);\n" +
-"			var magic = parseInt(document.forms[\"createCharacterForm\"][\"magic\"].value);\n" +
-"			var total = strength + agility + magic;\n" +
-"			alert(\"Total Experience points used: \" + total);\n" +
-"			if(total > maxValue)\n" +
-"			{\n" +
-"				alert(\"Cannot use more than\" + maxValue + \" experience points.\");\n" +
-"				return false;\n" +
-"			}\n" +
-"		\n" +
-"		}\n" +
-"       </script>" + 
-"	<body>\n" +
-"		<div id=\"header\" class=\"grid10\" align=\"right\">\n" +
-"			<a href=\"profile.html\" id=\"tarsusTitle\"> Unregistered User Character Creation </a> \n" +
-"			<a class=\"button\" href=\"../index.html\"> Log Out </a> </div>\n" +
-"		<div class=\"grid1\"> </div>\n" +
-"		<div class=\"grid8 centered\">\n" +
-"		<h1 id=\"title\" class=\"centered\">Character Creation</h1>\n" +
-"		\n" +
-"		<div class=\"grid2\"> </div>\n" +
-"		<form name=\"createCharacterForm\" action=\"Tarsus\" onsubmit=\"return validateForm()\" method=\"post\">\n" +
-"               <input type = \"hidden\" name = \"level\"> value=\"%f\"/>\n"+
-"		<div class=\"grid6\" align=\"center\">\n" +
-"			<h3> Level %f </h3>\n" +
-"			<p> Experience Points to Allocate: %f\n" +
-"			</p>\n" +
-"			<p> \n" +
-"				Name: <input type=\"text\" name=\"name\"/>\n" +
-"			</p>\n" +
-"			<p> \n" +
-"				Strength: <input type=\"number\" name=\"name\"min=\"0\" max=\"100\" value=\"0\"/>\n" +
-"			</p> \n" +
-"			<p> \n" +
-"				Agility: <input type=\"number\" name=\"agility\"min=\"0\" max=\"100\" value=\"0\"/>\n" +
-"			</p>  \n" +
-"			<p> \n" +
-"				Magic: <input type=\"number\" name=\"magic\" min=\"0\" max=\"100\" value=\"0\"/>\n" +
-"			</p>   \n" +
-"			<p>\n" +
-"				Biography:<textarea name=\"bio\" cols=\"35\" rows=\"3\" maxlength=\"300\"> </textarea> <br /> <a id=\"bioLimitID\">  (Max of 300 Chars)</a>\n" +
-"			</p>\n" +
-"		</div>\n" +
-"		<div class=\"grid10\" align=\"center\">\n" +
-"			<a href=\"continuechar.html\" class=frontPageButton>Create Character</a>\n" +
-"		</div>\n" +
-"		</form>\n" +
-"		</div>\n" +
-"		<div class=\"grid1\"> </div>\n" +
-"	</body>\n" +
-"	\n" +
-"</html>";
-        if(startingState != stateEnum.UNREGISTERED_CHARACTER_CREATION)
-        {
-            //create new page for it
-
-            //int level = (int)(Math.random()*50);
-            Integer level = (int)(Math.random()*50);
-            out.printf(StartPage, level, level*constantPtsPerLevel, level*constantPtsPerLevel, level);
-
-            
-            int numItemChoices = 5;
-            Item tempItem;
-            String submitValue;     
-            out.printf(StartPage);
-            out.println(((Integer)(level*constantPtsPerLevel)).toString());
-            out.printf(secondPart);
-            out.printf(level.toString());
-            out.printf(thirdPart);
-            out.printf(level.toString());
-            out.printf(fourthPart);
-            out.printf(((Integer)(level*constantPtsPerLevel)).toString());
-            out.printf(fifthPart);
-            out.printf("<input type=\"hidden\" name=\"level\" value=\"%d\" />\n",level);
-
-
     if((startingState != stateEnum.UNREGISTERED_CHARACTER_CREATION)|(error!=null))
     {
         //create new page for it
@@ -998,72 +855,9 @@ public class GameInstance {
             {
                 return stateEnum.INIT;
             }
-            out.println("</table>");
-            out.println(lastPart);
-            
-            return stateEnum.UNREGISTERED_CHARACTER_CREATION;
-
         }
         catch(Exception e)
         {
-           if(request.getParameter("Home").equals("Home"))
-           {
-               return stateEnum.BATTLE; //debug
-           }
-
-           String name = (String) request.getParameter("name");
-           Integer level = Integer.parseInt(request.getParameter("level"));
-           String bio = request.getParameter("bio");
-           int health = Integer.parseInt(request.getParameter("health"));
-           int strength = Integer.parseInt(request.getParameter("strength"));
-           int agility = Integer.parseInt(request.getParameter("agility"));
-           int magic = Integer.parseInt(request.getParameter("magic"));
-      
-           if(isValidString(name) & isValidString(bio))
-           {
-               //newCharacter(name, level,bio, health, strength, agility, magic);
-                return stateEnum.INIT;
-           }
-           else
-           {
-                level = (int)(Math.random()*50);
-                int numItemChoices = 5;
-                Item tempItem;
-                String submitValue;
-
-                out.printf(StartPage);
-                out.println(((Integer)(level*constantPtsPerLevel)).toString());
-                out.printf(secondPart);
-                out.printf(level.toString());
-                out.printf(thirdPart);
-                out.printf(level.toString());
-                out.printf(fourthPart);
-                out.printf(((Integer)(level*constantPtsPerLevel)).toString());
-                out.printf(fifthPart);
-                out.printf("<input type=\"hidden\" name=\"level\" value=\"%d\" />\n",level);
-
-                out.println("<table><tr><h2>Weapons</h2></tr><tr><th>Strength</th><th>Agility</th><th>Magic</th><th>select</th><tr>");
-                for(int i=0; i<numItemChoices; i++)
-                {
-                    tempItem = generateWeapon(level);
-                    submitValue = tempItem.getName()+"="+((Integer)tempItem.itemId).toString()+"+"+((Integer)tempItem.getStrength()).toString()+"-"+((Integer)tempItem.getAgility()).toString()+"*"+((Integer)tempItem.getMagic()).toString()+"_"+((Integer)tempItem.getType()).toString();
-                    out.printf("<tr><td>%d</td><td>%d</td><td>%d</td><td><input type=\"radio\" name=\"weapon\" value=\"%s\"></td></tr>\n",tempItem.getStrength(), tempItem.getAgility(), tempItem.getMagic(), submitValue);
-                }
-                out.println("</table>");
-
-                out.println("<table><tr><h2>Armor</h2></tr><tr><th>Strength</th><th>Agility</th><th>Magic</th><th>select</th><tr>");
-                for(int i=0; i<numItemChoices; i++)
-                {
-                    tempItem = generateArmor(level);
-                    submitValue = tempItem.getName()+"="+((Integer)tempItem.itemId).toString()+"+"+((Integer)tempItem.getStrength()).toString()+"-"+((Integer)tempItem.getAgility()).toString()+"*"+((Integer)tempItem.getMagic()).toString()+"_"+((Integer)tempItem.getType()).toString();
-                    out.printf("<tr><td>%d</td><td>%d</td><td>%d</td><td><input type=\"radio\" name=\"armor\" value=\"%s\"></td></tr>\n",tempItem.getStrength(), tempItem.getAgility(), tempItem.getMagic(), submitValue);
-                }
-                out.println("</table>");
-                out.println(lastPart);
-                out.println("<script>alert(\"Invalid name or bio\");</script>");
-                return stateEnum.UNREGISTERED_CHARACTER_CREATION;
-           }
-
             return charCreationParameters(out, request, true);
         }
         return charCreationParameters(out, request, true);
@@ -1165,8 +959,6 @@ public class GameInstance {
      * @return the next state
      ***************************************************/
     stateEnum blackSmithState(PrintWriter out, HttpServletRequest request) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-
         if(startingState != stateEnum.BLACKSMITH)
         {
             printBlacksmithState(out);
@@ -1373,7 +1165,6 @@ public class GameInstance {
                     + "WHERE username = \"" + username + "\";";
             
             Boolean alreadyExists = false;
-            connectDB();
             try{
                 connectDB();
                 ResultSet result = sqlQuery(findUsername, out);
@@ -1410,29 +1201,18 @@ public class GameInstance {
                     + password +"'), gold=0);";
             
             try{
-
                 connectDB();
-
-                connectDB();
-
             if(sqlCommand(command, out))
             {                
                 DBUtilities.closeStatement(stat);
                 disconnectDB();
                 return stateEnum.LOGIN;
              
-                if(sqlCommand(command, out))
-                {
-
-                    DBUtilities.closeStatement(stat);
-                    disconnectDB();
-                    return stateEnum.LOGIN;
-
-                } 
-
-                else{
-                    out.println(accountPageBegin +"<h1> ERROR! </h1>"+ accountPageEnd);
-                    return stateEnum.ACCOUNT_CREATION;
+            } 
+            
+            else{
+                out.println(accountPageBegin +"<h1> ERROR! </h1>"+ accountPageEnd);
+                return stateEnum.ACCOUNT_CREATION;
                         
             } 
             }catch(Exception ex)
@@ -1579,13 +1359,6 @@ public class GameInstance {
         return toBeReturned;
     }
     
-    
-    
-	String maxValueScript(int value)
-	{
-	return ("<script> var maxValue=" + Integer.toString(value) +";</script>");
-	}
-        
     String maxValueScript(int value)
     {
         return ("<script> var maxValue=" + Integer.toString(value) +";</script>");
@@ -2146,5 +1919,4 @@ public class GameInstance {
             return stateEnum.REGISTERED_CHARACTER_CREATION;
         }
     }
->>>>>>> master
 }

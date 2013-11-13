@@ -20,7 +20,6 @@ class Item {
         this.magic = magic;
         this.health = health;
     }
-
     
     Item(String input)
     {
