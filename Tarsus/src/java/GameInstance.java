@@ -232,7 +232,7 @@ public class GameInstance {
 						
 			//general type index that decides one of the three
                         // item types. // not including error
-			int gi = (int)(Math.round(Math.random() * (3)) + 1);
+			int gi = (int)(Math.round(Math.random() * (2)) + 1);
 			
 			storeItems[i] = generateItem(gi, STORE_LEVEL);
 		}
@@ -438,6 +438,13 @@ public class GameInstance {
         connectDB();
         String query = "Insert into Items (itemId, name, type, strengthVal, healthVal, upgradeCount, magicVal, agilityVal) VALUES ('"+((Integer)item.getItemId()).toString()+"', '"+item.getName()+"', '"+((Integer)item.getType()).toString()+"', '"+((Integer)item.getStrength()).toString()+"', '"+((Integer)item.getHeal()).toString()+"', '"+((Integer)item.getUpgradeCount()).toString()+"', '"+((Integer)item.getMagic()).toString()+"', '"+((Integer)item.getAgility()).toString()+"');";
         return sqlCommand(query,out);
+    }
+    Boolean deleteItem(Item item, PrintWriter out) throws SQLException
+    {
+        String query = "DELETE FROM CharacterHasItem WHERE itemID=";
+        query += "/'" + item.getItemId() + "/'";
+        query += ";";
+        return sqlCommand(query, out);
     }
     
     int nextItemId(PrintWriter out) throws SQLException
@@ -1609,7 +1616,9 @@ public class GameInstance {
                 out.println("</tr>");
 			}
 	out.println(sellPart);
+        out.println("player items held length: " + playerChar.itemsHeld.length);
 	for (int i = 0; i < playerChar.itemsHeld.length; i++){
+                out.println(" loop level: " + i);
                 out.println("<td> <input type=\"submit\" value=\"Sell for " + (int)(0.60 * storeItems[i].getValue()) + "\" name=\"Sell " + i + "\" class=\"tableButton\"> </td>");
                 out.println("<td>");
                 out.println(playerChar.itemsHeld[i].getName());
