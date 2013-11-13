@@ -19,19 +19,13 @@ public class GameInstance {
     DBConnections dataSource = null;
     Connection conn = null;
     Statement stat = null;
-<<<<<<< HEAD
-=======
+
     final int STORE_SIZE = 20;    
     int gold;
     String error;
     int storeLevel;
     Item[] storeItems;
->>>>>>> master
-
-    
     int constantPtsPerLevel = 5;
-<<<<<<< HEAD
-=======
     int constantWeaponPtsPerLevel = 3;
     int constantArmorPtsPerLevel = 5;
     int constantGoldPerLevel = 20;
@@ -42,29 +36,21 @@ public class GameInstance {
     int constantHealthBase = 200;
 
     
->>>>>>> master
     
     GameInstance()
     {
         playerChar = null;
         aresChar = null;
         currentState = stateEnum.INIT;
-<<<<<<< HEAD
         accountName = null;
-=======
         accountName = "Unregistered User";
-<<<<<<< HEAD
+
         int gold = 0;
-<<<<<<< HEAD
->>>>>>> master
-=======
-=======
+
         gold = 0;
         error = null;
->>>>>>> master
         int storeLevel = 0;
         Item[] storeItems = new Item[STORE_SIZE];
->>>>>>> master
     }
     
     /****************************************************
@@ -95,10 +81,7 @@ public class GameInstance {
         
         ResultSet result = null;
         try{
-<<<<<<< HEAD
-            
-=======
->>>>>>> master
+
              stat = conn.createStatement();
              result = stat.executeQuery(query);
         }catch(Exception ex){
@@ -245,9 +228,7 @@ public class GameInstance {
      ***************************************************/
     Item[] getStoreInventory(int level, int size)
     {
-<<<<<<< HEAD
         throw new UnsupportedOperationException("Not supported yet.");
-=======
         final int STORE_LEVEL = level;
 	final int STORE_SIZE = size;
 	Item[] storeItems = new Item[STORE_SIZE];
@@ -394,7 +375,6 @@ public class GameInstance {
     Item generateWeapon(int level)
     {
         return generateItem(1,level);
->>>>>>> master
     }
     
     /****************************************************
@@ -528,7 +508,7 @@ public class GameInstance {
         }
         else
         {
-<<<<<<< HEAD
+
             String value = request.getParameter("Sign Up");
             
             //state changes
@@ -543,7 +523,7 @@ public class GameInstance {
              
                 
             
-=======
+
             String value1 = request.getParameter("Sign Up");
             String value2 = request.getParameter("Log in");
             String value3 = request.getParameter("Create a Character");
@@ -562,7 +542,7 @@ public class GameInstance {
                 return stateEnum.UNREGISTERED_CHARACTER_CREATION;
             if(value.equals("Sign Up"))
                 return stateEnum.ACCOUNT_CREATION; 
->>>>>>> master
+
         }
        return stateEnum.INIT;
         
@@ -575,7 +555,7 @@ public class GameInstance {
      * @return the next state
      ***************************************************/
     private stateEnum storeState(PrintWriter out, HttpServletRequest request) {
-<<<<<<< HEAD
+
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 		/*
 		// have store level as well as the items be static so that it is the same each time the player comes back to the 
@@ -598,8 +578,8 @@ public class GameInstance {
 		
 		
 		// if item bought, add to inventory
-		*/
-=======
+		
+
 		
         // have store level as well as the items be static so that it is the same each time the player comes back to the 
         // store unless the player has increased in level
@@ -648,7 +628,7 @@ public class GameInstance {
             return stateEnum.STORE;
         }
 
->>>>>>> master
+
     }
 
     /****************************************************
@@ -903,7 +883,7 @@ public class GameInstance {
      * @return the next state
      ***************************************************/
     stateEnum unregisteredCharacterCreationState(PrintWriter out, HttpServletRequest request) {
-<<<<<<< HEAD
+
         String StartPage = "<html>\n" +
 "	<head>\n" +
 "	<!-- Call normalize.css -->\n" +
@@ -978,11 +958,11 @@ public class GameInstance {
         if(startingState != stateEnum.UNREGISTERED_CHARACTER_CREATION)
         {
             //create new page for it
-<<<<<<< HEAD
+
             int level = (int)(Math.random()*50);
             
             out.printf(StartPage, level, level*constantPtsPerLevel, level*constantPtsPerLevel, level);
-=======
+
             Integer level = (int)(Math.random()*50);
             int numItemChoices = 5;
             Item tempItem;
@@ -997,8 +977,7 @@ public class GameInstance {
             out.printf(((Integer)(level*constantPtsPerLevel)).toString());
             out.printf(fifthPart);
             out.printf("<input type=\"hidden\" name=\"level\" value=\"%d\" />\n",level);
-=======
->>>>>>> master
+
 
     if((startingState != stateEnum.UNREGISTERED_CHARACTER_CREATION)|(error!=null))
     {
@@ -1018,26 +997,19 @@ public class GameInstance {
             {
                 return stateEnum.INIT;
             }
-<<<<<<< HEAD
             out.println("</table>");
             out.println(lastPart);
->>>>>>> master
             
             return stateEnum.UNREGISTERED_CHARACTER_CREATION;
-=======
->>>>>>> master
+
         }
         catch(Exception e)
         {
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
            if(request.getParameter("Home").equals("Home"))
            {
                return stateEnum.BATTLE; //debug
            }
 
->>>>>>> master
            String name = (String) request.getParameter("name");
            Integer level = Integer.parseInt(request.getParameter("level"));
            String bio = request.getParameter("bio");
@@ -1090,9 +1062,8 @@ public class GameInstance {
                 out.println("<script>alert(\"Invalid name or bio\");</script>");
                 return stateEnum.UNREGISTERED_CHARACTER_CREATION;
            }
-=======
+
             return charCreationParameters(out, request, true);
->>>>>>> master
         }
         return charCreationParameters(out, request, true);
     }
@@ -1193,9 +1164,8 @@ public class GameInstance {
      * @return the next state
      ***************************************************/
     stateEnum blackSmithState(PrintWriter out, HttpServletRequest request) {
-<<<<<<< HEAD
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-=======
+
         if(startingState != stateEnum.BLACKSMITH)
         {
             printBlacksmithState(out);
@@ -1246,7 +1216,6 @@ public class GameInstance {
                 return stateEnum.BLACKSMITH;
             }
         }
->>>>>>> master
     }
 
     /****************************************************
@@ -1405,11 +1374,7 @@ public class GameInstance {
             Boolean alreadyExists = false;
             connectDB();
             try{
-<<<<<<< HEAD
-                
-=======
                 connectDB();
->>>>>>> master
                 ResultSet result = sqlQuery(findUsername, out);
                 if(result.isBeforeFirst()){
                     alreadyExists= true;
@@ -1444,19 +1409,16 @@ public class GameInstance {
                     + password +"'), gold=0);";
             
             try{
-<<<<<<< HEAD
-<<<<<<< HEAD
+
                 connectDB();
-=======
-=======
+
                 connectDB();
->>>>>>> master
+
             if(sqlCommand(command, out))
             {                
                 DBUtilities.closeStatement(stat);
                 disconnectDB();
                 return stateEnum.LOGIN;
->>>>>>> master
              
                 if(sqlCommand(command, out))
                 {
@@ -1616,13 +1578,13 @@ public class GameInstance {
         return toBeReturned;
     }
     
-<<<<<<< HEAD
+    
+    
 	String maxValueScript(int value)
 	{
 	return ("<script> var maxValue=" + Integer.toString(value) +";</script>");
 	}
-	
-=======
+        
     String maxValueScript(int value)
     {
         return ("<script> var maxValue=" + Integer.toString(value) +";</script>");
