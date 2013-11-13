@@ -141,7 +141,6 @@ public class GameInstance {
 
                 case REGISTERED_CHARACTER_CREATION:
                     //character creation
-                    out.println("Reg Char Creation");
                     nextState = registeredCharacterCreationState(out, request);
                     break;
 
@@ -806,7 +805,7 @@ public class GameInstance {
      if(startingState != stateEnum.REGISTERED_CHARACTER_CREATION)
         {
             //create new page for it
-            Integer level = (int)(Math.random()*49+1);
+            Integer level = 1;
             printCharacterCreation(level, out);   
             return stateEnum.REGISTERED_CHARACTER_CREATION;
         }
@@ -940,7 +939,7 @@ public class GameInstance {
                 value = value5;
             
             if(value.equals(accountName))
-                printProfileState(out);
+                return stateEnum.PROFILE;
             if(value.equals("Log out"))
                 return stateEnum.LOGOUT;
             if(value.equals("To Battle!"))
@@ -1752,7 +1751,7 @@ public class GameInstance {
 "                {\n" +
 "                \n" +
 "               var maxValue = ";
-        String secondPart = " \n" +
+        String secondPart = "; \n" +
 "                        var strength = parseInt(document.forms[\"createCharacterForm\"][\"strength\"].value); \n" +
 "                        var agility = parseInt(document.forms[\"createCharacterForm\"][\"agility\"].value);\n" +
 "                        var magic = parseInt(document.forms[\"createCharacterForm\"][\"magic\"].value);\n" +
