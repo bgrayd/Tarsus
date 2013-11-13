@@ -228,7 +228,7 @@ public class GameInstance {
      ***************************************************/
     Item[] getStoreInventory(int level, int size)
     {
-        throw new UnsupportedOperationException("Not supported yet.");
+        //throw new UnsupportedOperationException("Not supported yet.");
         final int STORE_LEVEL = level;
 	final int STORE_SIZE = size;
 	Item[] storeItems = new Item[STORE_SIZE];
@@ -528,7 +528,7 @@ public class GameInstance {
             String value2 = request.getParameter("Log in");
             String value3 = request.getParameter("Create a Character");
 
-            String value = "";
+            value = "";
             if(value1 != null)
                 value = value1;
             if(value2!=null)
@@ -556,7 +556,7 @@ public class GameInstance {
      ***************************************************/
     private stateEnum storeState(PrintWriter out, HttpServletRequest request) {
 
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 		/*
 		// have store level as well as the items be static so that it is the same each time the player comes back to the 
 		// store unless the player has increased in level
@@ -959,11 +959,11 @@ public class GameInstance {
         {
             //create new page for it
 
-            int level = (int)(Math.random()*50);
-            
+            //int level = (int)(Math.random()*50);
+            Integer level = (int)(Math.random()*50);
             out.printf(StartPage, level, level*constantPtsPerLevel, level*constantPtsPerLevel, level);
 
-            Integer level = (int)(Math.random()*50);
+            
             int numItemChoices = 5;
             Item tempItem;
             String submitValue;     
