@@ -481,7 +481,7 @@ public class GameInstance {
 "            <form action=\"Tarsus\" method=\"post\">\n" +
 "		<div id=\"header\" class=\"grid10\" align=\"right\">\n" +
 "			<input href=\"index.html\" id=\"tarsusTitle\" /> \n" +
-"			<input class=\"button\" type=\"submit\" value=\"Log in\" name=\"Log in\" /> </div>\n" +
+"			<input class=\"button\" type=\"submit\" value=\"Log In\" name=\"Log In\" /> </div>\n" +
 
 "		<div class=\"grid1\"> </div>\n" +
 "		<div class=\"grid8 centered\">\n" +
@@ -504,7 +504,7 @@ public class GameInstance {
         else
         {
             String value1 = request.getParameter("Sign Up");
-            String value2 = request.getParameter("Log in");
+            String value2 = request.getParameter("Log In");
             String value3 = request.getParameter("Create a Character");
 
             String value = "";
@@ -515,7 +515,7 @@ public class GameInstance {
             if(value3!=null)
                 value = value3;
           
-            if(value.equals("Log in"))
+            if(value.equals("Log In"))
                 return stateEnum.LOGIN;
             if(value.equals("Create a Character"))
                 return stateEnum.UNREGISTERED_CHARACTER_CREATION;
