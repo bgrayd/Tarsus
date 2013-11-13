@@ -454,6 +454,12 @@ public class GameInstance {
         return max+1;
     }
     
+    Boolean characterHasItem(Item item, PrintWriter out)
+    {
+        String query = "INSERT into CharacterHasItem (itemId, charName) VALUES ('"+item.getItemId()+"',"+playerChar.getName()+");";
+        return sqlCommand(query, out);
+    }
+    
     /****************************************************
      * The initial state
      * @param out the print writer
@@ -1878,6 +1884,8 @@ public class GameInstance {
                PlayerCharacter chrct = new PlayerCharacter(name,bio, level, health, strength, agility, magic, items,items[0],items[1],0,0,0,0);
 
                newCharacter(chrct,isUnReg, out);
+               characterHasItem(items[0], out);
+               characterHasItem(items[1], out);
                /*
                out.println(name);
                out.printf("level: %d\n",level);
