@@ -18,6 +18,7 @@ public abstract class Character {
         this.name = name;
         this.bio = bio;
         this.level = level; //should be 1 for logged in uers
+        this.maxHealth = health;
         this.health = health;
         this.strength = strength;
         this.agility = agility;
@@ -76,6 +77,16 @@ public abstract class Character {
         {
             //do nothing
         }
+    }
+    
+    String getName()
+    {
+        return name;
+    }
+    
+    String getBio()
+    {
+        return bio;
     }
     
     void setLevel(int level)

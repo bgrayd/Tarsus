@@ -11,6 +11,9 @@ public enum stateEnum {
     IDLING,
     DECISION,
     LOGIN,
-    ACCOUNT_CREATION
-    
+    ACCOUNT_CREATION,
+    LEVEL_UP,
+    PROFILE,
+    PAST_CHARACTERS,
+    LOGOUT
 }
