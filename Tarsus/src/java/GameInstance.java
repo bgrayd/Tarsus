@@ -141,7 +141,6 @@ public class GameInstance {
 
                 case REGISTERED_CHARACTER_CREATION:
                     //character creation
-                    out.println("Reg Char Creation");
                     nextState = registeredCharacterCreationState(out, request);
                     break;
 
@@ -805,7 +804,7 @@ public class GameInstance {
      if(startingState != stateEnum.REGISTERED_CHARACTER_CREATION)
         {
             //create new page for it
-            Integer level = (int)(Math.random()*49+1);
+            Integer level = 1;
             printCharacterCreation(level, out);   
             return stateEnum.REGISTERED_CHARACTER_CREATION;
         }
