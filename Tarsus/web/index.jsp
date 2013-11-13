@@ -22,7 +22,7 @@
                 <input type="hidden" name="RESET" value="RESET" />
 		<div id="header" class="grid10" align="right">
 			<input href="index.html" id="tarsusTitle" /> 
-			<input class="button" type="submit" value="Log in" name="Log in" /> </div>
+			<input class="button" type="submit" value="Log In" name="Log In" /> </div>
 		<div class="grid1"> </div>
 		<div class="grid8 centered">
 		<h1 id="title" class="centered">Welcome</h1>
