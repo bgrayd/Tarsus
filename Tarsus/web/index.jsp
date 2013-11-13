@@ -19,7 +19,6 @@
 	</head>
 	<body>
             <form action="Tarsus" method="post">
-                <input type="hidden" name="RESET" value="RESET" />
 		<div id="header" class="grid10" align="right">
 			<input href="index.html" id="tarsusTitle" /> 
 			<input class="button" type="submit" value="Log in" name="Log in" /> </div>

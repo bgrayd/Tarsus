@@ -245,9 +245,8 @@ public class GameInstance {
 		final String[] armor_name_type = {"Plate Armor", "Leather Armor", "Robe", "Mail Armor", "Magic-Strength Armor stuff", "Magic-Agility Armor stuff", "Armor"};
 		final String[] weapon_name_type = {"Sword", "Axe", "Mace", "Bow", "Crossbow", "Throwing Knives", "Staff", "Wand", "Orb"}; // Could have room for permutations
 		final String[] item_name_type = {"potion"};
-                final String[] error_name_type = {"error"};
 		final String[] item_name_quality_description = {"Broken", "Inferior", "Common", "Slightly Better", "Ancient", "Legendary", "Actually Broken"};
-		final String[][] general_item_type = {error_name_type, weapon_name_type, armor_name_type, item_name_type};
+		final String[][] general_item_type = {armor_name_type, weapon_name_type, item_name_type};
 		//final String[] item_name_Modifier_description = ["Warrior", "Hunter", "Wizard", "Bandit", "BattleMage", "Magic-Range Thing whatever", "Balance"] // permutation for each thing
 		
 		double base_stats[] = {0, 0, 0, 0};
@@ -481,7 +480,7 @@ public class GameInstance {
 "	<body>\n" +
 "            <form action=\"Tarsus\" method=\"post\">\n" +
 "		<div id=\"header\" class=\"grid10\" align=\"right\">\n" +
-"			<input href=\"index.jsp\" id=\"tarsusTitle\" /> \n" +
+"			<input href=\"index.html\" id=\"tarsusTitle\" /> \n" +
 "			<input class=\"button\" type=\"submit\" value=\"Log In\" name=\"Log In\" /> </div>\n" +
 
 "		<div class=\"grid1\"> </div>\n" +
