@@ -141,6 +141,7 @@ public class GameInstance {
 
                 case REGISTERED_CHARACTER_CREATION:
                     //character creation
+                    out.println("Reg Char Creation");
                     nextState = registeredCharacterCreationState(out, request);
                     break;
 
@@ -1232,7 +1233,7 @@ public class GameInstance {
         {
             String value1 = request.getParameter(accountName);
             String value2 = request.getParameter("Log out");
-            String value3 = request.getParameter("Create a Character");
+            String value3 = request.getParameter("Create Character");
             String value4 = request.getParameter("Load Character");
             String value5 = request.getParameter("Look at Past Characters");
             
@@ -1252,7 +1253,7 @@ public class GameInstance {
                 printProfileState(out);
             if(value.equals("Log out"))
                 return stateEnum.LOGOUT;
-            if(value.equals("Create a Character"))
+            if(value.equals("Create Character"))
                 return stateEnum.REGISTERED_CHARACTER_CREATION;
             if(value.equals("Load Character"))
             {
