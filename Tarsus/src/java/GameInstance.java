@@ -1336,7 +1336,14 @@ public class GameInstance {
     }
     
     stateEnum LogoutState(PrintWriter out, HttpServletRequest request) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        playerChar = null;
+        aresChar = null;
+        accountName = "Unregistered User";
+        gold = 0;
+        error = null;
+        //accountName = null;
+        return stateEnum.INIT;
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
     /****************************************************
