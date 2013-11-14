@@ -489,7 +489,7 @@ public class GameInstance {
 "            <form action=\"Tarsus\" method=\"post\">\n" +
 "		<div id=\"header\" class=\"grid10\" align=\"right\">\n" +
 "			<input href=\"index.html\" id=\"tarsusTitle\" /> \n" +
-"			<input class=\"button\" type=\"submit\" value=\"Log in\" name=\"Log in\" /> </div>\n" +
+"			<input class=\"button\" type=\"submit\" value=\"Log In\" name=\"Log In\" /> </div>\n" +
 
 "		<div class=\"grid1\"> </div>\n" +
 "		<div class=\"grid8 centered\">\n" +
@@ -512,7 +512,7 @@ public class GameInstance {
         else
         {
             String value1 = request.getParameter("Sign Up");
-            String value2 = request.getParameter("Log in");
+            String value2 = request.getParameter("Log In");
             String value3 = request.getParameter("Create a Character");
 
             String value = "";
@@ -523,7 +523,7 @@ public class GameInstance {
             if(value3!=null)
                 value = value3;
           
-            if(value.equals("Log in"))
+            if(value.equals("Log In"))
                 return stateEnum.LOGIN;
             if(value.equals("Create a Character"))
                 return stateEnum.UNREGISTERED_CHARACTER_CREATION;
@@ -917,7 +917,7 @@ public class GameInstance {
                         "	    <form action=\"Tarsus\" method=\"POST\">\n" +
                         "		<div id=\"header\" class=\"grid10\" align=\"right\">\n" +
                         "			<input name=\"" + accountName + "\" value=\"" + accountName + "\" type=\"submit\" id=\"tarsusTitle\" /> \n" +
-                        "			<input class=\"button\" name=\"Log out\" value=\"Log out\" type=\"submit\" /> </div>\n" +
+                        "			<input class=\"button\" name=\"Log Out\" value=\"Log Out\" type=\"submit\" /> </div>\n" +
                         "		<div class=\"grid1\"> </div>\n" +
                         "		<div class=\"grid8 centered\">\n" +
                         "			<h1 id=\"title\" class=\"centered\">" + playerChar.getName() + "</h1>\n" +
@@ -936,7 +936,7 @@ public class GameInstance {
         else
         {
             String value1 = request.getParameter(accountName);
-            String value2 = request.getParameter("Log out");
+            String value2 = request.getParameter("Log Out");
             String value3 = request.getParameter("To Battle!");
             String value4 = request.getParameter("Store");
             String value5 = request.getParameter("Blacksmith");
@@ -955,7 +955,7 @@ public class GameInstance {
             
             if(value.equals(accountName))
                 return stateEnum.PROFILE;
-            if(value.equals("Log out"))
+            if(value.equals("Log Out"))
                 return stateEnum.LOGOUT;
             if(value.equals("To Battle!"))
                 return stateEnum.BATTLE;
@@ -1048,7 +1048,9 @@ public class GameInstance {
             "	<title> Tarsus </title>\n" +
             "	</head>\n" +
             "	<div id=\"header\" class=\"grid10\" align=\"right\"> \n" +
-            "		<a href=\"index.jsp\" id=\"tarsusTitle\"> TARSUS </a> </div>\n" +
+            "       <form method=\"post\" action=\"Tarsus\"> \n" +
+            "		<input type=\"submit\" name=\"home\" value=\"TARSUS\" id=\"tarsusTitle\">  \n" +
+            "       </form> </div>" +
             "	<div class=\"grid1\"> </div>\n" +
             "	<div class=\"grid8 centered\">\n" +
             "		<h1 id=\"title\" class=\"centered\"> Log In</h1>\n" +
@@ -1067,6 +1069,13 @@ public class GameInstance {
             "</html>");
                     
         }else{
+            String value1 = request.getParameter("home");
+
+            String value = "";
+            if(value1 != null)
+                value = value1;
+            if(value.equals("TARSUS"))
+                return stateEnum.INIT;
             String username = request.getParameter("username");
             int password = request.getParameter("password").hashCode();
             if(!isValidString(username)){
@@ -1144,8 +1153,10 @@ public class GameInstance {
             "	<title> Tarsus </title>\n" +
             "	</head>\n" +
             "	<div id=\"header\" class=\"grid10\" align=\"right\"> \n" +
-            "		<a href=\"index.jsp\" id=\"tarsusTitle\"> TARSUS </a> \n" +
-            "		<a class=\"button\" href=\"login.html\"> Log In </a> </div>\n" +
+            "       <form method=\"post\" action=\"Tarsus\"> \n" +
+            "		<input type=\"submit\" name=\"home\" value=\"TARSUS\" id=\"tarsusTitle\">  \n" +
+            "		<input type=\"submit\" name=\"login\" value=\"Log In\" class=\"button\" href=\"login.html\"> \n" +
+            "       </form> </div>" +
             "	<div class=\"grid1\"> </div>\n" +
             "	<div class=\"grid8 centered\">\n" +
             "		<h1 id=\"title\" class=\"centered\"> Sign Up Below</h1>\n";
@@ -1174,6 +1185,19 @@ public class GameInstance {
             return stateEnum.ACCOUNT_CREATION;
         }
         else{
+            String value1 = request.getParameter("home");
+            String value2 = request.getParameter("login");
+
+            String value = "";
+            if(value1 != null)
+                value = value1;
+            if(value2!=null)
+                value = value2;
+          
+            if(value.equals("Log In"))
+                return stateEnum.LOGIN;
+            if(value.equals("TARSUS"))
+                return stateEnum.INIT;
             
             String username = request.getParameter("username");
             String findUsername = "SELECT username FROM Login "
@@ -1246,7 +1270,7 @@ public class GameInstance {
         else
         {
             String value1 = request.getParameter(accountName);
-            String value2 = request.getParameter("Log out");
+            String value2 = request.getParameter("Log Out");
             String value3 = request.getParameter("Create Character");
             String value4 = request.getParameter("Load Character");
             String value5 = request.getParameter("Look at Past Characters");
@@ -1265,7 +1289,7 @@ public class GameInstance {
             
             if(value.equals(accountName))
                 printProfileState(out);
-            if(value.equals("Log out"))
+            if(value.equals("Log Out"))
                 return stateEnum.LOGOUT;
             if(value.equals("Create Character"))
                 return stateEnum.REGISTERED_CHARACTER_CREATION;
@@ -1352,7 +1376,14 @@ public class GameInstance {
     }
     
     stateEnum LogoutState(PrintWriter out, HttpServletRequest request) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        playerChar = null;
+        aresChar = null;
+        accountName = "Unregistered User";
+        gold = 0;
+        error = null;
+        //accountName = null;
+        return stateEnum.INIT;
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
     /****************************************************
@@ -1502,7 +1533,7 @@ public class GameInstance {
             "   <form action=\"Tarsus\" method=\"post\">" + 
             "		<div id=\"header\" class=\"grid10\" align=\"right\">\n" +
             "			<input name=\"" + accountName + "\" value=\"" + accountName + "\" id=\"tarsusTitle\" type=\"submit\" /> \n" +
-            "			<input class=\"button\" name=\"Log out\" value=\"Log out\" type=\"submit\" /> </div>\n" +
+            "			<input class=\"button\" name=\"Log Out\" value=\"Log Out\" type=\"submit\" /> </div>\n" +
             "		<div class=\"grid2\"> </div>\n" +
             "		<div class=\"grid6 centered\">\n" +
             "			<h1 id=\"title\" class=\"centered\">TARSUS</h1> <br />\n" +
