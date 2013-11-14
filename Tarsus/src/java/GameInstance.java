@@ -1344,7 +1344,7 @@ public class GameInstance {
                 else
                 {
                     out.println("No Valid Character");
-                    printProfileState(out);
+                    printProfileStateNewChar(out);
                     return stateEnum.PROFILE;
                 }
             }
@@ -1500,6 +1500,24 @@ public class GameInstance {
 
     void printProfileState(PrintWriter out)
     {
+        try{
+        String search1 = "SELECT * FROM Characters WHERE creator='" + accountName + "' AND isDead=0;";
+        connectDB();
+        ResultSet result = sqlQuery(search1, out);
+        if(result.isBeforeFirst())
+        {
+            printProfileStateLoadChar(out);
+        }
+        else{ 
+            printProfileStateNewChar(out);
+        }
+        } catch(Exception ex){
+            out.println(ex);
+        }
+    }
+    
+    void printProfileStateNewChar(PrintWriter out)
+    {
         out.println("<html>\n" +
             "	<head>\n" +
             "	<!-- Call normalize.css -->\n" +
@@ -1523,6 +1541,39 @@ public class GameInstance {
             "			<h1 id=\"title\" class=\"centered\">TARSUS</h1> <br />\n" +
             "			<div align=\"center\"> \n" +
             "				<input class=\"profileButton\" name=\"Create Character\" value=\"Create Character\" type=\"submit\" />\n" +
+            "				<input class=\"profileButton\" name=\"Look at Past Characters\" value=\"Look at Past Characters\" type=\"submit\" /> \n" +
+            "			</div>\n" +
+            "		</div>\n" +
+            "		<div class=\"grid1\"> </div>\n" +
+            "           </form>" +
+            "	</body>\n" +
+            "	\n" +
+            "</html>");
+    }
+    void printProfileStateLoadChar(PrintWriter out)
+    {
+        out.println("<html>\n" +
+            "	<head>\n" +
+            "	<!-- Call normalize.css -->\n" +
+            "	<link rel=\"stylesheet\" href=\"css/normalize.css\" type=\"text/css\" media=\"screen\">\n" +
+            "	<!-- Import Font to be used in titles and buttons -->\n" +
+            "	<link href='http://fonts.googleapis.com/css?family=Sanchez' rel='stylesheet' type='text/css'>\n" +
+            "	<link href='http://fonts.googleapis.com/css?family=Prosto+One' rel='stylesheet' type='text/css'>\n" +
+            "	<!-- Call style.css -->\n" +
+            "	<link rel=\"stylesheet\" href=\"css/grid.css\" type=\"text/css\" media=\"screen\">\n" +
+            "	<!-- Call style.css -->\n" +
+            "	<link rel=\"stylesheet\" href=\"css/style.css\" type=\"text/css\" media=\"screen\">\n" +
+            "	<title> Tarsus </title>\n" +
+            "	</head>\n" +
+            "	<body>\n" +
+            "   <form action=\"Tarsus\" method=\"post\">" + 
+            "		<div id=\"header\" class=\"grid10\" align=\"right\">\n" +
+            "			<input name=\"" + accountName + "\" value=\"" + accountName + "\" id=\"tarsusTitle\" type=\"submit\" /> \n" +
+            "			<input class=\"button\" name=\"Log Out\" value=\"Log Out\" type=\"submit\" /> </div>\n" +
+            "		<div class=\"grid2\"> </div>\n" +
+            "		<div class=\"grid6 centered\">\n" +
+            "			<h1 id=\"title\" class=\"centered\">TARSUS</h1> <br />\n" +
+            "			<div align=\"center\"> \n" +
             "				<input class=\"profileButton\" name=\"Load Character\" value=\"Load Character\" type=\"submit\" />  \n" +
             "				<input class=\"profileButton\" name=\"Look at Past Characters\" value=\"Look at Past Characters\" type=\"submit\" /> \n" +
             "			</div>\n" +
