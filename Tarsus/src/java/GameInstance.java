@@ -561,28 +561,36 @@ public class GameInstance {
         }
         else
         {
+            out.print("I think you pressed a button");
+            out.print(" Currency: " + gold + " ");
             if(request.getParameter(accountName) != null)
                 return stateEnum.DECISION;
             // for buying items from the store
             for (int i = 0; i < storeItems.length - 1; i++)
             {
+                out.println("going through buy item: " + i);
                 String buyValue = request.getParameter("Buy " + i);
+                out.println(buyValue);
                 if(buyValue != null)
                 {
                     gold -= storeItems[i].getValue();
+                    //newItem(storeItems[i], out);
                     // a bad way of deleting an element
                     storeItems[i] = null;
                     printStoreState(out);
+                    break;
                 }
             }
             // for selling items player's inventory
             for (int i = 0; i < playerChar.itemsHeld.length - 1; i++){
+                out.println("going through sell item: " + i);
                 String sellValue = request.getParameter("Sell " + i);
                 if(sellValue != null)
                 {
                    gold += Math.round((.6) * playerChar.itemsHeld[i].getValue());
                    
                    // need to drop the item from the table
+                   //deleteItem(playerChar.itemsHeld[i], out);
                    printStoreState(out);
                 }
             }
