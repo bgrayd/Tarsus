@@ -376,9 +376,74 @@ public class GameInstance {
      * Loads a new enemy from the database
      * @param level the players level
      ***************************************************/
-    void getNextEnemy(int level)
+    void getNextEnemy(Integer Level, PrintWriter out) throws SQLException
     {
-    
+        String search1 = "SELECT * FROM Characters WHERE level='"+Level.toString() + "' AND isDead=b'1';";
+        connectDB();
+        ResultSet result = sqlQuery(search1, out);
+        if(result.isBeforeFirst())
+        {
+            result.next();
+            String name = result.getString("name");
+            String bio = result.getString("bio");
+            int level = result.getInt("level");
+            int health = result.getInt("health");
+            int strength = result.getInt("strength");
+            int agility = result.getInt("agility");
+            int magic = result.getInt("magic");
+            int timesAttacked = result.getInt("timesAttacked");
+            int timesSwitchedToStrength = result.getInt("timesSwitchedToStrength");
+            int timesSwitchedToAgility = result.getInt("timesSwitchedToAgility");
+            int timesSwitchedToMagic = result.getInt("timesSwitchedToMagic");
+            int equipWeaponId = result.getInt("equippedWeapon");
+            int equipArmorId = result.getInt("equippedArmor");
+            disconnectDB();
+
+            //getting the length for itemsHeld
+            connectDB();
+            String search2 = "SELECT COUNT(I.itemId) AS rows FROM Items I, CharacterHasItem C WHERE I.itemId=C.itemId AND C.charName='" + name + "';";
+            result = sqlQuery(search2, out);
+            result.next();
+            int rows = result.getInt("rows");
+            disconnectDB();
+
+            Item[] itemsHeld = new Item[rows];
+            Item weapon = null;
+            Item armor = null;
+            String search3 = "SELECT * FROM Items I, CharacterHasItem C WHERE I.itemId=C.itemId AND C.charName='" + name + "';";
+            connectDB();
+            result = sqlQuery(search3, out);
+            //temp varible
+            int i = 0;
+            while (result.next())
+            {
+                String iName = result.getString("name");
+                int itemId = result.getInt("itemId");
+                int type = result.getInt("type");
+                int upgradeCount = result.getInt("upgradeCount");
+                int strengthVal= result.getInt("strengthVal");
+                int agilityVal = result.getInt("agilityVal");
+                int magicVal = result.getInt("magicVal");
+                Item item = new Item(iName, itemId, type, upgradeCount, strengthVal, agilityVal, magicVal, 0);
+                itemsHeld[i] = item;
+                if (equipWeaponId == itemId)
+                {
+                    weapon = new Item(iName, itemId, type, upgradeCount, strengthVal, agilityVal, magicVal, 0);
+                }
+                if (equipArmorId == itemId)
+                {
+                    armor = new Item(iName, itemId, type, upgradeCount, strengthVal, agilityVal, magicVal, 0);
+                }
+                i++;
+            }
+            disconnectDB();
+            aresChar = new AresCharacter(name, bio, level, health, strength, agility, magic, itemsHeld, weapon, armor, timesAttacked, timesSwitchedToStrength, timesSwitchedToAgility, timesSwitchedToMagic);
+        }
+        else
+        {
+            Item[] itemsHeld = {generateWeapon(1), generateArmor(1), generateWeapon(1), generateArmor(1)};
+            aresChar = new AresCharacter("enemy", "", 1, 100, 1, 2, 3, itemsHeld, itemsHeld[0], itemsHeld[1], 0, 0, 0, 0);
+        }
     }
     
     /****************************************************
@@ -808,11 +873,12 @@ public class GameInstance {
      * @return the next state
      ***************************************************/
     stateEnum registeredCharacterCreationState(PrintWriter out, HttpServletRequest request) {
-     if(startingState != stateEnum.REGISTERED_CHARACTER_CREATION)
+     if((startingState != stateEnum.REGISTERED_CHARACTER_CREATION)|(error!=null))
         {
             //create new page for it
             Integer level = 1;
-            printCharacterCreation(level, out);   
+            printCharacterCreation(level, out);
+            error = null;
             return stateEnum.REGISTERED_CHARACTER_CREATION;
         }
         else
@@ -1835,21 +1901,21 @@ public class GameInstance {
             out.printf(fifthPart);
             out.printf("<input type=\"hidden\" name=\"level\" value=\"%d\" />\n",level);
             
-            out.println("<table><tr><h2>Weapons</h2></tr><tr><th>Strength</th><th>Agility</th><th>Magic</th><th>select</th><tr>");
+            out.println("<table><tr><h2>Weapons</h2></tr><tr><th>Name</th><th>Strength</th><th>Agility</th><th>Magic</th><th>select</th><tr>");
             for(int i=0; i<numItemChoices; i++)
             {
                 tempItem = generateWeapon(level);
                 submitValue = tempItem.getName()+"="+((Integer)tempItem.itemId).toString()+"+"+((Integer)tempItem.getStrength()).toString()+"-"+((Integer)tempItem.getAgility()).toString()+"*"+((Integer)tempItem.getMagic()).toString()+"_"+((Integer)tempItem.getType()).toString();
-                out.printf("<tr><td>%d</td><td>%d</td><td>%d</td><td><input type=\"radio\" name=\"weapon\" value=\"%s\"></td></tr>\n",tempItem.getStrength(), tempItem.getAgility(), tempItem.getMagic(), submitValue);
+                out.printf("<tr><td>%s    </td><td>%d</td><td>%d</td><td>%d</td><td><input type=\"radio\" name=\"weapon\" value=\"%s\"></td></tr>\n",tempItem.getName(),tempItem.getStrength(), tempItem.getAgility(), tempItem.getMagic(), submitValue);
             }
             out.println("</table>");
             
-            out.println("<table><tr><h2>Armor</h2></tr><tr><th>Strength</th><th>Agility</th><th>Magic</th><th>select</th><tr>");
+            out.println("<table><tr><h2>Armor</h2></tr><tr><th>Name</th><th>Strength</th><th>Agility</th><th>Magic</th><th>select</th><tr>");
             for(int i=0; i<numItemChoices; i++)
             {
                 tempItem = generateArmor(level);
                 submitValue = tempItem.getName()+"="+((Integer)tempItem.itemId).toString()+"+"+((Integer)tempItem.getStrength()).toString()+"-"+((Integer)tempItem.getAgility()).toString()+"*"+((Integer)tempItem.getMagic()).toString()+"_"+((Integer)tempItem.getType()).toString();
-                out.printf("<tr><td>%d</td><td>%d</td><td>%d</td><td><input type=\"radio\" name=\"armor\" value=\"%s\"></td></tr>\n",tempItem.getStrength(), tempItem.getAgility(), tempItem.getMagic(), submitValue);
+                out.printf("<tr><td>%s    </td><td>%d</td><td>%d</td><td>%d</td><td><input type=\"radio\" name=\"armor\" value=\"%s\"></td></tr>\n",tempItem.getName(),tempItem.getStrength(), tempItem.getAgility(), tempItem.getMagic(), submitValue);
             }
             out.println("</table>");
             out.println(lastPart);
