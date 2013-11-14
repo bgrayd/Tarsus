@@ -8,6 +8,7 @@ import java.io.PrintWriter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.*;
+import java.util.ArrayList;
 //Pulled from inclass exmple
 import database.*;
 
@@ -242,7 +243,7 @@ public class GameInstance {
     
     Item generateItem(int type, int Level)
 	{
-		final String[] armor_name_type = {"Plate Armor", "Leather Armor", "Robe", "Mail Armor", "Magic-Strength Armor stuff", "Magic-Agility Armor stuff", "Armor"};
+		final String[] armor_name_type = {"Plate Armor", "Leather Armor", "Robe", "Mail Armor", "M-S armor", "M-A armor", "Armor"};
 		final String[] weapon_name_type = {"Sword", "Axe", "Mace", "Bow", "Crossbow", "Throwing Knives", "Staff", "Wand", "Orb"}; // Could have room for permutations
 		final String[] item_name_type = {"potion"};
                 final String[] error_name_type = {"error"};
@@ -441,7 +442,8 @@ public class GameInstance {
     }
     Boolean deleteItem(Item item, PrintWriter out) throws SQLException
     {
-        String query = "DELETE FROM CharacterHasItem WHERE itemID=";
+        //String query = "DELETE FROM CharacterHasItem WHERE itemID=";
+        String query = "DELETE FROM Items WHERE itemID=";
         query += "/'" + item.getItemId() + "/'";
         query += ";";
         return sqlCommand(query, out);
@@ -559,6 +561,13 @@ public class GameInstance {
             printStoreState(out);
             return stateEnum.STORE;
         }
+        else{
+        String value1 = request.getParameter(accountName);
+        if(value1 != null)
+        {
+            out.println("going to Decision state");
+            return stateEnum.DECISION;
+        }
         else
         {
             out.print("I think you pressed a button");
@@ -566,23 +575,23 @@ public class GameInstance {
             if(request.getParameter(accountName) != null)
                 return stateEnum.DECISION;
             // for buying items from the store
-            for (int i = 0; i < storeItems.length - 1; i++)
+            for (int i = 0; i < storeItems.length; i++)
             {
-                out.println("going through buy item: " + i);
+                //out.println("going through buy item: " + i);
                 String buyValue = request.getParameter("Buy " + i);
-                out.println(buyValue);
+                //out.println(buyValue);
                 if(buyValue != null)
                 {
+                    //out.println("You chose index: " + i + " /n");
                     gold -= storeItems[i].getValue();
-                    //newItem(storeItems[i], out);
-                    // a bad way of deleting an element
+                    // could also just move the last index to this index
                     storeItems[i] = null;
-                    printStoreState(out);
+                    //printStoreState(out);
                     break;
                 }
             }
             // for selling items player's inventory
-            for (int i = 0; i < playerChar.itemsHeld.length - 1; i++){
+            for (int i = 0; i < playerChar.itemsHeld.length; i++){
                 out.println("going through sell item: " + i);
                 String sellValue = request.getParameter("Sell " + i);
                 if(sellValue != null)
@@ -591,12 +600,13 @@ public class GameInstance {
                    
                    // need to drop the item from the table
                    //deleteItem(playerChar.itemsHeld[i], out);
-                   printStoreState(out);
+                   //printStoreState(out);
                 }
             }
+            printStoreState(out);
             return stateEnum.STORE;
         }
-
+        }
     }
 
     /****************************************************
@@ -1571,11 +1581,13 @@ public class GameInstance {
 		            "	</head>\n" +
 		            "	<body>\n" +
 		            "		<div id=\"header\" class=\"grid10\" align=\"right\">\n" +
-		            "			<input value=\"Character Page\" name=\""  + "\" type=\"submit\" id=\"tarsusTitle\" />\n" +
-		            "			<input class=\"button\" type=\"submit\" value=\"Log Out\" name=\"Log Out\" /> </div>\n" +
+                                        "   <form action=\"Tarsus\" method=\"post\">" +
+                            "			<input value=\"" + accountName + "\" name=\"" + accountName + "\" type=\"submit\" id=\"tarsusTitle\" />\n" +
+		            "			<input class=\"button\" type=\"submit\" value=\"Log Out\" name=\"Log Out\" /> </div>\n" + "</form>" +
 		            "		<div class=\"grid1\"> </div>\n" +
 		            "		<div class=\"grid8 centered\">\n" +
-		            "		<h1 id=\"title\" class=\"centered\">Store</h1>\n" +
+                            "           </br><b>Your current amount of gold: " + gold + "</b></br>" +
+		            "		<h1 id=\"title\" class=\"centered\">Store Inventory</h1>\n" +
 		            "		<table id=\"table\" align=\"center\">\n" +
 		            "			<tr>\n" +
 		            "				<td> </td>\n" +
@@ -1603,19 +1615,20 @@ public class GameInstance {
 		            "				<th> Agility </th>\n" +
 		            "				<th> Heal </th>\n" +
 		            "				<th> Type </th>\n" + 
-		            "				<th> Price </th>\n" +
+		            "				<th> Sell Price </th>\n" +
 		            "			</tr>\n" +
-		            "			<tr>";
+		            "			";
 			
 			String buttonPart = ("		</table>\n" +
 	                "		</div>\n" +
 	                "		<div class=\"grid1\"> </div>\n" +
 					"		<div class=\"grid10\" align=\"center\">\n" +
-					"			<input id=\"Form\" type =\"submit\" value=\"Initiate Transaction\" class=frontPageButton /> \n" +
+					"			<input id=\"Form\" type =\"submit\" value=\"This button does not do anything\" class=frontPageButton /> \n" +
 					"		</div>\n" +
 					"		</form>\n");
 			
             String endPart = 
+                    /*"</table>\n" +"</div>\n" +*/
                     "	</body>\n" +
                     "	\n" +
                     "</html>";
@@ -1630,7 +1643,24 @@ public class GameInstance {
 
             out.println("<form name=\"buyItems\" action=\"Tarsus\" onsubmit=\"return getFormValues()\" method=\"post\">\n");
             for (int i = 0; i < storeItems.length; i++){
-                out.println("<td> <input id =\"" + i + "\" type=\"submit\" value=\"Buy for " + storeItems[i].getValue() + "\" name=\"Buy " + i + "\" class=\"tableButton\"> </td>");
+                out.println("<tr>");
+                if(storeItems[i] == null)
+                {
+                    out.println("<td> </td>");
+                    out.println("<td> Item sold out</td>");
+                    out.println("<td> n/a </td>");
+                    out.println("<td> n/a </td>");
+                    out.println("<td> n/a </td>");
+                    out.println("<td> n/a </td>");
+                    out.println("<td> n/a </td>");
+                    out.println("<td> n/a </td>");
+                    out.println("</tr>");
+                    
+                }
+                else{
+                out.println(storeItems[i]);
+                out.println("<tr>");
+                out.println("<td> <input id =\"" + i + "\" type=\"submit\" value=\"Buy" + "\" name=\"Buy " + i + "\" class=\"tableButton\"> </td>");
                 out.println("<td>");
                 out.println(storeItems[i].getName());
                 out.println("</td>");
@@ -1653,12 +1683,18 @@ public class GameInstance {
                 out.println(storeItems[i].getValue());
                 out.println("</td>");
                 out.println("</tr>");
+                }
 			}
 	out.println(sellPart);
         out.println("player items held length: " + playerChar.itemsHeld.length);
 	for (int i = 0; i < playerChar.itemsHeld.length; i++){
+            if(playerChar.itemsHeld[i] == null)
+            {
+                continue;
+            }
+                out.println("<tr>");
                 out.println(" loop level: " + i);
-                out.println("<td> <input type=\"submit\" value=\"Sell for " + (int)(0.60 * storeItems[i].getValue()) + "\" name=\"Sell " + i + "\" class=\"tableButton\"> </td>");
+                out.println("<td> <input type=\"submit\" value=\"Sell" +  "\" name=\"Sell " + i + "\" class=\"tableButton\"> </td>");
                 out.println("<td>");
                 out.println(playerChar.itemsHeld[i].getName());
                 out.println("</td>");
@@ -1675,7 +1711,7 @@ public class GameInstance {
                 out.println(playerChar.itemsHeld[i].getHeal());
                 out.println("</td>");
                 out.println("<td>");
-                out.println(playerChar.itemsHeld[storeItems[i].getType()]);
+                out.println(item_type_string[playerChar.itemsHeld[i].getType()]);
                 out.println("</td>");
                 out.println("<td>");
                 out.println((int)(0.60 * playerChar.itemsHeld[i].getValue()));
