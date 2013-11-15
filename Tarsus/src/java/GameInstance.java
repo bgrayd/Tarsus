@@ -35,7 +35,7 @@ public class GameInstance {
     int constantAgilityPerLevel = 10;
     int constantMagicPerLevel = 10;
     int constantHealthBase = 200;
-
+    int constantItemNameMaxLength = 20;
     
     
     GameInstance()
@@ -519,9 +519,9 @@ public class GameInstance {
         return max+1;
     }
     
-    Boolean characterHasItem(Item item, PrintWriter out)
+    Boolean characterHasItem(Item item, Character character,PrintWriter out)
     {
-        String query = "INSERT into CharacterHasItem (itemId, charName) VALUES ('"+item.getItemId()+"',"+playerChar.getName()+");";
+        String query = "INSERT into CharacterHasItem (itemId, charName) VALUES ('"+item.getItemId()+"','"+character.getName()+"');";
         return sqlCommand(query, out);
     }
     
@@ -913,7 +913,8 @@ public class GameInstance {
     {
         //create new page for it
         Integer level = (int)(Math.random()*49+1);
-        printCharacterCreation(level, out);   
+        printCharacterCreation(level, out);
+        error = null;
         return stateEnum.UNREGISTERED_CHARACTER_CREATION;
     }
     else
@@ -921,6 +922,7 @@ public class GameInstance {
         /*String value = request.getParameter("Home");
         if(value.equals("Home"))
             return stateEnum.INIT;*/
+        out.printf("here 1");//debug
         try
         {
             if(checkHome(request))
@@ -930,8 +932,10 @@ public class GameInstance {
         }
         catch(Exception e)
         {
+            out.printf("here 2");//debug
             return charCreationParameters(out, request, true);
         }
+        out.printf("here 3");//debug
         return charCreationParameters(out, request, true);
     }
 }
@@ -1933,25 +1937,35 @@ public class GameInstance {
 
     private stateEnum charCreationParameters(PrintWriter out, HttpServletRequest request, Boolean isUnReg) {
         
-        String name = (String) request.getParameter("name");
-        String bio = request.getParameter("bio");
-        int level = Integer.parseInt(request.getParameter("level"));
-        int health = (Integer.parseInt(request.getParameter("health"))*constantHealthPerLevel + constantHealthBase);
-        int strength = (Integer.parseInt(request.getParameter("strength"))*constantStrengthPerLevel);
-        int agility = (Integer.parseInt(request.getParameter("agility"))*constantAgilityPerLevel);
-        int magic = (Integer.parseInt(request.getParameter("magic"))*constantMagicPerLevel);
-        Item[] items = {new Item(request.getParameter("weapon")), new Item(request.getParameter("armor"))};
+        out.printf("here 4");//debug
         
+        String name = (String) request.getParameter("name");
+        out.printf("here 8");//debug
+        String bio = request.getParameter("bio");
+        out.printf("here 9");//debug
+        int level = Integer.parseInt(request.getParameter("level"));
+        out.printf("here 10");//debug
+        int health = (Integer.parseInt(request.getParameter("health"))*constantHealthPerLevel + constantHealthBase);
+        out.printf("here 11");//debug
+        int strength = (Integer.parseInt(request.getParameter("strength"))*constantStrengthPerLevel);
+        out.printf("here 12");//debug
+        int agility = (Integer.parseInt(request.getParameter("agility"))*constantAgilityPerLevel);
+        out.printf("here 13");//debug
+        int magic = (Integer.parseInt(request.getParameter("magic"))*constantMagicPerLevel);
+        out.printf("here 14");//debug
+        Item[] items = {new Item(request.getParameter("weapon")), new Item(request.getParameter("armor"))};
+        out.printf("here 5");//debug
         try{
             if(isValidString(name) & isValidString(bio))
             {
+                out.printf("here 6");//debug
                newItem(items[0], out);
                newItem(items[1], out);
                PlayerCharacter chrct = new PlayerCharacter(name,bio, level, health, strength, agility, magic, items,items[0],items[1],0,0,0,0);
 
                newCharacter(chrct,isUnReg, out);
-               characterHasItem(items[0], out);
-               characterHasItem(items[1], out);
+               characterHasItem(items[0], chrct, out);
+               characterHasItem(items[1], chrct, out);
                /*
                out.println(name);
                out.printf("level: %d\n",level);
@@ -1973,6 +1987,7 @@ public class GameInstance {
                out.printf("%d\n",items[1].agility);
                out.printf("%d\n",items[1].magic);
                out.printf("%d\n",items[1].type);*/
+               out.printf("here 7");//debug
                if(isUnReg)
                     return stateEnum.INIT;
                return stateEnum.DECISION;
