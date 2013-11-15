@@ -443,8 +443,8 @@ public class GameInstance {
     Boolean deleteItem(Item item, PrintWriter out) throws SQLException
     {
         //String query = "DELETE FROM CharacterHasItem WHERE itemID=";
-        String query = "DELETE FROM Items WHERE itemID=";
-        query += "/'" + item.getItemId() + "/'";
+        String query = "DELETE FROM Items WHERE itemId=";
+        query += "" + item.getItemId() + "";
         query += ";";
         return sqlCommand(query, out);
     }
@@ -586,7 +586,9 @@ public class GameInstance {
                     gold -= storeItems[i].getValue();
                     // could also just move the last index to this index
                     try{
+                        connectDB();
                         newItem(storeItems[i], out);
+                        disconnectDB();
                         storeItems[i] = null;
                     }
                     catch(Exception e)
@@ -607,7 +609,9 @@ public class GameInstance {
                    
                    // need to drop the item from the table
                    try{
+                   connectDB();
                    deleteItem(playerChar.itemsHeld[i], out);
+                   disconnectDB();
                    }
                    catch(Exception e)
                    {
