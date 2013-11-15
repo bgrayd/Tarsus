@@ -1373,8 +1373,8 @@ public class GameInstance {
                                 "	</head>\n" +
                                 "	<body>\n" +
                                 "		<div id=\"header\" class=\"grid10\" align=\"right\">\n" +
-                                "			<input name=\"accountName\" value=\"accountName\" type=\"submit\" /> \n" +
-                                "			<a class=\"button\" name=\"\" value=\"\" type=\"submit\" /> </div>\n" +
+                                "			<input class=\"button\" name=\"" + accountName + "\" value=\"" + accountName + "\" type=\"submit\" /> \n" +
+                                "			<input class=\"button\" name=\"Log Out\" value=\"Log Out\" type=\"submit\" /> </div>\n" +
                                 "		<div class=\"grid1\"> </div>\n" +
                                 "		<div class=\"grid8 centered\">\n" +
                                 "		<h1 id=\"title\" class=\"centered\">Past Characters</h1>\n" +
@@ -1403,7 +1403,7 @@ public class GameInstance {
             try
             {
                             //getting the amount of dead characters
-            String search1 = "SELECT COUNT(C.name) AS rows FROM Characters WHERE creator='" + accountName + "' AND isDead=1;";
+            String search1 = "SELECT COUNT(name) AS rows FROM Characters WHERE creator='" + accountName + "' AND isDead=1;";
             connectDB();
             result = sqlQuery(search1, out);
             result.next();
@@ -1414,23 +1414,23 @@ public class GameInstance {
             {
                 out.println("Error in getting rows: " + ex);
             }
-
+            
             boolean noDead;
+            if(rows > 0)
+            {
+                    noDead = false;
+            }
+            else
+            {
+                    noDead = true;
+            }
+            
             String search2 = "SELECT * FROM Characters WHERE creator='" + accountName + "' AND isDead=1;";
             connectDB();
             try
             {
                 result = sqlQuery(search2, out);
-            
-
-                if(rows > 0)
-                {
-                        noDead = false;
-                }
-                else
-                {
-                        noDead = true;
-                }
+                
                 if(noDead)
                 {
                         out.println("<tr>");
@@ -1447,15 +1447,29 @@ public class GameInstance {
                 {
                         while (result.next())
                         {
-                            String name = result.getString("name");
-                            int level = result.getInt("level");
-                            int health = result.getInt("health");
-                            int strength = result.getInt("strength");
-                            int agility = result.getInt("agility");
-                            int magic = result.getInt("magic");
-                            String bio = result.getString("bio");
+                            out.println("<td>");
+                            out.println(result.getString("name"));
+                            out.println("</td>");
+                            out.println("<td>");
+                            out.println(result.getInt("level"));
+                            out.println("</td>");
+                            out.println("<td>");
+                            out.println(result.getInt("health"));
+                            out.println("</td>");
+                            out.println("<td>");
+                            out.println(result.getInt("strength"));
+                            out.println("</td>");
+                            out.println("<td>");
+                            out.println(result.getInt("agility"));
+                            out.println("</td>");
+                            out.println("<td>");
+                            out.println(result.getInt("magic"));
+                            out.println("</td>");
+                            out.println("<td>");
+                            out.println(result.getString("bio"));
+                            out.println("</td>");
+                            out.println("</tr>\n");
                         }
-
                 }
             }
             catch(Exception ex)
@@ -1464,7 +1478,7 @@ public class GameInstance {
             }
             disconnectDB();
 
-            out.println("lastPart");
+            out.println(lastPart);
             
             return stateEnum.PAST_CHARACTERS;
         }
@@ -1548,7 +1562,7 @@ public class GameInstance {
             "   <form action=\"Tarsus\" method=\"post\">" + 
             "		<div id=\"header\" class=\"grid10\" align=\"right\">\n" +
             "			<input value=\"" + accountName + "\" name=\"" + accountName + "\" type=\"submit\" id=\"tarsusTitle\" />\n" +
-            "			<input class=\"button\" value=\"Log Out\" name=\"Log Out\" /> </div>\n" +
+            "			<input class=\"button\" value=\"Log Out\" name=\"Log Out\" type=\"submit\" /> </div>\n" +
             "		<div class=\"grid1\"> </div>\n" +
             "		<div class=\"grid8 centered\">\n" +
             "		<h1 id=\"title\" class=\"centered\">Blacksmith</h1>\n" +
