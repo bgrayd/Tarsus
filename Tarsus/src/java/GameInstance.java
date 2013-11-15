@@ -530,7 +530,7 @@ public class GameInstance {
             if(value.equals("Create a Character"))
                 return stateEnum.UNREGISTERED_CHARACTER_CREATION;
             if(value.equals("Sign Up"))
-                return stateEnum.ACCOUNT_CREATION; 
+                return stateEnum.ACCOUNT_CREATION;
         }
        return stateEnum.INIT;
         
@@ -1028,7 +1028,7 @@ public class GameInstance {
                             }
                             if(playerChar.itemsHeld[i].getAgility() > 0)
                             {
-                                query = query + "agilityVal=alilityVal+'" + playerChar.itemsHeld[i].CONSTANT_weaponUpgrade;
+                                query = query + "agilityVal=agilityVal+'" + playerChar.itemsHeld[i].CONSTANT_weaponUpgrade;
                             }
                             if(playerChar.itemsHeld[i].getMagic() > 0)
                             {
@@ -1399,8 +1399,149 @@ public class GameInstance {
     }
     
     stateEnum pastCharactersState(PrintWriter out, HttpServletRequest request) {
-        out.println("Past");
-        return stateEnum.PAST_CHARACTERS;
+        if(startingState != stateEnum.ACCOUNT_CREATION)
+        {
+            String startPart = "<html>\n" +
+                                "	<head>\n" +
+                                "	<!-- Call normalize.css -->\n" +
+                                "	<link rel=\"stylesheet\" href=\"css/normalize.css\" type=\"text/css\" media=\"screen\">\n" +
+                                "	<!-- Import Font to be used in titles and buttons -->\n" +
+                                "	<link href='http://fonts.googleapis.com/css?family=Sanchez' rel='stylesheet' type='text/css'>\n" +
+                                "	<link href='http://fonts.googleapis.com/css?family=Prosto+One' rel='stylesheet' type='text/css'>\n" +
+                                "	<!-- Call style.css -->\n" +
+                                "	<link rel=\"stylesheet\" href=\"css/grid.css\" type=\"text/css\" media=\"screen\">\n" +
+                                "	<!-- Call style.css -->\n" +
+                                "	<link rel=\"stylesheet\" href=\"css/style.css\" type=\"text/css\" media=\"screen\">\n" +
+                                "	<title> Tarsus </title>\n" +
+                                "	</head>\n" +
+                                "	<body>\n" +
+                                "		<div id=\"header\" class=\"grid10\" align=\"right\">\n" +
+                                "			<input class=\"button\" name=\"" + accountName + "\" value=\"" + accountName + "\" type=\"submit\" /> \n" +
+                                "			<input class=\"button\" name=\"Log Out\" value=\"Log Out\" type=\"submit\" /> </div>\n" +
+                                "		<div class=\"grid1\"> </div>\n" +
+                                "		<div class=\"grid8 centered\">\n" +
+                                "		<h1 id=\"title\" class=\"centered\">Past Characters</h1>\n" +
+                                "		<table id=\"table\" align=\"center\">\n" +
+                                "			<tr>\n" +
+                                "				<th> Name </th>\n" +
+                                "				<th> Level </th>\n" +
+                                "				<th> Health </th>\n" +
+                                "				<th> Strength </th>\n" +
+                                "				<th> Agility </th>\n" +
+                                "				<th> Magic </th>\n" +
+                                "				<th> Bio </th>\n" +
+                                "			</tr>\n";
+            String lastPart = "			</tr>\n" +
+                                "		</table>\n" +
+                                "		</div>\n" +
+                                "		<div class=\"grid1\"> </div>\n" +
+                                "	</body>\n" +
+                                "	\n" +
+                                "</html>";
+            
+            out.println(startPart);
+
+            ResultSet result;
+            int rows = 0;
+            try
+            {
+                            //getting the amount of dead characters
+            String search1 = "SELECT COUNT(name) AS rows FROM Characters WHERE creator='" + accountName + "' AND isDead=1;";
+            connectDB();
+            result = sqlQuery(search1, out);
+            result.next();
+            rows = result.getInt("rows");
+            disconnectDB();
+            }
+            catch(Exception ex)
+            {
+                out.println("Error in getting rows: " + ex);
+            }
+            
+            boolean noDead;
+            if(rows > 0)
+            {
+                    noDead = false;
+            }
+            else
+            {
+                    noDead = true;
+            }
+            
+            String search2 = "SELECT * FROM Characters WHERE creator='" + accountName + "' AND isDead=1;";
+            connectDB();
+            try
+            {
+                result = sqlQuery(search2, out);
+                
+                if(noDead)
+                {
+                        out.println("<tr>");
+                        out.println("<th></th>\n" +
+                                "<th></th>\n" +
+                                "<th></th>\n" +
+                                "<th></th>\n" +
+                                "<th></th>\n" +
+                                "<th></th>\n" +
+                                "<th></th>\n");
+                        out.println("</tr>");
+                }
+                else //there are one or more dead characters
+                {
+                        while (result.next())
+                        {
+                            out.println("<td>");
+                            out.println(result.getString("name"));
+                            out.println("</td>");
+                            out.println("<td>");
+                            out.println(result.getInt("level"));
+                            out.println("</td>");
+                            out.println("<td>");
+                            out.println(result.getInt("health"));
+                            out.println("</td>");
+                            out.println("<td>");
+                            out.println(result.getInt("strength"));
+                            out.println("</td>");
+                            out.println("<td>");
+                            out.println(result.getInt("agility"));
+                            out.println("</td>");
+                            out.println("<td>");
+                            out.println(result.getInt("magic"));
+                            out.println("</td>");
+                            out.println("<td>");
+                            out.println(result.getString("bio"));
+                            out.println("</td>");
+                            out.println("</tr>\n");
+                        }
+                }
+            }
+            catch(Exception ex)
+            {
+                    out.println("Error grabbing dead characters: " + ex);
+            }
+            disconnectDB();
+
+            out.println(lastPart);
+            
+            return stateEnum.PAST_CHARACTERS;
+        }
+        else
+        {
+            String value1 = request.getParameter(accountName);
+            String value2 = request.getParameter("Log out");
+
+            String value = "";
+            if(value1 != null)
+                value = value1;
+            if(value2!=null)
+                value = value2;
+          
+            if(value.equals(accountName))
+                return stateEnum.PROFILE;
+            if(value.equals("Log out"))
+                return stateEnum.LOGOUT;
+        }
+        return stateEnum.PROFILE;
     }
     
     stateEnum LogoutState(PrintWriter out, HttpServletRequest request) {
@@ -1464,7 +1605,7 @@ public class GameInstance {
             "   <form action=\"Tarsus\" method=\"post\">" + 
             "		<div id=\"header\" class=\"grid10\" align=\"right\">\n" +
             "			<input value=\"" + accountName + "\" name=\"" + accountName + "\" type=\"submit\" id=\"tarsusTitle\" />\n" +
-            "			<input class=\"button\" value=\"Log Out\" name=\"Log Out\" /> </div>\n" +
+            "			<input class=\"button\" value=\"Log Out\" name=\"Log Out\" type=\"submit\" /> </div>\n" +
             "		<div class=\"grid1\"> </div>\n" +
             "		<div class=\"grid8 centered\">\n" +
             "		<h1 id=\"title\" class=\"centered\">Blacksmith</h1>\n" +
