@@ -245,9 +245,10 @@ public class GameInstance {
 	{
 		final String[] armor_name_type = {"Plate Armor", "Leather Armor", "Robe", "Mail Armor", "M-S armor", "M-A armor", "Armor"};
 		final String[] weapon_name_type = {"Sword", "Axe", "Mace", "Bow", "Crossbow", "Throwing Knives", "Staff", "Wand", "Orb"}; // Could have room for permutations
-		final String[] item_name_type = {"potion"};
+		final String[] item_name_type = {"Potion"};
+                final String[] error_name_type = {"Error"};
 		final String[] item_name_quality_description = {"Broken", "Inferior", "Common", "Slightly Better", "Ancient", "Legendary", "Actually Broken"};
-		final String[][] general_item_type = {armor_name_type, weapon_name_type, item_name_type};
+		final String[][] general_item_type = {error_name_type, weapon_name_type, armor_name_type, item_name_type};
 		//final String[] item_name_Modifier_description = ["Warrior", "Hunter", "Wizard", "Bandit", "BattleMage", "Magic-Range Thing whatever", "Balance"] // permutation for each thing
 		
 		double base_stats[] = {0, 0, 0, 0};
@@ -334,13 +335,13 @@ public class GameInstance {
 			// Get the base damage of each stat
 			// will only affect one stat at the moment
 			
-			int value_sum = 0;
+			//int value_sum = 0;
 			for(int j = 0; j < 4; j++)
 			{
 				// multiples the base stat for cases where the base stat is split up in proportions
 				base_stats[j] *=(((quality) * 100) + 20);
 				base_stats[j] = Math.round(base_stats[j]);
-				value_sum += base_stats[j];
+				//value_sum += base_stats[j];
 			}
 			
 		String item_name = item_quality + " " + item_type;
@@ -584,7 +585,14 @@ public class GameInstance {
                     //out.println("You chose index: " + i + " /n");
                     gold -= storeItems[i].getValue();
                     // could also just move the last index to this index
-                    storeItems[i] = null;
+                    try{
+                        newItem(storeItems[i], out);
+                        storeItems[i] = null;
+                    }
+                    catch(Exception e)
+                    {
+                        error = "An error occured while trying to buy the item.";
+                    }
                     //printStoreState(out);
                     break;
                 }
@@ -598,7 +606,14 @@ public class GameInstance {
                    gold += Math.round((.6) * playerChar.itemsHeld[i].getValue());
                    
                    // need to drop the item from the table
-                   //deleteItem(playerChar.itemsHeld[i], out);
+                   try{
+                   deleteItem(playerChar.itemsHeld[i], out);
+                   }
+                   catch(Exception e)
+                   {
+                       error = "failed to delete item from player's inventory.";
+                   }
+                   
                    //printStoreState(out);
                 }
             }
