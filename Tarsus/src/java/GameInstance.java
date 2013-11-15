@@ -149,11 +149,6 @@ public class GameInstance {
                     nextState = unregisteredCharacterCreationState(out, request);
                     break;
 
-                case IDLING:
-                    //idle state
-                    nextState = idling(out, request);
-                    break;
-
                 case DECISION:
                     //this state is for asking what to do next
                     nextState = decisionState(out, request);
@@ -863,18 +858,6 @@ public class GameInstance {
     }
 }
 
-
-    /****************************************************
-     * The idling state, logs out after a certain amount of time
-     * may be removed
-     * @param out the print writer
-     * @param request the servlet request
-     * @return the next state
-     ***************************************************/
-    stateEnum idling(PrintWriter out, HttpServletRequest request) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
     /****************************************************
      * Asking what the player wants to do next
      * @param out the print writer
@@ -1072,7 +1055,9 @@ public class GameInstance {
             ResultSet result = sqlQuery(search, out);
             try{
             if(result.isBeforeFirst()){
+                    result.next();
                     accountName = username;
+                    gold = result.getInt("gold");
                     return stateEnum.PROFILE;
             }else{
                 out.println("<html>\n" +
@@ -1675,6 +1660,7 @@ public class GameInstance {
             "	<body>\n" +
             "   <form action=\"Tarsus\" method=\"post\">" + 
             "		<div id=\"header\" class=\"grid10\" align=\"right\">\n" +
+            "                   <p>Gold: " + gold + "</p>" +
             "			<input name=\"" + accountName + "\" value=\"" + accountName + "\" id=\"tarsusTitle\" type=\"submit\" /> \n" +
             "			<input class=\"button\" name=\"Log Out\" value=\"Log Out\" type=\"submit\" /> </div>\n" +
             "		<div class=\"grid2\"> </div>\n" +
@@ -1709,6 +1695,7 @@ public class GameInstance {
             "	<body>\n" +
             "   <form action=\"Tarsus\" method=\"post\">" + 
             "		<div id=\"header\" class=\"grid10\" align=\"right\">\n" +
+            "                   <p>Gold: " + gold + "</p>" +
             "			<input name=\"" + accountName + "\" value=\"" + accountName + "\" id=\"tarsusTitle\" type=\"submit\" /> \n" +
             "			<input class=\"button\" name=\"Log Out\" value=\"Log Out\" type=\"submit\" /> </div>\n" +
             "		<div class=\"grid2\"> </div>\n" +
