@@ -985,7 +985,7 @@ public class GameInstance {
                             }
                             if(playerChar.itemsHeld[i].getAgility() > 0)
                             {
-                                query = query + "agilityVal=alilityVal+'" + playerChar.itemsHeld[i].CONSTANT_weaponUpgrade;
+                                query = query + "agilityVal=agilityVal+'" + playerChar.itemsHeld[i].CONSTANT_weaponUpgrade;
                             }
                             if(playerChar.itemsHeld[i].getMagic() > 0)
                             {
