@@ -1113,7 +1113,7 @@ public class GameInstance {
                 return stateEnum.LOGOUT;
             else
             {
-                for (int i = 0; i < playerChar.itemsHeld.length - 1; i++){
+                for (int i = 0; i < playerChar.itemsHeld.length; i++){
                     String tempValue = request.getParameter("Upgrade" + i);
                     if(tempValue != null)
                     {
@@ -2291,8 +2291,8 @@ public class GameInstance {
 		            "				<td> </td>\n" +
 		            "				<th> Name </th>\n" +
 		            "				<th> Strength </th>\n" +
-		            "				<th> Magic </th>\n" +
 		            "				<th> Agility </th>\n" +
+		            "				<th> Magic </th>\n" +
 		            "				<th> Heal </th>\n" +
 		            "				<th> Type </th>\n" + 
 		            "				<th> Upgrade Count </th>\n" +
