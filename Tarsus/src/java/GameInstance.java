@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.sql.*;
 //Pulled from inclass exmple
 import database.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class GameInstance {
     PlayerCharacter playerChar;
@@ -211,6 +213,7 @@ public class GameInstance {
                     initState(out, request);
                     break;
             }
+            out.printf(currentState.toString());//debug
         }while((currentState != nextState)|(error!=null));
     }
     
@@ -381,9 +384,18 @@ public class GameInstance {
         String search1 = "SELECT * FROM Characters WHERE level='"+Level.toString() + "' AND isDead=b'1';";
         connectDB();
         ResultSet result = sqlQuery(search1, out);
+        int max = result.getFetchSize();
+        int number = (int) (Math.random()*max);
+        
+        
         if(result.isBeforeFirst())
         {
-            result.next();
+            for(int i=0;i<number;i++)
+            {
+              result.next();
+            }
+            //result.next();
+            result.first();
             String name = result.getString("name");
             String bio = result.getString("bio");
             int level = result.getInt("level");
@@ -486,7 +498,7 @@ public class GameInstance {
         if(isDead)
             dead=1;
         connectDB();
-        String query = "UPDATE Characters SET level='"+(((Integer)chrct.getLevel()).toString())+"', bio='"+chrct.getBio()+"', strength='"+((Integer)(chrct.getStrength())).toString()+"', health='"+((Integer)chrct.getMaxHealth()).toString()+"', isDead=b'"+(dead.toString())+"', magic='"+((Integer)chrct.getMagic()).toString()+"', agility='"+((Integer)chrct.getAgility()).toString()+"', timesAttacked='"+((Integer)chrct.timesAttacked).toString()+"', timesSwitchedToStrength='"+((Integer)chrct.timesSwitchedToStrength).toString()+"', timesSwitchedToAgility='"+((Integer)chrct.timesSwitchedToAgility).toString()+"', timesSwitchedToMagic='"+((Integer)chrct.timesSwitchedToMagic).toString()+"', equippedWeapon='"+((Integer)chrct.weapon.getItemId()).toString()+"', equippedArmor='"+((Integer)chrct.armor.getItemId()).toString()+"' WHERE name='"+chrct.getName()+"');";
+        String query = "UPDATE Characters SET level='"+(((Integer)chrct.getLevel()).toString())+"', bio='"+chrct.getBio()+"', strength='"+((Integer)(chrct.getStrength())).toString()+"', health='"+((Integer)chrct.getMaxHealth()).toString()+"', isDead=b'"+(dead.toString())+"', magic='"+((Integer)chrct.getMagic()).toString()+"', agility='"+((Integer)chrct.getAgility()).toString()+"', timesAttacked='"+((Integer)chrct.timesAttacked).toString()+"', timesSwitchedToStrength='"+((Integer)chrct.timesSwitchedToStrength).toString()+"', timesSwitchedToAgility='"+((Integer)chrct.timesSwitchedToAgility).toString()+"', timesSwitchedToMagic='"+((Integer)chrct.timesSwitchedToMagic).toString()+"', equippedWeapon='"+((Integer)chrct.weapon.getItemId()).toString()+"', equippedArmor='"+((Integer)chrct.armor.getItemId()).toString()+"' WHERE name='"+chrct.getName()+"';";
         return sqlCommand(query,out);
     }
     
@@ -664,9 +676,14 @@ public class GameInstance {
     private stateEnum battleState(PrintWriter out, HttpServletRequest request) {
         if(startingState != stateEnum.BATTLE)
         {
-            Item[] itemsHeld = {generateWeapon(1), generateArmor(1), generateWeapon(1), generateArmor(1)};
-            playerChar = new PlayerCharacter("player", "", 1, 1000, 1, 2, 3, itemsHeld, itemsHeld[0], itemsHeld[1], 0, 0, 0, 0);
-            aresChar = new AresCharacter("enemy", "", 1, 100, 1, 2, 3, itemsHeld, itemsHeld[0], itemsHeld[1], 0, 0, 0, 0);
+            try {
+                //Item[] itemsHeld = {generateWeapon(1), generateArmor(1), generateWeapon(1), generateArmor(1)};
+                //playerChar = new PlayerCharacter("player", "", 1, 1000, 1, 2, 3, itemsHeld, itemsHeld[0], itemsHeld[1], 0, 0, 0, 0);
+                //aresChar = new AresCharacter("enemy", "", 1, 100, 1, 2, 3, itemsHeld, itemsHeld[0], itemsHeld[1], 0, 0, 0, 0);
+                getNextEnemy(playerChar.getLevel(), out);
+            } catch (SQLException ex) {
+                Logger.getLogger(GameInstance.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         
         String startPage = "<html>\n" +
@@ -1431,6 +1448,8 @@ public class GameInstance {
             toBeReturned = false;
         if(string.contains(";"))
             toBeReturned = false;
+        if(string.contains("'"))
+            toBeReturned = false;
         
         return toBeReturned;
     }
@@ -1910,7 +1929,10 @@ public class GameInstance {
             {
                 tempItem = generateWeapon(level);
                 submitValue = tempItem.getName()+"="+((Integer)tempItem.itemId).toString()+"+"+((Integer)tempItem.getStrength()).toString()+"-"+((Integer)tempItem.getAgility()).toString()+"*"+((Integer)tempItem.getMagic()).toString()+"_"+((Integer)tempItem.getType()).toString();
-                out.printf("<tr><td>%s    </td><td>%d</td><td>%d</td><td>%d</td><td><input type=\"radio\" name=\"weapon\" value=\"%s\"></td></tr>\n",tempItem.getName(),tempItem.getStrength(), tempItem.getAgility(), tempItem.getMagic(), submitValue);
+                if(i==0)
+                    out.printf("<tr><td>%s    </td><td>%d</td><td>%d</td><td>%d</td><td><input type=\"radio\" name=\"weapon\" value=\"%s\" checked></td></tr>\n",tempItem.getName(),tempItem.getStrength(), tempItem.getAgility(), tempItem.getMagic(), submitValue);
+                else
+                    out.printf("<tr><td>%s    </td><td>%d</td><td>%d</td><td>%d</td><td><input type=\"radio\" name=\"weapon\" value=\"%s\"></td></tr>\n",tempItem.getName(),tempItem.getStrength(), tempItem.getAgility(), tempItem.getMagic(), submitValue);
             }
             out.println("</table>");
             
@@ -1919,7 +1941,10 @@ public class GameInstance {
             {
                 tempItem = generateArmor(level);
                 submitValue = tempItem.getName()+"="+((Integer)tempItem.itemId).toString()+"+"+((Integer)tempItem.getStrength()).toString()+"-"+((Integer)tempItem.getAgility()).toString()+"*"+((Integer)tempItem.getMagic()).toString()+"_"+((Integer)tempItem.getType()).toString();
-                out.printf("<tr><td>%s    </td><td>%d</td><td>%d</td><td>%d</td><td><input type=\"radio\" name=\"armor\" value=\"%s\"></td></tr>\n",tempItem.getName(),tempItem.getStrength(), tempItem.getAgility(), tempItem.getMagic(), submitValue);
+                if(i==0)
+                    out.printf("<tr><td>%s    </td><td>%d</td><td>%d</td><td>%d</td><td><input type=\"radio\" name=\"armor\" value=\"%s\" checked></td></tr>\n",tempItem.getName(),tempItem.getStrength(), tempItem.getAgility(), tempItem.getMagic(), submitValue);                    
+                else
+                    out.printf("<tr><td>%s    </td><td>%d</td><td>%d</td><td>%d</td><td><input type=\"radio\" name=\"armor\" value=\"%s\"></td></tr>\n",tempItem.getName(),tempItem.getStrength(), tempItem.getAgility(), tempItem.getMagic(), submitValue);
             }
             out.println("</table>");
             out.println(lastPart);
@@ -1953,7 +1978,15 @@ public class GameInstance {
         out.printf("here 13");//debug
         int magic = (Integer.parseInt(request.getParameter("magic"))*constantMagicPerLevel);
         out.printf("here 14");//debug
-        Item[] items = {new Item(request.getParameter("weapon")), new Item(request.getParameter("armor"))};
+        
+        //Item[] items = {new Item(request.getParameter("weapon")), new Item(request.getParameter("armor"))};
+        String weap = request.getParameter("weapon");out.printf("out 1");//debug
+        Item weap2 = new Item(weap);out.printf("out 2");//debug
+        String armor = request.getParameter("armor");out.printf("out 3");//debug
+        Item armor2 = new Item(armor);out.printf("out 4");//debug
+        
+        Item[] items = {weap2, armor2};out.printf("out 5");//debug
+        
         out.printf("here 5");//debug
         try{
             if(isValidString(name) & isValidString(bio))
@@ -1990,6 +2023,7 @@ public class GameInstance {
                out.printf("here 7");//debug
                if(isUnReg)
                     return stateEnum.INIT;
+               playerChar = chrct;
                return stateEnum.DECISION;
             }
             else
