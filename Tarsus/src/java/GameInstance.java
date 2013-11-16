@@ -641,6 +641,7 @@ public class GameInstance {
 
         // if level has changed create a new item inventory for the store
         // based on some hash function of the character's level
+        
         if(playerChar.getLevel() != storeLevel)
         {
                 storeLevel = playerChar.getLevel();
@@ -683,6 +684,7 @@ public class GameInstance {
                         characterHasItem(storeItems[i], playerChar, out);
                         disconnectDB();
                         storeItems[i] = null;
+                        getItems(out);
                     }
                     catch(Exception e)
                     {
@@ -705,12 +707,13 @@ public class GameInstance {
                    connectDB();
                    deleteItem(playerChar.itemsHeld[i], out);
                    disconnectDB();
+                   getItems(out);
                    }
                    catch(Exception e)
                    {
                        error = "failed to delete item from player's inventory.";
                    }
-                   
+                   break;
                    //printStoreState(out);
                 }
             }
