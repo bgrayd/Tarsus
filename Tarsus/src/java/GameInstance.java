@@ -214,7 +214,6 @@ public class GameInstance {
                     initState(out, request);
                     break;
             }
-            out.printf(currentState.toString());//debug
         }while((currentState != nextState)|(error!=null));
     }
     
@@ -246,7 +245,7 @@ public class GameInstance {
     
     Item generateItem(int type, int Level)
 	{
-		final String[] armor_name_type = {"Plate Armor", "Leather Armor", "Robe", "Mail Armor", "M-S armor", "M-A armor", "Armor"};
+		final String[] armor_name_type = {"Plate Armor", "Leather Armor", "Robe", "Mail Armor", "Magic Strength armor", "Magic Agility armor", "Armor"};
 		final String[] weapon_name_type = {"Sword", "Axe", "Mace", "Bow", "Crossbow", "Throwing Knives", "Staff", "Wand", "Orb"}; // Could have room for permutations
 		final String[] item_name_type = {"Potion"};
                 final String[] error_name_type = {"Error"};
@@ -384,9 +383,15 @@ public class GameInstance {
     {
         String search1 = "SELECT * FROM Characters WHERE level='"+Level.toString() + "' AND isDead=b'1';";
         connectDB();
+        
+        String maxCount = "SELECT COUNT(*) AS rows FROM Characters WHERE level='1' AND isDead=b'1';";
+        ResultSet resultMax = sqlQuery(maxCount, out);
+        resultMax.next();
+        int max = resultMax.getInt("rows");
+        disconnectDB();
+        connectDB();
         ResultSet result = sqlQuery(search1, out);
-        int max = result.getFetchSize();
-        int number = (int) (Math.random()*max);
+        int number = (int) (Math.random()*max) +1;
         
         
         if(result.isBeforeFirst())
@@ -396,7 +401,6 @@ public class GameInstance {
               result.next();
             }
             //result.next();
-            result.first();
             String name = result.getString("name");
             String bio = result.getString("bio");
             int level = result.getInt("level");
@@ -877,7 +881,7 @@ public class GameInstance {
             
             else if(playerChar.getHealth()<1)
             {
-                //mark the character as dead in the database debug
+                //mark the character as dead in the database
                 updateCharacter(playerChar, true, out);
                 return stateEnum.PROFILE;
             }
@@ -982,7 +986,7 @@ public class GameInstance {
         /*String value = request.getParameter("Home");
         if(value.equals("Home"))
             return stateEnum.INIT;*/
-        out.printf("here 1");//debug
+
         try
         {
             if(checkHome(request))
@@ -992,10 +996,8 @@ public class GameInstance {
         }
         catch(Exception e)
         {
-            out.printf("here 2");//debug
             return charCreationParameters(out, request, true);
         }
-        out.printf("here 3");//debug
         return charCreationParameters(out, request, true);
     }
 }
@@ -2114,6 +2116,7 @@ public class GameInstance {
             playerChar.setStrength(playerChar.getStrength()+strength*constantStrengthPerLevel);
             playerChar.setAgility(playerChar.getAgility()+agility*constantAgilityPerLevel);
             playerChar.setMagic(playerChar.getMagic()+magic*constantMagicPerLevel);
+            playerChar.setLevel(playerChar.getLevel()+1);
                         
             //update database
             updateCharacter(playerChar, false, out);
@@ -2256,36 +2259,26 @@ public class GameInstance {
 
     private stateEnum charCreationParameters(PrintWriter out, HttpServletRequest request, Boolean isUnReg) {
         
-        out.printf("here 4");//debug
-        
+
         String name = (String) request.getParameter("name");
-        out.printf("here 8");//debug
         String bio = request.getParameter("bio");
-        out.printf("here 9");//debug
         int level = Integer.parseInt(request.getParameter("level"));
-        out.printf("here 10");//debug
         int health = (Integer.parseInt(request.getParameter("health"))*constantHealthPerLevel + constantHealthBase);
-        out.printf("here 11");//debug
         int strength = (Integer.parseInt(request.getParameter("strength"))*constantStrengthPerLevel);
-        out.printf("here 12");//debug
         int agility = (Integer.parseInt(request.getParameter("agility"))*constantAgilityPerLevel);
-        out.printf("here 13");//debug
         int magic = (Integer.parseInt(request.getParameter("magic"))*constantMagicPerLevel);
-        out.printf("here 14");//debug
         
         //Item[] items = {new Item(request.getParameter("weapon")), new Item(request.getParameter("armor"))};
-        String weap = request.getParameter("weapon");out.printf("out 1");//debug
-        Item weap2 = new Item(weap);out.printf("out 2");//debug
-        String armor = request.getParameter("armor");out.printf("out 3");//debug
-        Item armor2 = new Item(armor);out.printf("out 4");//debug
+        String weap = request.getParameter("weapon");
+        Item weap2 = new Item(weap);
+        String armor = request.getParameter("armor");
+        Item armor2 = new Item(armor);
         
-        Item[] items = {weap2, armor2};out.printf("out 5");//debug
-        
-        out.printf("here 5");//debug
+        Item[] items = {weap2, armor2};
+
         try{
             if(isValidString(name) & isValidString(bio))
             {
-                out.printf("here 6");//debug
                newItem(items[0], out);
                newItem(items[1], out);
                PlayerCharacter chrct = new PlayerCharacter(name,bio, level, health, strength, agility, magic, items,items[0],items[1],0,0,0,0);
@@ -2314,7 +2307,6 @@ public class GameInstance {
                out.printf("%d\n",items[1].agility);
                out.printf("%d\n",items[1].magic);
                out.printf("%d\n",items[1].type);*/
-               out.printf("here 7");//debug
                if(isUnReg)
                     return stateEnum.INIT;
                playerChar = chrct;
