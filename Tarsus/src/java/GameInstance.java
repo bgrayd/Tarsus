@@ -888,6 +888,7 @@ public class GameInstance {
                         "		<div class=\"grid1\"> </div>\n" +
                         "		<div class=\"grid8 centered\">\n" +
                         "			<h1 id=\"title\" class=\"centered\">" + playerChar.getName() + "</h1>\n" +
+                        "                   <h2 id=\"title\" class=\"GoldDisplay\"> Gold: " + gold + "</h2>" +
                         "			<p align=\"center\">\n" +
                         "				<input name=\"To Battle!\" value=\"To Battle!\" type=\"submit\" class=\"profileButton\" />\n" +
                         "				<input name=\"Store\" value=\"Store\" type=\"submit\" class=\"profileButton\" />\n" +
@@ -949,8 +950,11 @@ public class GameInstance {
         else
         {
             String value1 = request.getParameter(accountName);
+            String value2 = request.getParameter("Log Out");
             if(value1 != null)
                 return stateEnum.DECISION;
+            else if(value2 != null)
+                return stateEnum.LOGOUT;
             else
             {
                 for (int i = 0; i < playerChar.itemsHeld.length - 1; i++){
@@ -1340,7 +1344,7 @@ public class GameInstance {
     }
     
     stateEnum pastCharactersState(PrintWriter out, HttpServletRequest request) {
-        if(startingState != stateEnum.ACCOUNT_CREATION)
+        if(startingState != stateEnum.PAST_CHARACTERS)
         {
             String startPart = "<html>\n" +
                                 "	<head>\n" +
@@ -1356,8 +1360,9 @@ public class GameInstance {
                                 "	<title> Tarsus </title>\n" +
                                 "	</head>\n" +
                                 "	<body>\n" +
+                                "           <form action=\"Tarsus\" method=\"get\">" +
                                 "		<div id=\"header\" class=\"grid10\" align=\"right\">\n" +
-                                "			<input class=\"button\" name=\"" + accountName + "\" value=\"" + accountName + "\" type=\"submit\" /> \n" +
+                                "			<input name=\"" + accountName + "\" value=\"" + accountName + "\" type=\"submit\" id=\"tarsusTitle\" /> \n" +
                                 "			<input class=\"button\" name=\"Log Out\" value=\"Log Out\" type=\"submit\" /> </div>\n" +
                                 "		<div class=\"grid1\"> </div>\n" +
                                 "		<div class=\"grid8 centered\">\n" +
@@ -1376,6 +1381,7 @@ public class GameInstance {
                                 "		</table>\n" +
                                 "		</div>\n" +
                                 "		<div class=\"grid1\"> </div>\n" +
+                                "           </form>" +
                                 "	</body>\n" +
                                 "	\n" +
                                 "</html>";
@@ -1386,13 +1392,13 @@ public class GameInstance {
             int rows = 0;
             try
             {
-                            //getting the amount of dead characters
-            String search1 = "SELECT COUNT(name) AS rows FROM Characters WHERE creator='" + accountName + "' AND isDead=1;";
-            connectDB();
-            result = sqlQuery(search1, out);
-            result.next();
-            rows = result.getInt("rows");
-            disconnectDB();
+                //getting the amount of dead characters
+                String search1 = "SELECT COUNT(name) AS rows FROM Characters WHERE creator='" + accountName + "' AND isDead=1;";
+                connectDB();
+                result = sqlQuery(search1, out);
+                result.next();
+                rows = result.getInt("rows");
+                disconnectDB();
             }
             catch(Exception ex)
             {
@@ -1469,17 +1475,17 @@ public class GameInstance {
         else
         {
             String value1 = request.getParameter(accountName);
-            String value2 = request.getParameter("Log out");
+            String value2 = request.getParameter("Log Out");
 
             String value = "";
             if(value1 != null)
                 value = value1;
-            if(value2!=null)
+            if(value2 != null)
                 value = value2;
           
             if(value.equals(accountName))
                 return stateEnum.PROFILE;
-            if(value.equals("Log out"))
+            if(value.equals("Log Out"))
                 return stateEnum.LOGOUT;
         }
         return stateEnum.PROFILE;
@@ -1550,6 +1556,7 @@ public class GameInstance {
             "		<div class=\"grid1\"> </div>\n" +
             "		<div class=\"grid8 centered\">\n" +
             "		<h1 id=\"title\" class=\"centered\">Blacksmith</h1>\n" +
+            "                   <h2 id=\"title\" class=\"GoldDisplay\"> Gold: " + gold + "</h2>" +
             "		<table id=\"table\" align=\"center\">\n" +
             "			<tr>\n" +
             "				<td> </td>\n" +
@@ -1660,12 +1667,12 @@ public class GameInstance {
             "	<body>\n" +
             "   <form action=\"Tarsus\" method=\"post\">" + 
             "		<div id=\"header\" class=\"grid10\" align=\"right\">\n" +
-            "                   <p>Gold: " + gold + "</p>" +
             "			<input name=\"" + accountName + "\" value=\"" + accountName + "\" id=\"tarsusTitle\" type=\"submit\" /> \n" +
             "			<input class=\"button\" name=\"Log Out\" value=\"Log Out\" type=\"submit\" /> </div>\n" +
             "		<div class=\"grid2\"> </div>\n" +
             "		<div class=\"grid6 centered\">\n" +
             "			<h1 id=\"title\" class=\"centered\">TARSUS</h1> <br />\n" +
+            "                   <h2 id=\"title\" class=\"GoldDisplay\"> Gold: " + gold + "</h2>" +
             "			<div align=\"center\"> \n" +
             "				<input class=\"profileButton\" name=\"Create Character\" value=\"Create Character\" type=\"submit\" />\n" +
             "				<input class=\"profileButton\" name=\"Look at Past Characters\" value=\"Look at Past Characters\" type=\"submit\" /> \n" +
@@ -1695,12 +1702,12 @@ public class GameInstance {
             "	<body>\n" +
             "   <form action=\"Tarsus\" method=\"post\">" + 
             "		<div id=\"header\" class=\"grid10\" align=\"right\">\n" +
-            "                   <p>Gold: " + gold + "</p>" +
             "			<input name=\"" + accountName + "\" value=\"" + accountName + "\" id=\"tarsusTitle\" type=\"submit\" /> \n" +
             "			<input class=\"button\" name=\"Log Out\" value=\"Log Out\" type=\"submit\" /> </div>\n" +
             "		<div class=\"grid2\"> </div>\n" +
             "		<div class=\"grid6 centered\">\n" +
             "			<h1 id=\"title\" class=\"centered\">TARSUS</h1> <br />\n" +
+            "                   <h2 id=\"title\" class=\"GoldDisplay\"> Gold: " + gold + "</h2>" +
             "			<div align=\"center\"> \n" +
             "				<input class=\"profileButton\" name=\"Load Character\" value=\"Load Character\" type=\"submit\" />  \n" +
             "				<input class=\"profileButton\" name=\"Look at Past Characters\" value=\"Look at Past Characters\" type=\"submit\" /> \n" +
