@@ -30,40 +30,32 @@ public class Tarsus extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        PrintWriter out = response.getWriter();
-        Boolean clearSession = false;
-        try
-        {
-            String reset = request.getParameter("RESET");
-            if(reset.equals("RESET"))
-                clearSession=true;
-        }
-        finally{
-            try {
-                /* TODO output your page here. You may use following sample code. 
-                out.println("<!DOCTYPE html>");
-                out.println("<html>");
-                out.println("<head>");
-                out.println("<title>Servlet Tarsus</title>");            
-                out.println("</head>");
-                out.println("<body>");
-                out.println("<h1>Servlet Tarsus at " + request.getContextPath() + "</h1>");
-                out.println("</body>");
-                out.println("</html>");*/
-
-                HttpSession session = request.getSession();
-                GameInstance instance = (GameInstance)session.getAttribute("GameInstance");
-                if((instance == null)|(clearSession))
-                {
-                    instance = new GameInstance();
-                    session.setAttribute("GameInstance", (Object)instance);
-                }
-
-                instance.advanceGame(out, request);
-
-            } finally {            
-                out.close();
+        PrintWriter out = response.getWriter();        
+        try {
+            /* TODO output your page here. You may use following sample code. 
+            out.println("<!DOCTYPE html>");
+            out.println("<html>");
+            out.println("<head>");
+            out.println("<title>Servlet Tarsus</title>");            
+            out.println("</head>");
+            out.println("<body>");
+            out.println("<h1>Servlet Tarsus at " + request.getContextPath() + "</h1>");
+            out.println("</body>");
+            out.println("</html>");*/
+        
+            HttpSession session = request.getSession();
+            GameInstance instance = (GameInstance)session.getAttribute("GameInstance");
+            
+            if(instance == null)
+            {
+                instance = new GameInstance();
+                session.setAttribute("GameInstance", (Object)instance);
             }
+            
+            instance.advanceGame(out, request);
+
+        } finally {            
+            out.close();
         }
     }
 
