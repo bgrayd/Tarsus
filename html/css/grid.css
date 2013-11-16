@@ -12,8 +12,8 @@
 .grid9 {width: 90%;}
 .grid10 {width: 100%;}
 
-.gridHalf{width: 50%; float:left; display: block;}
-
+.gridHalf{width: 45%; float:left; display: block;}
+.gridMiddle{width: 11%; float: left; display: block;}
 .centeredHead {margin-left: auto; margin-right: auto;}
 
 .centered{margin-left: auto; margin-right: auto;}
