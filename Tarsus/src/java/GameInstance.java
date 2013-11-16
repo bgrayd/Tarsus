@@ -25,7 +25,7 @@ public class GameInstance {
     String error;
     int storeLevel;
     Item[] storeItems;
-
+    String item_type_string[] = {"Error", "Weapon", "Armor", "Item"};
     
     int constantPtsPerLevel = 5;
     int constantWeaponPtsPerLevel = 3;
@@ -966,8 +966,11 @@ public class GameInstance {
                         "			</p>\n" +
                         "		</div>\n" +
                         "		<div class=\"grid1\"> </div>\n" +
-                        "	    </form>\n" +
+                        "	    </form>\n"); /*+
                         "	</body>\n" +
+                        "</html>");*/
+            printInventory(out);
+            out.println("	</body>\n" +
                         "</html>");
             return stateEnum.DECISION;
         }
@@ -1783,7 +1786,7 @@ public class GameInstance {
     
     public void printStoreState(PrintWriter out)
     {
-        String item_type_string[] = {"Error", "Weapon", "Armor", "Item"};
+        //String item_type_string[] = {"Error", "Weapon", "Armor", "Item"};
 
 			
 			String startPart = "<html>\n" +
@@ -1878,7 +1881,7 @@ public class GameInstance {
                     
                 }
                 else{
-                out.println(storeItems[i]);
+                //out.println(storeItems[i]);
                 out.println("<tr>");
                 out.println("<td> <input id =\"" + i + "\" type=\"submit\" value=\"Buy" + "\" name=\"Buy " + i + "\" class=\"tableButton\"> </td>");
                 out.println("<td>");
@@ -1906,7 +1909,7 @@ public class GameInstance {
                 }
 			}
 	out.println(sellPart);
-        out.println("player items held length: " + playerChar.itemsHeld.length);
+        //out.println("player items held length: " + playerChar.itemsHeld.length);
 	for (int i = 0; i < playerChar.itemsHeld.length; i++){
             if(playerChar.itemsHeld[i] == null)
             {
@@ -2163,6 +2166,75 @@ public class GameInstance {
         return value.equals("Home");
     }
 
+    private void printInventory(PrintWriter out)
+    {
+      String startPart = 
+                    "		<div class=\"grid1 centered\"> </div>\n" +
+					"<div class=\"grid1\"> </div>\n" +
+		            "		<div class=\"grid8 centered\">\n" +
+		            "		<h1 id=\"title\" class=\"centered\">Your Inventory</h1>\n" +
+		            "		<table id=\"table\" align=\"center\">\n" +
+		            "			<tr>\n" +
+		            "				<td> </td>\n" +
+		            "				<th> Name </th>\n" +
+		            "				<th> Strength </th>\n" +
+		            "				<th> Magic </th>\n" +
+		            "				<th> Agility </th>\n" +
+		            "				<th> Heal </th>\n" +
+		            "				<th> Type </th>\n" + 
+		            "				<th> Upgrade Count </th>\n" +
+		            "			</tr>\n" +
+		            "			";
+      String endPart = "</table> </div>";
+      
+      out.println(startPart);
+      for (int i = 0; i < playerChar.itemsHeld.length; i++){
+            if(playerChar.itemsHeld[i] == null)
+            {
+                continue;
+            }
+                out.println("<tr>");
+                //out.println(" loop level: " + i);
+                out.println("<td>");
+                if(playerChar.itemsHeld[i] == playerChar.armor)
+                {
+                    out.println("<b>Equiped Armor</b>");
+                }
+                else if(playerChar.itemsHeld[i] == playerChar.weapon)
+                {
+                    out.println("<b>Equiped Weapon</b>");
+                }
+                else
+                {
+                    out.println("");
+                }
+                out.println("</td>");
+                out.println("<td>");
+                out.println(playerChar.itemsHeld[i].getName());
+                out.println("</td>");
+                out.println("<td>");
+                out.println(playerChar.itemsHeld[i].getStrength());
+                out.println("</td>");
+                out.println("<td>");
+                out.println(playerChar.itemsHeld[i].getAgility());
+                out.println("</td>");
+                out.println("<td>");
+                out.println(playerChar.itemsHeld[i].getMagic());
+                out.println("</td>");
+                out.println("<td>");
+                out.println(playerChar.itemsHeld[i].getHeal());
+                out.println("</td>");
+                out.println("<td>");
+                out.println(item_type_string[playerChar.itemsHeld[i].getType()]);
+                out.println("</td>");
+                out.println("<td>");
+                out.println(playerChar.itemsHeld[i].getUpgradeCount());
+                out.println("</td>");
+                out.println("</tr>");
+      }
+      out.println(endPart);
+    }
+    
     private stateEnum charCreationParameters(PrintWriter out, HttpServletRequest request, Boolean isUnReg) {
         
         String name = (String) request.getParameter("name");
