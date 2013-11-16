@@ -685,6 +685,7 @@ public class GameInstance {
                     try{
                         connectDB();
                         newItem(storeItems[i], out);
+                        characterHasItem(storeItems[i], playerChar, out);
                         disconnectDB();
                         storeItems[i] = null;
                     }
@@ -2077,7 +2078,7 @@ public class GameInstance {
 "			var strength = parseInt(document.forms[\"createCharacterForm\"][\"strength\"].value); \n" +
 "			var agility = parseInt(document.forms[\"createCharacterForm\"][\"agility\"].value);\n" +
 "			var magic = parseInt(document.forms[\"createCharacterForm\"][\"magic\"].value);\n" +
-"                       var health = parseInt(document.forms[\"createCharacterForm\"][\"magic\"].value);\n" +
+"                       var health = parseInt(document.forms[\"createCharacterForm\"][\"health\"].value);\n" +
 "			var total = strength + agility + magic + health;\n" +
 "			alert(\"Total Experience points used: \" + total);\n" +
 "			if(total > maxValue)\n" +
@@ -2170,7 +2171,7 @@ public class GameInstance {
 "                        var strength = parseInt(document.forms[\"createCharacterForm\"][\"strength\"].value); \n" +
 "                        var agility = parseInt(document.forms[\"createCharacterForm\"][\"agility\"].value);\n" +
 "                        var magic = parseInt(document.forms[\"createCharacterForm\"][\"magic\"].value);\n" +
-"                       var health = parseInt(document.forms[\"createCharacterForm\"][\"magic\"].value);\n" +
+"                       var health = parseInt(document.forms[\"createCharacterForm\"][\"health\"].value);\n" +
 "                        var total = strength + agility + magic + health;\n" +
 "                        alert(\"Total Experience points used: \" + total);\n" +
 "                        if(total > maxValue)\n" +
