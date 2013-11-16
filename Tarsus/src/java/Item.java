@@ -89,8 +89,8 @@ class Item {
 	int getValue()
     {
     	// returns a value with a slight exponential increase as items get better
-    	int sum = strength + agility + magic + health;
-    	int value_sum = (sum) * (sum / 10);
+    	double sum = strength + agility + magic + health;
+    	int value_sum = (int)((sum) * (sum / 50.0));
     	return value_sum;
     }
         
