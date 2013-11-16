@@ -440,9 +440,19 @@ public class GameInstance {
         String query = "Insert into Items (itemId, name, type, strengthVal, healthVal, upgradeCount, magicVal, agilityVal) VALUES ('"+((Integer)item.getItemId()).toString()+"', '"+item.getName()+"', '"+((Integer)item.getType()).toString()+"', '"+((Integer)item.getStrength()).toString()+"', '"+((Integer)item.getHeal()).toString()+"', '"+((Integer)item.getUpgradeCount()).toString()+"', '"+((Integer)item.getMagic()).toString()+"', '"+((Integer)item.getAgility()).toString()+"');";
         return sqlCommand(query,out);
     }
-    Boolean deleteItem(Item item, PrintWriter out) throws SQLException
+    
+    Boolean deleteCharacterHasItem(Item item, PrintWriter out) throws SQLException
     {
         //String query = "DELETE FROM CharacterHasItem WHERE itemID=";
+        String query = "DELETE FROM CharacterHasItem WHERE itemId=";
+        query += "" + item.getItemId() + "";
+        query += ";";
+        return sqlCommand(query, out);
+    }
+    
+    Boolean deleteItem(Item item, PrintWriter out) throws SQLException
+    {
+        deleteCharacterHasItem(item, out);
         String query = "DELETE FROM Items WHERE itemId=";
         query += "" + item.getItemId() + "";
         query += ";";
