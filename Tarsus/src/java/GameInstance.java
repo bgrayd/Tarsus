@@ -935,6 +935,7 @@ public class GameInstance {
         {
             int newGold = (int) (constantGoldPerLevel*playerChar.getLevel()*(Math.random()*.4+.8));
             gold+=newGold;
+            updateGold(out);
             playerChar.setHealth(playerChar.getMaxHealth());
             out.printf("Congradulations you beat your enemy.\n You get %d gold.\n", newGold);
             out.printf("<input type=\"submit\" name=\"OK\" value=\"OK\" class=\"profileButton\" /> \n");
