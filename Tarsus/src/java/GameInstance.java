@@ -1917,7 +1917,16 @@ public class GameInstance {
             }
                 out.println("<tr>");
                 out.println(" loop level: " + i);
-                out.println("<td> <input type=\"submit\" value=\"Sell" +  "\" name=\"Sell " + i + "\" class=\"tableButton\"> </td>");
+                out.println("<td>");
+                if((playerChar.itemsHeld[i] != playerChar.weapon) && (playerChar.itemsHeld[i] != playerChar.armor))
+                {
+                out.println("<input type=\"submit\" value=\"Sell" +  "\" name=\"Sell " + i + "\" class=\"tableButton\">");
+                }
+                else
+                {
+                    out.println("Equiped Item");
+                }
+                out.println("</td>");
                 out.println("<td>");
                 out.println(playerChar.itemsHeld[i].getName());
                 out.println("</td>");
