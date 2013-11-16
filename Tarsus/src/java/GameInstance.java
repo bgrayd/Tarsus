@@ -660,15 +660,20 @@ public class GameInstance {
         }
         else{
         String value1 = request.getParameter(accountName);
+        String value2 = request.getParameter("Log Out");
         if(value1 != null)
         {
-            out.println("going to Decision state");
+            //out.println("going to Decision state");
             return stateEnum.DECISION;
+        }
+        else if(value2 != null)
+        {
+            return stateEnum.LOGOUT;
         }
         else
         {
-            out.print("I think you pressed a button");
-            out.print(" Currency: " + gold + " ");
+            //out.print("I think you pressed a button");
+            //out.print(" Currency: " + gold + " ");
             if(request.getParameter(accountName) != null)
                 return stateEnum.DECISION;
             // for buying items from the store
@@ -700,7 +705,7 @@ public class GameInstance {
             }
             // for selling items player's inventory
             for (int i = 0; i < playerChar.itemsHeld.length; i++){
-                out.println("going through sell item: " + i);
+                //out.println("going through sell item: " + i);
                 String sellValue = request.getParameter("Sell " + i);
                 if(sellValue != null)
                 {
@@ -1695,7 +1700,7 @@ public class GameInstance {
 	
     double getQuality(int level)
     {
-        double ratio = ((double)level) / ((double)level + 1.0);
+        double ratio = ((double)level) / ((double)level + 5.0);
 	double quality = Math.random() * ratio;
 	return quality;
     }
@@ -2025,7 +2030,7 @@ public class GameInstance {
                 continue;
             }
                 out.println("<tr>");
-                out.println(" loop level: " + i);
+                //out.println(" loop level: " + i);
                 out.println("<td>");
                 if((playerChar.itemsHeld[i] != playerChar.weapon) && (playerChar.itemsHeld[i] != playerChar.armor))
                 {
@@ -2055,7 +2060,7 @@ public class GameInstance {
                 out.println(item_type_string[playerChar.itemsHeld[i].getType()]);
                 out.println("</td>");
                 out.println("<td>");
-                out.println((int)(0.60 * playerChar.itemsHeld[i].getValue()));
+                out.println((int)(0.60 * (double)(playerChar.itemsHeld[i].getValue())));
                 out.println("</td>");
                 out.println("</tr>");
 			}
