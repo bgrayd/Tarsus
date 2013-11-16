@@ -83,7 +83,7 @@ class Item {
     }
     int getHeal()
     {
-        return CONSTANT_potionHeal * health;
+        return health;
     }
 	
 	int getValue()
