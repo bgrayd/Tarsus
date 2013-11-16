@@ -458,8 +458,12 @@ public class GameInstance {
         }
         else
         {
-            Item[] itemsHeld = {generateWeapon(1), generateArmor(1), generateWeapon(1), generateArmor(1)};
-            aresChar = new AresCharacter("enemy", "", 1, 100, 1, 2, 3, itemsHeld, itemsHeld[0], itemsHeld[1], 0, 0, 0, 0);
+            Item[] itemsHeld = {generateWeapon(Level +1), generateArmor(Level+1)};
+            int aresHealth = constantHealthBase+(Level+1)*constantPtsPerLevel*constantHealthPerLevel;
+            int aresStrength = (Level+1)*constantPtsPerLevel*constantStrengthPerLevel;
+            int aresAgility = (Level+1)*constantPtsPerLevel*constantAgilityPerLevel;
+            int aresMagic = (Level+1)*constantPtsPerLevel*constantMagicPerLevel;
+            aresChar = new AresCharacter("Ares", "", Level, aresHealth, aresStrength, aresAgility, aresMagic, itemsHeld, itemsHeld[0], itemsHeld[1], 0, 0, 0, 0);
         }
     }
     
