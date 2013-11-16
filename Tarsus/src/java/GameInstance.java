@@ -2462,4 +2462,20 @@ public class GameInstance {
             out.println("Error: " + ex);
         }
     }
+    
+    void updateGold(PrintWriter out)
+    {
+        connectDB();
+        String query = "UPDATE Login SET gold=\"" + gold + "\";";
+        boolean okay = sqlCommand(query, out);
+        if(okay)
+        {
+            //do nothing
+        }
+        else
+        {
+            out.println("Error: You suck!");
+        }
+        disconnectDB();
+    }
 }
