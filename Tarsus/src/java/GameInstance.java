@@ -981,7 +981,7 @@ public class GameInstance {
                         else //playerChar.itemsHeld[i].getType() == 2
                         {
                             query = query + "strengthVal=strengthVal+'" + playerChar.itemsHeld[i].CONSTANT_armorUpgrade + 
-                                    "', agilityVal=alilityVal+'" + playerChar.itemsHeld[i].CONSTANT_armorUpgrade + 
+                                    "', agilityVal=agilityVal+'" + playerChar.itemsHeld[i].CONSTANT_armorUpgrade + 
                                     "', magicVal=magicVal+'" + playerChar.itemsHeld[i].CONSTANT_armorUpgrade;
                         }
                         query = query + "' WHERE itemId='" + playerChar.itemsHeld[i].getItemId() + "';";
@@ -1288,7 +1288,6 @@ public class GameInstance {
                     int equipWeaponId = result.getInt("equippedWeapon");
                     int equipArmorId = result.getInt("equippedArmor");
                     disconnectDB();
-                    
                     //getting the length for itemsHeld
                     connectDB();
                     String search2 = "SELECT COUNT(I.itemId) AS rows FROM Items I, CharacterHasItem C WHERE I.itemId=C.itemId AND C.charName='" + name + "';";
@@ -1327,6 +1326,7 @@ public class GameInstance {
                         i++;
                     }
                     disconnectDB();
+                    
                     playerChar = new PlayerCharacter(name, bio, level, health, strength, agility, magic, itemsHeld, weapon, armor, timesAttacked, timesSwitchedToStrength, timesSwitchedToAgility, timesSwitchedToMagic);
                     return stateEnum.DECISION;
                 }
@@ -1562,8 +1562,8 @@ public class GameInstance {
             "				<td> </td>\n" +
             "				<th> Name </th>\n" +
             "				<th> Strength </th>\n" +
-            "				<th> Magic </th>\n" +
             "				<th> Agility </th>\n" +
+            "				<th> Magic </th>\n" +
             "				<th> Type </th>\n" +
             "                           <th> Times Upgraded </th>\n" +
             "			</tr>\n";
@@ -1751,8 +1751,8 @@ public class GameInstance {
 		            "				<td> </td>\n" +
 		            "				<th> Name </th>\n" +
 		            "				<th> Strength </th>\n" +
-		            "				<th> Magic </th>\n" +
 		            "				<th> Agility </th>\n" +
+		            "				<th> Magic </th>\n" +
 		            "				<th> Heal </th>\n" +
 		            "				<th> Type </th>\n" + 
 		            "				<th> Price </th>\n" +
@@ -1769,8 +1769,8 @@ public class GameInstance {
 		            "				<td> </td>\n" +
 		            "				<th> Name </th>\n" +
 		            "				<th> Strength </th>\n" +
-		            "				<th> Magic </th>\n" +
 		            "				<th> Agility </th>\n" +
+		            "				<th> Magic </th>\n" +
 		            "				<th> Heal </th>\n" +
 		            "				<th> Type </th>\n" + 
 		            "				<th> Price </th>\n" +
@@ -2133,6 +2133,49 @@ public class GameInstance {
             if(isUnReg)
                 return stateEnum.UNREGISTERED_CHARACTER_CREATION;
             return stateEnum.REGISTERED_CHARACTER_CREATION;
+        }
+    }
+    
+    void getItems(PrintWriter out)
+    {
+        //getting the length for itemsHeld
+        playerChar.itemsHeld = null;
+        ResultSet result;
+        try
+        {
+            connectDB();
+            String search1 = "SELECT COUNT(I.itemId) AS rows FROM Items I, CharacterHasItem C WHERE I.itemId=C.itemId AND C.charName='" + playerChar.getName() + "';";
+            result = sqlQuery(search1, out);
+            result.next();
+            int rows = result.getInt("rows");
+            disconnectDB();
+
+            playerChar.itemsHeld = new Item[rows];
+            Item weapon = null;
+            Item armor = null;
+            String search2 = "SELECT * FROM Items I, CharacterHasItem C WHERE I.itemId=C.itemId AND C.charName='" + playerChar.getName() + "';";
+            connectDB();
+            result = sqlQuery(search2, out);
+            //temp varible
+            int i = 0;
+            while (result.next())
+            {
+                String iName = result.getString("name");
+                int itemId = result.getInt("itemId");
+                int type = result.getInt("type");
+                int upgradeCount = result.getInt("upgradeCount");
+                int strengthVal= result.getInt("strengthVal");
+                int agilityVal = result.getInt("agilityVal");
+                int magicVal = result.getInt("magicVal");
+                Item item = new Item(iName, itemId, type, upgradeCount, strengthVal, agilityVal, magicVal, 0);
+                playerChar.itemsHeld[i] = item;
+                i++;
+            }
+            disconnectDB();
+        }
+        catch(Exception ex)
+        {
+            out.println("Error: " + ex);
         }
     }
 }
