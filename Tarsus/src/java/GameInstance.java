@@ -1759,8 +1759,9 @@ public class GameInstance {
 "	<body>\n" +
                 "<form name=\"createCharacterForm\" action=\"Tarsus\" onsubmit=\"return validateForm()\" method=\"post\">\n" +
 "		<div id=\"header\" class=\"grid10\" align=\"right\">\n" +
-                "<input type=\"Submit\" name=\"Home\" value=\"Home\"  class=\"FrontPageButton\" />" +
+                "<input type=\"Submit\" name=\"Home\" value=\"Home\"  id=\"tarsusTitle\" />" +
 "		<div class=\"grid1\"> </div></div>\n" +
+"               <div class=\"grid1\"> </div>" +
 "		<div class=\"grid8 centered\">\n" +
 "		<h1 id=\"title\" class=\"centered\">Character Creation</h1>\n" +
 "		\n" +
@@ -1850,8 +1851,9 @@ public class GameInstance {
 "        <body>\n" +
 "                <form action=\"Tarsus\" method=\"post\">" +
 "                <div id=\"header\" class=\"grid10\" align=\"right\">\n" +
-                "<input type=\"Submit\" name=\"Home\" value=\"Home\"  class=\"FrontPageButton\" />" +
+                "<input type=\"Submit\" name=\"Home\" value=\"Home\"  id=\"tarsusTitle\" />" +
 "                <div class=\"grid1\"> </div></div>\n" +
+"                <div class=\"grid1\"> </div>"+ 
 "                <div class=\"grid8 centered\">\n" +
                 "</form>" +
 "<form name=\"createCharacterForm\" action=\"Tarsus\" onsubmit=\"return validateForm()\" method=\"post\">\n" +
