@@ -453,8 +453,12 @@ public class GameInstance {
         }
         else
         {
-            Item[] itemsHeld = {generateWeapon(1), generateArmor(1), generateWeapon(1), generateArmor(1)};
-            aresChar = new AresCharacter("enemy", "", 1, 100, 1, 2, 3, itemsHeld, itemsHeld[0], itemsHeld[1], 0, 0, 0, 0);
+            Item[] itemsHeld = {generateWeapon(Level +1), generateArmor(Level+1)};
+            int aresHealth = constantHealthBase+(Level+1)*constantPtsPerLevel*constantHealthPerLevel;
+            int aresStrength = (Level+1)*constantPtsPerLevel*constantStrengthPerLevel;
+            int aresAgility = (Level+1)*constantPtsPerLevel*constantAgilityPerLevel;
+            int aresMagic = (Level+1)*constantPtsPerLevel*constantMagicPerLevel;
+            aresChar = new AresCharacter("Ares", "", Level, aresHealth, aresStrength, aresAgility, aresMagic, itemsHeld, itemsHeld[0], itemsHeld[1], 0, 0, 0, 0);
         }
     }
     
@@ -931,6 +935,7 @@ public class GameInstance {
         {
             int newGold = (int) (constantGoldPerLevel*playerChar.getLevel()*(Math.random()*.4+.8));
             gold+=newGold;
+            updateGold(out);
             playerChar.setHealth(playerChar.getMaxHealth());
             out.printf("Congradulations you beat your enemy.\n You get %d gold.\n", newGold);
             out.printf("<input type=\"submit\" name=\"OK\" value=\"OK\" class=\"profileButton\" /> \n");
@@ -2368,7 +2373,18 @@ public class GameInstance {
         Item[] items = {weap2, armor2};
 
         try{
-            if(isValidString(name) & isValidString(bio))
+            String findCharName = "SELECT name FROM Characters "
+                    + "WHERE name = \"" + name + "\";";
+            
+            Boolean alreadyExists = false;
+                connectDB();
+                ResultSet result = sqlQuery(findCharName, out);
+                if(result.isBeforeFirst()){
+                    alreadyExists= true;
+                    
+                }
+            
+            if(isValidString(name) & isValidString(bio) & !alreadyExists)
             {
                newItem(items[0], out);
                newItem(items[1], out);
@@ -2377,27 +2393,6 @@ public class GameInstance {
                newCharacter(chrct,isUnReg, out);
                characterHasItem(items[0], chrct, out);
                characterHasItem(items[1], chrct, out);
-               /*
-               out.println(name);
-               out.printf("level: %d\n",level);
-               out.println(bio);
-               out.printf("health: %d\n",health);
-               out.printf("strength: %d\n",strength);
-               out.printf("agility: %d\n",agility);
-               out.printf("magic: %d\n",magic);
-               out.printf("%s\n",items[0].name);
-               out.printf("%d\n",items[0].itemId);
-               out.printf("%d\n",items[0].strength);
-               out.printf("%d\n",items[0].agility);
-               out.printf("%d\n",items[0].magic);
-               out.printf("%d\n",items[0].type);
-
-               out.printf("%s\n",items[1].name);
-               out.printf("%d\n",items[1].itemId);
-               out.printf("%d\n",items[1].strength);
-               out.printf("%d\n",items[1].agility);
-               out.printf("%d\n",items[1].magic);
-               out.printf("%d\n",items[1].type);*/
                if(isUnReg)
                     return stateEnum.INIT;
                playerChar = chrct;
@@ -2406,6 +2401,8 @@ public class GameInstance {
             else
             {
                 error = "The character name or bio is invalid or there was a database error";
+                if(alreadyExists)
+                    error = "That name is already in use";
                 if(isUnReg)
                     return stateEnum.UNREGISTERED_CHARACTER_CREATION;
                 return stateEnum.REGISTERED_CHARACTER_CREATION;
