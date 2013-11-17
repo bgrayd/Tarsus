@@ -1947,7 +1947,7 @@ public class GameInstance {
 		            "			</tr>\n" +
 		            "			<tr>";
 			String sellPart = "		</table>\n" +
-                    "		</div>\n" +
+                    "		</div>\n" + 
                     "		<div class=\"grid1\"> </div>\n" +
 			"       <div class=\"grid10\">" + 
                         "       <div class=\"grid1\"> </div>\n" +
