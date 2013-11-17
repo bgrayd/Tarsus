@@ -1604,7 +1604,10 @@ public class GameInstance {
                             out.println(result.getInt("level"));
                             out.println("</td>");
                             out.println("<td>");
-                            out.println(result.getInt("isDead"));
+                            if(result.getInt("isDead") == 0)
+                                out.println("Alive");
+                            else
+                                out.println("Dead");
                             out.println("</td>");
                             out.println("<td>");
                             out.println(result.getString("creator"));
@@ -2095,13 +2098,13 @@ public class GameInstance {
 		            "			</tr>\n" +
 		            "			";
 			
-			String buttonPart = ("		</table>\n" +
+			String buttonPart = "		</table>\n" +
 	                "		</div>\n" +
-	                "		<div class=\"grid1\"> </div> </div>\n" +
-					"		<div class=\"grid10\" align=\"center\">\n" +
-					"			<input id=\"Form\" type =\"submit\" value=\"This button does not do anything\" class=frontPageButton /> \n" +
-					"		</div>\n" +
-					"		</form>\n");
+	                //"		<div class=\"grid1\"> </div> </div>\n" +
+			//		"		<div class=\"grid10\" align=\"center\">\n" +
+			//		"			<input id=\"Form\" type =\"submit\" value=\"This button does not do anything\" class=frontPageButton /> \n" +
+			//		"		</div>\n" +
+					"		</form>\n";
 			
             String endPart = 
                     /*"</table>\n" +"</div>\n" +*/
@@ -2136,7 +2139,7 @@ public class GameInstance {
                 else{
                 //out.println(storeItems[i]);
                 out.println("<tr>");
-                out.println("<td> <input id =\"" + i + "\" type=\"submit\" value=\"Buy" + "\" name=\"Buy " + i + "\" class=\"tableButton\"> </td>");
+                out.println("<td> <input type=\"submit\" value=\"Buy" + "\" name=\"Buy " + i + "\" class=\"tableButton\"> </td>");
                 out.println("<td>");
                 out.println(storeItems[i].getName());
                 out.println("</td>");
@@ -2154,8 +2157,9 @@ public class GameInstance {
                 out.println("</td>");
                 out.println("<td>");
                 out.println(item_type_string[storeItems[i].getType()]);
-                out.println("</td>");
-                out.println("<td>");
+                out.println("</td>");               
+                out.println("<td id =\"" + i + "\" ");
+                out.println("value=" + storeItems[i].getValue() + " >");
                 out.println(storeItems[i].getValue());
                 out.println("</td>");
                 out.println("</tr>");
