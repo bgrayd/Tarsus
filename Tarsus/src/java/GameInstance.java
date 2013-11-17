@@ -1942,7 +1942,8 @@ public class GameInstance {
 			String sellPart = "		</table>\n" +
                     "		</div>\n" +
                     "		<div class=\"grid1\"> </div>\n" +
-					"<div class=\"grid1\"> </div>\n" +
+			"       <div class=\"grid10\">" + 
+                        "       <div class=\"grid1\"> </div>\n" +
 		            "		<div class=\"grid8 centered\">\n" +
 		            "		<h1 id=\"title\" class=\"centered\">Your Items</h1>\n" +
 		            "		<table id=\"table\" align=\"center\">\n" +
@@ -1960,7 +1961,7 @@ public class GameInstance {
 			
 			String buttonPart = ("		</table>\n" +
 	                "		</div>\n" +
-	                "		<div class=\"grid1\"> </div>\n" +
+	                "		<div class=\"grid1\"> </div> </div>\n" +
 					"		<div class=\"grid10\" align=\"center\">\n" +
 					"			<input id=\"Form\" type =\"submit\" value=\"This button does not do anything\" class=frontPageButton /> \n" +
 					"		</div>\n" +
@@ -2433,7 +2434,7 @@ public class GameInstance {
     {
       String startPart = 
                     "		<div class=\"grid1 centered\"> </div>\n" +
-					"<div class=\"grid1\"> </div>\n" +
+					"<div class=\"grid10\"> \n <div class=\"grid1\"> </div>\n" +
 		            "		<div class=\"grid8 centered\">\n" +
 		            "		<h1 id=\"title\" class=\"centered\">Your Inventory</h1>\n" +
 		            "		<table id=\"table\" align=\"center\">\n" +
@@ -2448,7 +2449,7 @@ public class GameInstance {
 		            "				<th> Upgrade Count </th>\n" +
 		            "			</tr>\n" +
 		            "			";
-      String endPart = "</table> </div>";
+      String endPart = "</table> </div> </div>";
       
       out.println(startPart);
       for (int i = 0; i < playerChar.itemsHeld.length; i++){
