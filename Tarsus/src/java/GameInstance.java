@@ -746,13 +746,21 @@ public class GameInstance {
     private stateEnum battleState(PrintWriter out, HttpServletRequest request) {
         if(startingState != stateEnum.BATTLE)
         {
+            //add a default aresChar incase the getNexrEnemy does not work
+            Integer Level = playerChar.getLevel();
+            Item[] itemsHeld = {generateWeapon(Level +1), generateArmor(Level+1)};
+            int aresHealth = constantHealthBase+(Level+1)*constantPtsPerLevel*constantHealthPerLevel;
+            int aresStrength = (Level+1)*constantPtsPerLevel*constantStrengthPerLevel;
+            int aresAgility = (Level+1)*constantPtsPerLevel*constantAgilityPerLevel;
+            int aresMagic = (Level+1)*constantPtsPerLevel*constantMagicPerLevel;
+            aresChar = new AresCharacter("Ares", "", Level, aresHealth, aresStrength, aresAgility, aresMagic, itemsHeld, itemsHeld[0], itemsHeld[1], 0, 0, 0, 0);
+            
             try {
                 //Item[] itemsHeld = {generateWeapon(1), generateArmor(1), generateWeapon(1), generateArmor(1)};
                 //playerChar = new PlayerCharacter("player", "", 1, 1000, 1, 2, 3, itemsHeld, itemsHeld[0], itemsHeld[1], 0, 0, 0, 0);
                 //aresChar = new AresCharacter("enemy", "", 1, 100, 1, 2, 3, itemsHeld, itemsHeld[0], itemsHeld[1], 0, 0, 0, 0);
                 getNextEnemy(playerChar.getLevel(), out);
             } catch (SQLException ex) {
-                Logger.getLogger(GameInstance.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
         
@@ -973,21 +981,17 @@ public class GameInstance {
            }
            else
            {
-               String value1 = request.getParameter(accountName);
-               String value2 = request.getParameter("Log Out");
-
-               String value = "";
-               if(value1 != null)
-                   value = value1;
-               if(value2 != null)
-                   value = value2;
-
-               if(value.equals(accountName))
-                   return stateEnum.PROFILE;
-               if(value.equals("Log Out"))
-                   return stateEnum.LOGOUT;
+               try{
+                   stateEnum check = checkNameandLog(request);
+ 
+                   if(check != stateEnum.REGISTERED_CHARACTER_CREATION)
+                       return check;
+               }
+               catch(Exception e){
+               }
+               charCreationParameters(out, request, false);
            }
-        return stateEnum.PROFILE;
+        return stateEnum.DECISION;
     }
     
     /****************************************************
@@ -2072,7 +2076,7 @@ public class GameInstance {
 		            "			</tr>\n" +
 		            "			<tr>";
 			String sellPart = "		</table>\n" +
-                    "		</div>\n" +
+                    "		</div>\n" + 
                     "		<div class=\"grid1\"> </div>\n" +
 			"       <div class=\"grid10\">" + 
                         "       <div class=\"grid1\"> </div>\n" +
@@ -2560,6 +2564,22 @@ public class GameInstance {
     {
         String value = request.getParameter("Home");
         return value.equals("Home");
+    }
+    
+    stateEnum checkNameandLog(HttpServletRequest request)
+    {
+        String name = request.getParameter(accountName), logOut = request.getParameter("Log Out");
+        try{
+            if(name!=null)
+                return stateEnum.PROFILE;
+        }
+        catch(Exception e){}
+        try{
+            if(logOut != null)
+                return stateEnum.LOGOUT;
+        }
+        catch(Exception e){}
+        return stateEnum.REGISTERED_CHARACTER_CREATION;
     }
 
     private void printInventory(PrintWriter out)
