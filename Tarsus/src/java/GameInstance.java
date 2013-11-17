@@ -1496,11 +1496,11 @@ public class GameInstance {
                         itemsHeld[i] = item;
                         if (equipWeaponId == itemId)
                         {
-                            weapon = new Item(iName, itemId, type, upgradeCount, strengthVal, agilityVal, magicVal, 0);
+                            weapon = item;
                         }
                         if (equipArmorId == itemId)
                         {
-                            armor = new Item(iName, itemId, type, upgradeCount, strengthVal, agilityVal, magicVal, 0);
+                            armor = item;
                         }
                         i++;
                     }
@@ -2588,7 +2588,8 @@ public class GameInstance {
     
     void getItems(PrintWriter out)
     {
-        //getting the length for itemsHeld
+        playerChar.weapon = null;
+        playerChar.armor = null;
         playerChar.itemsHeld = null;
         try
         {
@@ -2602,6 +2603,7 @@ public class GameInstance {
                     int equipArmorId = result.getInt("equippedArmor");
                     disconnectDB();
                     
+                    //getting the length for itemsHeld
                     connectDB();
                     String search2 = "SELECT COUNT(I.itemId) AS rows FROM Items I, CharacterHasItem C WHERE I.itemId=C.itemId AND C.charName='" + playerChar.getName() + "';";
                     result = sqlQuery(search2, out);
@@ -2610,8 +2612,6 @@ public class GameInstance {
                     disconnectDB();
 
                     playerChar.itemsHeld = new Item[rows];
-                    playerChar.weapon = null;
-                    playerChar.armor = null;
                     String search3 = "SELECT * FROM Items I, CharacterHasItem C WHERE I.itemId=C.itemId AND C.charName='" + playerChar.getName() + "';";
                     connectDB();
                     result = sqlQuery(search3, out);
@@ -2630,11 +2630,11 @@ public class GameInstance {
                         playerChar.itemsHeld[i] = item;
                         if (equipWeaponId == itemId)
                         {
-                            playerChar.weapon = new Item(iName, itemId, type, upgradeCount, strengthVal, agilityVal, magicVal, 0);
+                            playerChar.weapon = item;
                         }
                         if (equipArmorId == itemId)
                         {
-                            playerChar.armor = new Item(iName, itemId, type, upgradeCount, strengthVal, agilityVal, magicVal, 0);
+                            playerChar.armor = item;
                         }
                         i++;
                     }
