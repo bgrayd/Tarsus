@@ -198,6 +198,10 @@ public class GameInstance {
                     nextState = pastCharactersState(out, request);
                     break;
                     
+                case ALL_CHARACTERS:
+                    // look at all Characters
+                    nextState = allCharactersState(out, request);
+                    
                 case LOGOUT:
                     //Log Out
                     nextState = LogoutState(out, request);
@@ -1408,6 +1412,7 @@ public class GameInstance {
             String value3 = request.getParameter("Create Character");
             String value4 = request.getParameter("Load Character");
             String value5 = request.getParameter("Look at Past Characters");
+            String value6 = request.getParameter("Look at All Characters");
             
             String value = "";
             if(value1 != null)
@@ -1420,6 +1425,8 @@ public class GameInstance {
                 value = value4;
             if(value5 != null)
                 value = value5;
+            if(value6 != null)
+                value = value6;
             
             if(value.equals(accountName))
                 printProfileState(out);
@@ -1500,8 +1507,111 @@ public class GameInstance {
             }
             if(value.equals("Look at Past Characters"))
                 return stateEnum.PAST_CHARACTERS;
+            if(value.equals("Look at All Characters"))
+                return stateEnum.ALL_CHARACTERS;
         }
         return stateEnum.PROFILE;
+    }
+    
+    stateEnum allCharactersState(PrintWriter out, HttpServletRequest request)
+    {
+        if(startingState != stateEnum.ALL_CHARACTERS)
+        {
+         String startPart = "<html>\n" +
+                                "	<head>\n" +
+                                "	<!-- Call normalize.css -->\n" +
+                                "	<link rel=\"stylesheet\" href=\"css/normalize.css\" type=\"text/css\" media=\"screen\">\n" +
+                                "	<!-- Import Font to be used in titles and buttons -->\n" +
+                                "	<link href='http://fonts.googleapis.com/css?family=Sanchez' rel='stylesheet' type='text/css'>\n" +
+                                "	<link href='http://fonts.googleapis.com/css?family=Prosto+One' rel='stylesheet' type='text/css'>\n" +
+                                "	<!-- Call style.css -->\n" +
+                                "	<link rel=\"stylesheet\" href=\"css/grid.css\" type=\"text/css\" media=\"screen\">\n" +
+                                "	<!-- Call style.css -->\n" +
+                                "	<link rel=\"stylesheet\" href=\"css/style.css\" type=\"text/css\" media=\"screen\">\n" +
+                                "	<title> ALL Characters </title>\n" +
+                                "	</head>\n" +
+                                "	<body>\n" +
+                                "           <form action=\"Tarsus\" method=\"get\">" +
+                                "		<div id=\"header\" class=\"grid10\" align=\"right\">\n" +
+                                "			<input name=\"" + accountName + "\" value=\"" + accountName + "\" type=\"submit\" id=\"tarsusTitle\" /> \n" +
+                                "			<input class=\"button\" name=\"Log Out\" value=\"Log Out\" type=\"submit\" /> </div>\n" +
+                                "		<div class=\"grid1\"> </div>\n" +
+                                "		<div class=\"grid8 centered\">\n" +
+                                "		<h1 id=\"title\" class=\"centered\">Past Characters</h1>\n" +
+                                "		<table id=\"table\" align=\"center\">\n" +
+                                "			<tr>\n" +
+                                "				<th> Name </th>\n" +
+                                "				<th> Level </th>\n" +
+                                "				<th> Status </th>\n" +
+                                "				<th> Account </th>\n" +                              
+                                "				<th> Bio </th>\n" +
+                                "			</tr>\n";
+            String lastPart = 
+                                "		</table>\n" +
+                                "		</div>\n" +
+                                "		<div class=\"grid1\"> </div>\n" +
+                                "           </form>" +
+                                "	</body>\n" +
+                                "	\n" +
+                                "</html>";
+            
+            out.println(startPart);
+            ResultSet result;
+            int rows = 0;
+            try
+            {
+                //getting the amount of dead characters
+                String search1 = "SELECT COUNT(name) AS rows FROM Characters;";
+                connectDB();
+                result = sqlQuery(search1, out);
+                result.next();
+                rows = result.getInt("rows");
+                disconnectDB();
+            }
+            catch(Exception ex)
+            {
+                out.println("Error in getting rows: " + ex);
+            }
+            
+                        
+            String search2 = "SELECT * FROM Characters;";
+            connectDB();
+            try
+            {
+                result = sqlQuery(search2, out);
+                while (result.next())
+                        {
+                            out.println("<td>");
+                            out.println(result.getString("name"));
+                            out.println("</td>");
+                            out.println("<td>");
+                            out.println(result.getInt("level"));
+                            out.println("</td>");
+                            out.println("<td>");
+                            out.println(result.getInt("isDead"));
+                            out.println("</td>");
+                            out.println("<td>");
+                            out.println(result.getString("creator"));
+                            out.println("</td>");                            
+                            out.println("<td>");
+                            out.println(result.getString("bio"));
+                            out.println("</td>");
+                            out.println("</tr>\n");
+                        }
+                
+            }
+            catch(Exception ex)
+            {
+                    out.println("Error grabbing characters: " + ex);
+            }
+            disconnectDB();
+
+            out.println(lastPart);
+            
+            return stateEnum.PAST_CHARACTERS;
+                
+        }
+        return stateEnum.ALL_CHARACTERS;
     }
     
     stateEnum pastCharactersState(PrintWriter out, HttpServletRequest request) {
@@ -1839,6 +1949,7 @@ public class GameInstance {
             "			<div align=\"center\"> \n" +
             "				<input class=\"profileButton\" name=\"Create Character\" value=\"Create Character\" type=\"submit\" />\n" +
             "				<input class=\"profileButton\" name=\"Look at Past Characters\" value=\"Look at Past Characters\" type=\"submit\" /> \n" +
+            "				<input class=\"profileButton\" name=\"Look at All Characters\" value=\"Look at All Characters\" type=\"submit\" /> \n" +
             "			</div>\n" +
             "		</div>\n" +
             "		<div class=\"grid1\"> </div>\n" +
@@ -1874,6 +1985,8 @@ public class GameInstance {
             "			<div align=\"center\"> \n" +
             "				<input class=\"profileButton\" name=\"Load Character\" value=\"Load Character\" type=\"submit\" />  \n" +
             "				<input class=\"profileButton\" name=\"Look at Past Characters\" value=\"Look at Past Characters\" type=\"submit\" /> \n" +
+            "				<input class=\"profileButton\" name=\"Look at All Characters\" value=\"Look at All Characters\" type=\"submit\" /> \n" +
+
             "			</div>\n" +
             "		</div>\n" +
             "		<div class=\"grid1\"> </div>\n" +
