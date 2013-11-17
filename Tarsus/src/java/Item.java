@@ -7,6 +7,7 @@ class Item {
     final int CONSTANT_weaponUpgrade = 5;
     final int CONSTANT_armorUpgrade = 7;
     final int CONSTANT_upgradeMax = 3;
+    final int CONSTANT_upgradeGold = 50;
     final int CONSTANT_potionHeal = 20;
     
     Item(String name, int itemId, int type, int upgradeCount, int strength, int agility, int magic, int health)

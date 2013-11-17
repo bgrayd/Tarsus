@@ -6,25 +6,22 @@
 	<link href='http://fonts.googleapis.com/css?family=Sanchez' rel='stylesheet' type='text/css'>
 	<link href='http://fonts.googleapis.com/css?family=Prosto+One' rel='stylesheet' type='text/css'>
 	<!-- Call style.css -->
-	<link rel="stylesheet" href="../css/grid.css" type="text/css" media="screen">
+	<link rel="stylesheet" href="css/grid.css" type="text/css" media="screen">
 	<!-- Call style.css -->
-	<link rel="stylesheet" href="../css/style.css" type="text/css" media="screen">
+	<link rel="stylesheet" href="css/style.css" type="text/css" media="screen">
 	<title> Tarsus </title>
 	</head>
 	<body>
-		<div id="header" class="grid10" align="right">
-			<a href="continuechar.html" id="tarsusTitle"> USERNAME </a> 
-			<a class="button" href="../login.html"> Log Out </a> </div>
+		<div id="header" class="grid10" align="center">
+			<a> Terry </a>
+	    </div>
 		<div class="grid1"> </div>
 		<div class="grid8 centered">
-		<h1 id="title" class="centered"> Round 1! </h1>
 		<br />
 		<p align="center">
-				<a href="fight.html" class="profileButton">Attack</a>  
-				<a href="inventory.html" class="profileButton">Inventory</a> 
 		</p>
-		<div class="gridHalfL"> 
-			<h2 align="center"> User Character Name </h2>
+		<div class="gridHalf"> 
+			<h2 align="center"> Terry Crews </h2>
 			
 			<table id="table" align="center">
 				<tr>
@@ -34,10 +31,10 @@
 					<th> Agility </th>
 				</tr>
 				<tr>
-					<th> 115 </th>
+					<th> 200 </th>
+					<td> 50 </td>
 					<td> 0 </td>
 					<td> 0 </td>
-					<td> 4 </td>
 				</tr>
 			</table>
 			
@@ -52,23 +49,24 @@
 				</tr>
 				<tr>
 					<th> Weapon: </th>
-					<td> Short Bow </td>
+					<td> Common Mace </td>
+					<td> 53 </td>
 					<td> 0 </td>
 					<td> 0 </td>
-					<td> 4 </td>
 				</tr>
-				<tr>
+                               <tr>
 					<th> Armor: </th>
-					<td> Light Armor </td>
-					<td> 2% </td>
-					<td> 1% </td>
-					<td> 4% </td>
+					<td> Slightly Better potion </td>
+					<td> 65 </td>
+					<td> 0 </td>
+					<td> 0 </td>
 				</tr>
 			</table>
 		</div>
-		<div class="grid1"> </div>
-		<div class="gridHalfR"> 
-			<h2 align="center"> Enemy Character Name </h3>
+		<div class="gridMiddle"> </div>
+		<div class="gridHalf"> 
+			<h2 align="center"> Merlin </h2>
+			
 			<table id="table" align="center">
 				<tr>
 					<th> Health </th>
@@ -77,10 +75,10 @@
 					<th> Agility </th>
 				</tr>
 				<tr>
-					<th> 100 </th>
+					<th> 245 </th>
 					<td> 0 </td>
+					<td> 20 </td>
 					<td> 0 </td>
-					<td> 5 </td>
 				</tr>
 			</table>
 			
@@ -95,23 +93,29 @@
 				</tr>
 				<tr>
 					<th> Weapon: </th>
-					<td> Crossbow </td>
+					<td> Slightly Better Staff </td>
 					<td> 0 </td>
+					<td> 65 </td>
 					<td> 0 </td>
-					<td> 3 </td>
 				</tr>
-				<tr>
+                               <tr>
 					<th> Armor: </th>
-					<td> Tuxedo </td>
-					<td> 1% </td>
-					<td> 1% </td>
-					<td> 6% </td>
+					<td> Slightly Better Armor </td>
+					<td> 22 </td>
+					<td> 22 </td>
+					<td> 22 </td>
 				</tr>
 			</table>
-		</div>
 		
-		</div>
-		<div class="grid1"> </div>
+		</div>  <div class="grid10">
+                               <div align="center"> <form action="Tarsus" method = "post"> <p> You have done 0 damage to your opponent.
+ Your opponent has done 0 damage to you. </p>				<input type = "submit" class="profileButton" name = "attack" value = "Attack" />   <br />
+                               <select name = "itemSelected"> 
+<option value = "Common Mace"> Common Mace </option> 
+<option value = "Slightly Better potion"> Slightly Better potion </option> 
+                               </select>				<input type = "submit" class="profileButton" name="use" value = "Use item" /> 
+                               </form> </div>		
+                               <div class="grid1"> </div></div>
 	</body>
 	
 </html>
