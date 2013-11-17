@@ -736,13 +736,21 @@ public class GameInstance {
     private stateEnum battleState(PrintWriter out, HttpServletRequest request) {
         if(startingState != stateEnum.BATTLE)
         {
+            //add a default aresChar incase the getNexrEnemy does not work
+            Integer Level = playerChar.getLevel();
+            Item[] itemsHeld = {generateWeapon(Level +1), generateArmor(Level+1)};
+            int aresHealth = constantHealthBase+(Level+1)*constantPtsPerLevel*constantHealthPerLevel;
+            int aresStrength = (Level+1)*constantPtsPerLevel*constantStrengthPerLevel;
+            int aresAgility = (Level+1)*constantPtsPerLevel*constantAgilityPerLevel;
+            int aresMagic = (Level+1)*constantPtsPerLevel*constantMagicPerLevel;
+            aresChar = new AresCharacter("Ares", "", Level, aresHealth, aresStrength, aresAgility, aresMagic, itemsHeld, itemsHeld[0], itemsHeld[1], 0, 0, 0, 0);
+            
             try {
                 //Item[] itemsHeld = {generateWeapon(1), generateArmor(1), generateWeapon(1), generateArmor(1)};
                 //playerChar = new PlayerCharacter("player", "", 1, 1000, 1, 2, 3, itemsHeld, itemsHeld[0], itemsHeld[1], 0, 0, 0, 0);
                 //aresChar = new AresCharacter("enemy", "", 1, 100, 1, 2, 3, itemsHeld, itemsHeld[0], itemsHeld[1], 0, 0, 0, 0);
                 getNextEnemy(playerChar.getLevel(), out);
             } catch (SQLException ex) {
-                Logger.getLogger(GameInstance.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
         
