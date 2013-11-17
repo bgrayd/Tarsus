@@ -1,89 +1,337 @@
+
 <html>
-        <head>
-        <!-- Call normalize.css -->
-        <link rel="stylesheet" href="css/normalize.css" type="text/css" media="screen">
-        <!-- Import Font to be used in titles and buttons -->
-        <link href='http://fonts.googleapis.com/css?family=Sanchez' rel='stylesheet' type='text/css'>
-        <link href='http://fonts.googleapis.com/css?family=Prosto+One' rel='stylesheet' type='text/css'>
-        <!-- Call style.css -->
-        <link rel="stylesheet" href="css/grid.css" type="text/css" media="screen">
-        <!-- Call style.css -->
-        <link rel="stylesheet" href="css/style.css" type="text/css" media="screen">
-        <title> Tarsus </title>
-        </head>
-       <script>
-                function validateForm()
-                {
-                
-               var maxValue = 10
-; 
-                        var strength = parseInt(document.forms["createCharacterForm"]["strength"].value); 
-                        var agility = parseInt(document.forms["createCharacterForm"]["agility"].value);
-                        var magic = parseInt(document.forms["createCharacterForm"]["magic"].value);
-                       var health = parseInt(document.forms["createCharacterForm"]["magic"].value);
-                        var total = strength + agility + magic + health;
-                        alert("Total Experience points used: " + total);
-                        if(total > maxValue)
-                        {
-                                alert("Cannot use more than" + maxValue + " experience points.");
-                                return false;
-                        }
-                
-                }
-       </script>        <body>
-                <form action="Tarsus" method="post">                <div id="header" class="grid10" align="right">
-<input type="Submit" name="Home" value="Home"  class="FrontPageButton" />                <div class="grid1"> </div></div>
-                <div class="grid1"> </div>
-                <div class="grid8 centered">
-</form><form name="createCharacterForm" action="Tarsus" onsubmit="return validateForm()" method="post">
-                <h1 id="title" class="centered">Character Creation</h1>
-                
-                <div class="grid2"> </div>
-               <input type = "hidden" name = "level" value="2"/>
-                <div class="grid6" align="center">
-                        <h3> Level 2 </h3>
-                        <p> Experience Points to Allocate: 10
-                        </p>
-                        <p> 
-                                Name: <input type="text" name="name"/>
-                        </p>
-                        <p> 
-                                Strength: <input type="number" name="strength"min="0" max="100" value="0"/>
-                        </p> 
-                        <p> 
-                                Agility: <input type="number" name="agility"min="0" max="100" value="0"/>
-                        </p>  
-                        <p> 
-                                Magic: <input type="number" name="magic" min="0" max="100" value="0"/>
-                        </p>   
-                        <p> 
-                                Health: <input type="number" name="health" min="0" max="100" value="0"/>
-                        </p>   
-                        <p>
-                                Biography:<textarea name="bio" cols="35" rows="3" maxlength="300"> </textarea> <br /> <a id="bioLimitID">  (Max of 300 Chars)</a>
-                        </p>
-<input type="hidden" name="level" value="2" />
-<table><tr><h2>Weapons</h2></tr><tr><th>Strength</th><th>Agility</th><th>Magic</th><th>select</th><tr>
-<tr><td>65</td><td>0</td><td>0</td><td><input type="radio" name="weapon" value="Slightly Better Axe=0+65-0*0_1"></td></tr>
-<tr><td>0</td><td>0</td><td>22</td><td><input type="radio" name="weapon" value="Broken Orb=0+0-0*22_1"></td></tr>
-<tr><td>40</td><td>0</td><td>0</td><td><input type="radio" name="weapon" value="Inferior Sword=0+40-0*0_1"></td></tr>
-<tr><td>0</td><td>0</td><td>54</td><td><input type="radio" name="weapon" value="Common Orb=0+0-0*54_1"></td></tr>
-<tr><td>0</td><td>67</td><td>0</td><td><input type="radio" name="weapon" value="Slightly Better Bow=0+0-67*0_1"></td></tr>
-</table>
-<table><tr><h2>Armor</h2></tr><tr><th>Strength</th><th>Agility</th><th>Magic</th><th>select</th><tr>
-<tr><td>84</td><td>0</td><td>0</td><td><input type="radio" name="armor" value="Ancient potion=0+84-0*0_2"></td></tr>
-<tr><td>26</td><td>0</td><td>0</td><td><input type="radio" name="armor" value="Broken potion=0+26-0*0_2"></td></tr>
-<tr><td>59</td><td>0</td><td>0</td><td><input type="radio" name="armor" value="Common potion=0+59-0*0_2"></td></tr>
-<tr><td>35</td><td>0</td><td>0</td><td><input type="radio" name="armor" value="Inferior potion=0+35-0*0_2"></td></tr>
-<tr><td>32</td><td>0</td><td>0</td><td><input type="radio" name="armor" value="Inferior potion=0+32-0*0_2"></td></tr>
-</table>
-                </div>
-                <div class="grid10" align="center">
-                        <input type ="submit" value="Create a Character" class=frontPageButton /> 
-                </div>
-                </form>
-                </div>
-                <div class="grid1"> </div>
-        </body>
-        
+	<head>
+	<!-- Call normalize.css -->
+	<link rel="stylesheet" href="css/normalize.css" type="text/css" media="screen">
+	<!-- Import Font to be used in titles and buttons -->
+	<link href='http://fonts.googleapis.com/css?family=Sanchez' rel='stylesheet' type='text/css'>
+	<link href='http://fonts.googleapis.com/css?family=Prosto+One' rel='stylesheet' type='text/css'>
+	<!-- Call style.css -->
+	<link rel="stylesheet" href="css/grid.css" type="text/css" media="screen">
+	<!-- Call style.css -->
+	<link rel="stylesheet" href="css/style.css" type="text/css" media="screen">
+	<title> Tarsus </title>
+	</head>
+	<body>
+	    <form action="Tarsus" method="POST">
+		<div id="header" class="grid10" align="right">
+			<input name="Austin_Ladner" value="Austin_Ladner" type="submit" id="tarsusTitle" /> 
+			<input class="button" name="Log Out" value="Log Out" type="submit" /> 
+		</div>
+		<div class="grid1"> </div>
+		<div class="grid8 centered">
+			<h1 id="title" class="centered">Kelly John</h1>
+                   <h2 id="title" class="GoldDisplay"> Gold: 126</h2>			<p align="center">
+				<input name="To Battle!" value="To Battle!" type="submit" class="profileButton" />
+				<input name="Store" value="Store" type="submit" class="profileButton" />
+				<input name="Blacksmith" value="Blacksmith" type="submit" class="profileButton" />
+			</p>
+		</div>
+		<div class="grid1"> </div>
+	    </form>
+
+<div> 
+ <div class="grid1"> </div>
+		<div class="grid8">
+		<h1 id="title" class="centered">Your DUCESInventory</h1>
+		<table id="table" align="center">
+			<tr>
+				<td> </td>
+				<th> Name </th>
+				<th> Strength </th>
+				<th> Agility </th>
+				<th> Magic </th>
+				<th> Heal </th>
+				<th> Type </th>
+				<th> Upgrade Count </th>
+			</tr>
+			
+<tr>
+<td>
+
+</td>
+<td>
+Inferior Axe
+</td>
+<td>
+48
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+Weapon
+</td>
+<td>
+3
+</td>
+</tr>
+<tr>
+<td>
+
+</td>
+<td>
+Inferior Armor
+</td>
+<td>
+24
+</td>
+<td>
+24
+</td>
+<td>
+24
+</td>
+<td>
+0
+</td>
+<td>
+Armor
+</td>
+<td>
+2
+</td>
+</tr>
+<tr>
+<td>
+
+</td>
+<td>
+Inferior Sword
+</td>
+<td>
+44
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+Weapon
+</td>
+<td>
+0
+</td>
+</tr>
+<tr>
+<td>
+
+</td>
+<td>
+Ancient Potion
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+Item
+</td>
+<td>
+0
+</td>
+</tr>
+<tr>
+<td>
+
+</td>
+<td>
+Ancient Potion
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+Item
+</td>
+<td>
+0
+</td>
+</tr>
+<tr>
+<td>
+
+</td>
+<td>
+Ancient Magic Strength armor
+</td>
+<td>
+42
+</td>
+<td>
+0
+</td>
+<td>
+42
+</td>
+<td>
+0
+</td>
+<td>
+Armor
+</td>
+<td>
+0
+</td>
+</tr>
+<tr>
+<td>
+
+</td>
+<td>
+Slightly Better Axe
+</td>
+<td>
+78
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+Weapon
+</td>
+<td>
+0
+</td>
+</tr>
+<tr>
+<td>
+
+</td>
+<td>
+Legendary Potion
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+Item
+</td>
+<td>
+0
+</td>
+</tr>
+<tr>
+<td>
+
+</td>
+<td>
+Legendary Potion
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+Item
+</td>
+<td>
+0
+</td>
+</tr>
+<tr>
+<td>
+
+</td>
+<td>
+Legendary Potion
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+Item
+</td>
+<td>
+0
+</td>
+</tr>
+<tr>
+<td>
+
+</td>
+<td>
+Ancient Armor
+</td>
+<td>
+29
+</td>
+<td>
+29
+</td>
+<td>
+29
+</td>
+<td>
+0
+</td>
+<td>
+Armor
+</td>
+<td>
+0
+</td>
+</tr>
+</table> </div> </div>
+	</body>
 </html>

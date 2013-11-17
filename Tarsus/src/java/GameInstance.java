@@ -660,15 +660,20 @@ public class GameInstance {
         }
         else{
         String value1 = request.getParameter(accountName);
+        String value2 = request.getParameter("Log Out");
         if(value1 != null)
         {
-            out.println("going to Decision state");
+            //out.println("going to Decision state");
             return stateEnum.DECISION;
+        }
+        else if(value2 != null)
+        {
+            return stateEnum.LOGOUT;
         }
         else
         {
-            out.print("I think you pressed a button");
-            out.print(" Currency: " + gold + " ");
+            //out.print("I think you pressed a button");
+            //out.print(" Currency: " + gold + " ");
             if(request.getParameter(accountName) != null)
                 return stateEnum.DECISION;
             // for buying items from the store
@@ -700,7 +705,7 @@ public class GameInstance {
             }
             // for selling items player's inventory
             for (int i = 0; i < playerChar.itemsHeld.length; i++){
-                out.println("going through sell item: " + i);
+                //out.println("going through sell item: " + i);
                 String sellValue = request.getParameter("Sell " + i);
                 if(sellValue != null)
                 {
@@ -757,7 +762,7 @@ public class GameInstance {
         String startPage = "<html>\n" +
 "	<head>\n" +
 "	<!-- Call normalize.css -->\n" +
-"	<link rel=\"stylesheet\" href=\"../css/normalize.css\" type=\"text/css\" media=\"screen\">\n" +
+"	<link rel=\"stylesheet\" href=\"css/normalize.css\" type=\"text/css\" media=\"screen\">\n" +
 "	<!-- Import Font to be used in titles and buttons -->\n" +
 "	<link href='http://fonts.googleapis.com/css?family=Sanchez' rel='stylesheet' type='text/css'>\n" +
 "	<link href='http://fonts.googleapis.com/css?family=Prosto+One' rel='stylesheet' type='text/css'>\n" +
@@ -768,7 +773,7 @@ public class GameInstance {
 "	<title> Tarsus </title>\n" +
 "	</head>\n" +
 "	<body>\n" +
-"		<div id=\"header\" class=\"grid10\" align=\"right\">\n" +
+"		<div id=\"header\" class=\"grid10\" align=\"center\">\n" +
 "			%s \n" +
 "	        </div>\n" +
 "		<div class=\"grid1\"> </div>\n" +
@@ -827,16 +832,18 @@ public class GameInstance {
         String afterTable = 
 "		\n" +
 "		</div>\n" +
-"                               <form action=\"Tarsus\" method = \"post\">";
+"                               <div class=\"grid10\">\n" +
+"                               <div align=\"center\">\n"
+                + "                                       <form action=\"Tarsus\" method = \"post\">";
         String attackButton =
-"				<input type = \"submit\" class=\"profileButton\" name = \"attack\" value = \"Attack\" />  \n" + 
+"				<input type = \"submit\" class=\"profileButton\" name = \"attack\" value = \"Attack\" /> <br /> \n" + 
 "                               <select name = \"itemSelected\"> \n";
         String useButton = 
 "                               </select>" + 
 "				<input type = \"submit\" class=\"profileButton\" name=\"use\" value = \"Use item\" /> \n";
         String lastPart = 
 "                               </form>" + 
-"		<div class=\"grid1\"> </div>\n" +
+"		<div class=\"grid1\"> </div> </div>\n" +
 "	</body>\n" +
 "	\n" +
 "</html>";
@@ -934,7 +941,7 @@ public class GameInstance {
         }
         else if(playerChar.getHealth()<1)
         {
-            out.printf("The valiant hero has been killed.\n");
+            out.printf("The valiant hero has been killed. <br />\n");
             out.printf("<input type=\"submit\" name=\"OK\" value=\"OK\" class=\"profileButton\" /> \n");
         }
    
@@ -959,32 +966,31 @@ public class GameInstance {
      * @return the next state
      ***************************************************/
     stateEnum registeredCharacterCreationState(PrintWriter out, HttpServletRequest request) {
-     if((startingState != stateEnum.REGISTERED_CHARACTER_CREATION)|(error!=null))
-        {
-            //create new page for it
-            Integer level = 1;
-            printCharacterCreation(level, out);
-            error = null;
-            return stateEnum.REGISTERED_CHARACTER_CREATION;
-        }
-        else
-        {
-             stateEnum state;
-            try
-            {
-                if(checkHome(request))
-                {
-                    return stateEnum.INIT;
-                }
-            }
-            catch(Exception e)
-            {
-                state = charCreationParameters(out, request, false);
-                return state;
-            }
-            state = charCreationParameters(out, request, false);
-            return state;
-        }
+        if((startingState != stateEnum.REGISTERED_CHARACTER_CREATION)|(error!=null))
+           {
+               //create new page for it
+               Integer level = 1;
+               printRegCharacterCreation(level, out);
+               error = null;
+               return stateEnum.REGISTERED_CHARACTER_CREATION;
+           }
+           else
+           {
+               String value1 = request.getParameter(accountName);
+               String value2 = request.getParameter("Log Out");
+
+               String value = "";
+               if(value1 != null)
+                   value = value1;
+               if(value2 != null)
+                   value = value2;
+
+               if(value.equals(accountName))
+                   return stateEnum.PROFILE;
+               if(value.equals("Log Out"))
+                   return stateEnum.LOGOUT;
+           }
+        return stateEnum.PROFILE;
     }
     
     /****************************************************
@@ -1130,6 +1136,11 @@ public class GameInstance {
                     String tempValue = request.getParameter("Upgrade" + i);
                     if(tempValue != null)
                     {
+                        if(gold < playerChar.itemsHeld[i].CONSTANT_upgradeGold)
+                        {
+                            out.println("You do not have enought gold.");
+                            return stateEnum.BLACKSMITH;
+                        }
                         playerChar.itemsHeld[i].upgradeItem();
                         String query = "UPDATE Items SET upgradeCount=upgradeCount+1, ";
                         if(playerChar.itemsHeld[i].getType() == 1)
@@ -1699,7 +1710,7 @@ public class GameInstance {
 	
     double getQuality(int level)
     {
-        double ratio = ((double)level) / ((double)level + 1.0);
+        double ratio = ((double)level) / ((double)level + 5.0);
 	double quality = Math.random() * ratio;
 	return quality;
     }
@@ -1732,6 +1743,7 @@ public class GameInstance {
             "			<tr>\n" +
             "				<td> </td>\n" +
             "				<th> Name </th>\n" +
+            "                           <th> Upgrade Cost </th>\n" +
             "				<th> Strength </th>\n" +
             "				<th> Agility </th>\n" +
             "				<th> Magic </th>\n" +
@@ -1766,6 +1778,7 @@ public class GameInstance {
                         "<th></th>\n" +
                         "<th></th>\n" +
                         "<th></th>\n" +
+                        "<th></th>\n" +
                         "<th></th>\n");
             out.println("</tr>");
         }
@@ -1780,6 +1793,9 @@ public class GameInstance {
                     out.println(playerChar.itemsHeld[i].getName());
                     out.println("</td>");
                     out.println("<td>");
+                    out.println(playerChar.itemsHeld[i].CONSTANT_upgradeGold);
+                    out.println("</td>");
+                    out.println("<td>");
                     out.println(playerChar.itemsHeld[i].getStrength());
                     out.println("</td>");
                     out.println("<td>");
@@ -1789,7 +1805,7 @@ public class GameInstance {
                     out.println(playerChar.itemsHeld[i].getMagic());
                     out.println("</td>");
                     out.println("<td>");
-                    out.println(playerChar.itemsHeld[i].getType());
+                    out.println(item_type_string[playerChar.itemsHeld[i].getType()]);
                     out.println("</td>");
                     out.println("<td>");
                     out.println(playerChar.itemsHeld[i].getUpgradeCount());
@@ -1934,7 +1950,8 @@ public class GameInstance {
 			String sellPart = "		</table>\n" +
                     "		</div>\n" +
                     "		<div class=\"grid1\"> </div>\n" +
-					"<div class=\"grid1\"> </div>\n" +
+			"       <div class=\"grid10\">" + 
+                        "       <div class=\"grid1\"> </div>\n" +
 		            "		<div class=\"grid8 centered\">\n" +
 		            "		<h1 id=\"title\" class=\"centered\">Your Items</h1>\n" +
 		            "		<table id=\"table\" align=\"center\">\n" +
@@ -1952,7 +1969,7 @@ public class GameInstance {
 			
 			String buttonPart = ("		</table>\n" +
 	                "		</div>\n" +
-	                "		<div class=\"grid1\"> </div>\n" +
+	                "		<div class=\"grid1\"> </div> </div>\n" +
 					"		<div class=\"grid10\" align=\"center\">\n" +
 					"			<input id=\"Form\" type =\"submit\" value=\"This button does not do anything\" class=frontPageButton /> \n" +
 					"		</div>\n" +
@@ -2024,7 +2041,7 @@ public class GameInstance {
                 continue;
             }
                 out.println("<tr>");
-                out.println(" loop level: " + i);
+                //out.println(" loop level: " + i);
                 out.println("<td>");
                 if((playerChar.itemsHeld[i] != playerChar.weapon) && (playerChar.itemsHeld[i] != playerChar.armor))
                 {
@@ -2054,7 +2071,7 @@ public class GameInstance {
                 out.println(item_type_string[playerChar.itemsHeld[i].getType()]);
                 out.println("</td>");
                 out.println("<td>");
-                out.println((int)(0.60 * playerChar.itemsHeld[i].getValue()));
+                out.println((int)(0.60 * (double)(playerChar.itemsHeld[i].getValue())));
                 out.println("</td>");
                 out.println("</tr>");
 			}
@@ -2285,6 +2302,135 @@ public class GameInstance {
             error = null;
            
     }
+    
+    private void printRegCharacterCreation(Integer level, PrintWriter out) {
+        String StartPage = "<html>\n" +
+"        <head>\n" +
+"        <!-- Call normalize.css -->\n" +
+"        <link rel=\"stylesheet\" href=\"css/normalize.css\" type=\"text/css\" media=\"screen\">\n" +
+"        <!-- Import Font to be used in titles and buttons -->\n" +
+"        <link href='http://fonts.googleapis.com/css?family=Sanchez' rel='stylesheet' type='text/css'>\n" +
+"        <link href='http://fonts.googleapis.com/css?family=Prosto+One' rel='stylesheet' type='text/css'>\n" +
+"        <!-- Call style.css -->\n" +
+"        <link rel=\"stylesheet\" href=\"css/grid.css\" type=\"text/css\" media=\"screen\">\n" +
+"        <!-- Call style.css -->\n" +
+"        <link rel=\"stylesheet\" href=\"css/style.css\" type=\"text/css\" media=\"screen\">\n" +
+"        <title> Tarsus </title>\n" +
+"        </head>\n" +
+"       <script>\n" +
+"                function validateForm()\n" +
+"                {\n" +
+"                \n" +
+"               var maxValue = ";
+        String secondPart = "; \n" +
+"                        var strength = parseInt(document.forms[\"createCharacterForm\"][\"strength\"].value); \n" +
+"                        var agility = parseInt(document.forms[\"createCharacterForm\"][\"agility\"].value);\n" +
+"                        var magic = parseInt(document.forms[\"createCharacterForm\"][\"magic\"].value);\n" +
+"                       var health = parseInt(document.forms[\"createCharacterForm\"][\"health\"].value);\n" +
+"                        var total = strength + agility + magic + health;\n" +
+"                        alert(\"Total Experience points used: \" + total);\n" +
+"                        if(total > maxValue)\n" +
+"                        {\n" +
+"                                alert(\"Cannot use more than\" + maxValue + \" experience points.\");\n" +
+"                                return false;\n" +
+"                        }\n" +
+"                \n" +
+"                }\n" +
+"       </script>" + 
+"        <body>\n" +
+"                <form action=\"Tarsus\" method=\"post\">" +
+"                <div id=\"header\" class=\"grid10\" align=\"right\">\n" +
+                "<input type=\"Submit\" name=\"" + accountName + "\" value=\"" + accountName + "\"  id=\"tarsusTitle\" />" +
+                "<input class=\"button\" type=\"Submit\" name=\"Log Out\" value=\"Log Out\" />" +
+"                <div class=\"grid1\"> </div></div>\n" +
+"                <div class=\"grid1\"> </div>"+ 
+"                <div class=\"grid8 centered\">\n" +
+                "</form>" +
+"<form name=\"createCharacterForm\" action=\"Tarsus\" onsubmit=\"return validateForm()\" method=\"post\">\n" +
+"                <h1 id=\"title\" class=\"centered\">Character Creation</h1>\n" +
+"                \n" +
+"                <div class=\"grid2\"> </div>\n" +
+"               <input type = \"hidden\" name = \"level\" value=\"";
+        String thirdPart = "\"/>\n"+
+"                <div class=\"grid6\" align=\"center\">\n" +
+"                        <h3> Level ";
+        String fourthPart = " </h3>\n" +
+"                        <p> Experience Points to Allocate: ";
+        String fifthPart = "\n" +
+"                        </p>\n" +
+"                        <p> \n" +
+"                                Name: <input type=\"text\" name=\"name\"/>\n" +
+"                        </p>\n" +
+"                        <p> \n" +
+"                                Strength: <input type=\"number\" name=\"strength\"min=\"0\" max=\"100\" value=\"0\"/>\n" +
+"                        </p> \n" +
+"                        <p> \n" +
+"                                Agility: <input type=\"number\" name=\"agility\"min=\"0\" max=\"100\" value=\"0\"/>\n" +
+"                        </p>  \n" +
+"                        <p> \n" +
+"                                Magic: <input type=\"number\" name=\"magic\" min=\"0\" max=\"100\" value=\"0\"/>\n" +
+"                        </p>   \n" +
+"                        <p> \n" +
+"                                Health: <input type=\"number\" name=\"health\" min=\"0\" max=\"100\" value=\"0\"/>\n" +
+"                        </p>   \n" +
+"                        <p>\n" +
+"                                Biography:<textarea name=\"bio\" cols=\"35\" rows=\"3\" maxlength=\"300\"> </textarea> <br /> <a id=\"bioLimitID\">  (Max of 300 Chars)</a>\n" +
+"                        </p>\n";
+                String lastPart = 
+"                </div>\n"+
+"                <div class=\"grid10\" align=\"center\">\n" +
+"                        <input type =\"submit\" value=\"Create a Character\" class=frontPageButton /> \n" +
+"                </div>\n" +
+"                </form>\n" +
+"                </div>\n" +
+"                <div class=\"grid1\"> </div>\n" +
+"        </body>\n" +
+"        \n" +
+"</html>";
+            int numItemChoices = 5;
+            Item tempItem;
+            String submitValue;
+            
+            out.printf(StartPage);
+            out.println(((Integer)(level*constantPtsPerLevel)).toString());
+            out.printf(secondPart);
+            out.printf(level.toString());
+            out.printf(thirdPart);
+            out.printf(level.toString());
+            out.printf(fourthPart);
+            out.printf(((Integer)(level*constantPtsPerLevel)).toString());
+            out.printf(fifthPart);
+            out.printf("<input type=\"hidden\" name=\"level\" value=\"%d\" />\n",level);
+            
+            out.println("<table><tr><h2>Weapons</h2></tr><tr><th>Name</th><th>Strength</th><th>Agility</th><th>Magic</th><th>select</th><tr>");
+            for(int i=0; i<numItemChoices; i++)
+            {
+                tempItem = generateWeapon(level);
+                submitValue = tempItem.getName()+"="+((Integer)tempItem.itemId).toString()+"+"+((Integer)tempItem.getStrength()).toString()+"-"+((Integer)tempItem.getAgility()).toString()+"*"+((Integer)tempItem.getMagic()).toString()+"_"+((Integer)tempItem.getType()).toString();
+                if(i==0)
+                    out.printf("<tr><td>%s    </td><td>%d</td><td>%d</td><td>%d</td><td><input type=\"radio\" name=\"weapon\" value=\"%s\" checked></td></tr>\n",tempItem.getName(),tempItem.getStrength(), tempItem.getAgility(), tempItem.getMagic(), submitValue);
+                else
+                    out.printf("<tr><td>%s    </td><td>%d</td><td>%d</td><td>%d</td><td><input type=\"radio\" name=\"weapon\" value=\"%s\"></td></tr>\n",tempItem.getName(),tempItem.getStrength(), tempItem.getAgility(), tempItem.getMagic(), submitValue);
+            }
+            out.println("</table>");
+            
+            out.println("<table><tr><h2>Armor</h2></tr><tr><th>Name</th><th>Strength</th><th>Agility</th><th>Magic</th><th>select</th><tr>");
+            for(int i=0; i<numItemChoices; i++)
+            {
+                tempItem = generateArmor(level);
+                submitValue = tempItem.getName()+"="+((Integer)tempItem.itemId).toString()+"+"+((Integer)tempItem.getStrength()).toString()+"-"+((Integer)tempItem.getAgility()).toString()+"*"+((Integer)tempItem.getMagic()).toString()+"_"+((Integer)tempItem.getType()).toString();
+                if(i==0)
+                    out.printf("<tr><td>%s    </td><td>%d</td><td>%d</td><td>%d</td><td><input type=\"radio\" name=\"armor\" value=\"%s\" checked></td></tr>\n",tempItem.getName(),tempItem.getStrength(), tempItem.getAgility(), tempItem.getMagic(), submitValue);                    
+                else
+                    out.printf("<tr><td>%s    </td><td>%d</td><td>%d</td><td>%d</td><td><input type=\"radio\" name=\"armor\" value=\"%s\"></td></tr>\n",tempItem.getName(),tempItem.getStrength(), tempItem.getAgility(), tempItem.getMagic(), submitValue);
+            }
+            out.println("</table>");
+            out.println(lastPart);
+            if(error!=null)
+                out.printf("<script>alert(\"%s\");</script>",error);
+            error = null;
+           
+    }
 
     private boolean checkHome(HttpServletRequest request)
     {
@@ -2296,7 +2442,7 @@ public class GameInstance {
     {
       String startPart = 
                     "		<div class=\"grid1 centered\"> </div>\n" +
-					"<div class=\"grid1\"> </div>\n" +
+					"<div class=\"grid10\"> \n <div class=\"grid1\"> </div>\n" +
 		            "		<div class=\"grid8 centered\">\n" +
 		            "		<h1 id=\"title\" class=\"centered\">Your Inventory</h1>\n" +
 		            "		<table id=\"table\" align=\"center\">\n" +
@@ -2311,7 +2457,7 @@ public class GameInstance {
 		            "				<th> Upgrade Count </th>\n" +
 		            "			</tr>\n" +
 		            "			";
-      String endPart = "</table> </div>";
+      String endPart = "</table> </div> </div>";
       
       out.println(startPart);
       for (int i = 0; i < playerChar.itemsHeld.length; i++){
@@ -2429,38 +2575,56 @@ public class GameInstance {
     {
         //getting the length for itemsHeld
         playerChar.itemsHeld = null;
-        ResultSet result;
         try
         {
-            connectDB();
-            String search1 = "SELECT COUNT(I.itemId) AS rows FROM Items I, CharacterHasItem C WHERE I.itemId=C.itemId AND C.charName='" + playerChar.getName() + "';";
-            result = sqlQuery(search1, out);
-            result.next();
-            int rows = result.getInt("rows");
-            disconnectDB();
+            String search1 = "SELECT * FROM Characters WHERE creator='" + accountName + "' AND isDead=0;";
+                connectDB();
+                ResultSet result = sqlQuery(search1, out);
+                if(result.isBeforeFirst())
+                {
+                    result.next();
+                    int equipWeaponId = result.getInt("equippedWeapon");
+                    int equipArmorId = result.getInt("equippedArmor");
+                    disconnectDB();
+                    
+                    connectDB();
+                    String search2 = "SELECT COUNT(I.itemId) AS rows FROM Items I, CharacterHasItem C WHERE I.itemId=C.itemId AND C.charName='" + playerChar.getName() + "';";
+                    result = sqlQuery(search2, out);
+                    result.next();
+                    int rows = result.getInt("rows");
+                    disconnectDB();
 
-            playerChar.itemsHeld = new Item[rows];
-            Item weapon = null;
-            Item armor = null;
-            String search2 = "SELECT * FROM Items I, CharacterHasItem C WHERE I.itemId=C.itemId AND C.charName='" + playerChar.getName() + "';";
-            connectDB();
-            result = sqlQuery(search2, out);
-            //temp varible
-            int i = 0;
-            while (result.next())
-            {
-                String iName = result.getString("name");
-                int itemId = result.getInt("itemId");
-                int type = result.getInt("type");
-                int upgradeCount = result.getInt("upgradeCount");
-                int strengthVal= result.getInt("strengthVal");
-                int agilityVal = result.getInt("agilityVal");
-                int magicVal = result.getInt("magicVal");
-                Item item = new Item(iName, itemId, type, upgradeCount, strengthVal, agilityVal, magicVal, 0);
-                playerChar.itemsHeld[i] = item;
-                i++;
-            }
-            disconnectDB();
+                    playerChar.itemsHeld = new Item[rows];
+                    Item weapon = null;
+                    Item armor = null;
+                    String search3 = "SELECT * FROM Items I, CharacterHasItem C WHERE I.itemId=C.itemId AND C.charName='" + playerChar.getName() + "';";
+                    connectDB();
+                    result = sqlQuery(search3, out);
+                    //temp varible
+                    int i = 0;
+                    while (result.next())
+                    {
+                        String iName = result.getString("name");
+                        int itemId = result.getInt("itemId");
+                        int type = result.getInt("type");
+                        int upgradeCount = result.getInt("upgradeCount");
+                        int strengthVal= result.getInt("strengthVal");
+                        int agilityVal = result.getInt("agilityVal");
+                        int magicVal = result.getInt("magicVal");
+                        Item item = new Item(iName, itemId, type, upgradeCount, strengthVal, agilityVal, magicVal, 0);
+                        playerChar.itemsHeld[i] = item;
+                        if (equipWeaponId == itemId)
+                        {
+                            weapon = new Item(iName, itemId, type, upgradeCount, strengthVal, agilityVal, magicVal, 0);
+                        }
+                        if (equipArmorId == itemId)
+                        {
+                            armor = new Item(iName, itemId, type, upgradeCount, strengthVal, agilityVal, magicVal, 0);
+                        }
+                        i++;
+                    }
+                    disconnectDB();
+                }
         }
         catch(Exception ex)
         {
@@ -2471,7 +2635,7 @@ public class GameInstance {
     void updateGold(PrintWriter out)
     {
         connectDB();
-        String query = "UPDATE Login SET gold=\"" + gold + "\";";
+        String query = "UPDATE Login SET gold=\"" + gold + "\" WHERE username='" + accountName + "';";
         boolean okay = sqlCommand(query, out);
         if(okay)
         {
