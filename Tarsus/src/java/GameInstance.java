@@ -201,6 +201,7 @@ public class GameInstance {
                 case ALL_CHARACTERS:
                     // look at all Characters
                     nextState = allCharactersState(out, request);
+                    break;
                     
                 case LOGOUT:
                     //Log Out
@@ -1548,7 +1549,7 @@ public class GameInstance {
                                 "			<input class=\"button\" name=\"Log Out\" value=\"Log Out\" type=\"submit\" /> </div>\n" +
                                 "		<div class=\"grid1\"> </div>\n" +
                                 "		<div class=\"grid8 centered\">\n" +
-                                "		<h1 id=\"title\" class=\"centered\">Past Characters</h1>\n" +
+                                "		<h1 id=\"title\" class=\"centered\">All Characters</h1>\n" +
                                 "		<table id=\"table\" align=\"center\">\n" +
                                 "			<tr>\n" +
                                 "				<th> Name </th>\n" +
@@ -1619,10 +1620,28 @@ public class GameInstance {
 
             out.println(lastPart);
             
-            return stateEnum.PAST_CHARACTERS;
+            return stateEnum.ALL_CHARACTERS;
                 
         }
-        return stateEnum.ALL_CHARACTERS;
+        else
+        {
+            String value1 = request.getParameter(accountName);
+            String value2 = request.getParameter("Log Out");
+
+            String value = "";
+            if(value1 != null)
+                value = value1;
+            if(value2 != null)
+                value = value2;
+          
+            if(value.equals(accountName))
+                return stateEnum.PROFILE;
+            if(value.equals("Log Out"))
+                return stateEnum.LOGOUT;
+            else
+                return stateEnum.ALL_CHARACTERS;
+        }
+        //return stateEnum.PROFILE;
     }
     
     stateEnum pastCharactersState(PrintWriter out, HttpServletRequest request) {
@@ -2583,6 +2602,7 @@ public class GameInstance {
                 }
                 else
                 {
+                    // Will Give the option to equip other itmes here
                     out.println("");
                 }
                 out.println("</td>");
