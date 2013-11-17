@@ -754,7 +754,7 @@ public class GameInstance {
         String startPage = "<html>\n" +
 "	<head>\n" +
 "	<!-- Call normalize.css -->\n" +
-"	<link rel=\"stylesheet\" href=\"../css/normalize.css\" type=\"text/css\" media=\"screen\">\n" +
+"	<link rel=\"stylesheet\" href=\"css/normalize.css\" type=\"text/css\" media=\"screen\">\n" +
 "	<!-- Import Font to be used in titles and buttons -->\n" +
 "	<link href='http://fonts.googleapis.com/css?family=Sanchez' rel='stylesheet' type='text/css'>\n" +
 "	<link href='http://fonts.googleapis.com/css?family=Prosto+One' rel='stylesheet' type='text/css'>\n" +
@@ -765,7 +765,7 @@ public class GameInstance {
 "	<title> Tarsus </title>\n" +
 "	</head>\n" +
 "	<body>\n" +
-"		<div id=\"header\" class=\"grid10\" align=\"right\">\n" +
+"		<div id=\"header\" class=\"grid10\" align=\"center\">\n" +
 "			%s \n" +
 "	        </div>\n" +
 "		<div class=\"grid1\"> </div>\n" +
@@ -824,16 +824,18 @@ public class GameInstance {
         String afterTable = 
 "		\n" +
 "		</div>\n" +
-"                               <form action=\"Tarsus\" method = \"post\">";
+"                               <div class=\"grid10\">\n" +
+"                               <div align=\"center\">\n"
+                + "                                       <form action=\"Tarsus\" method = \"post\">";
         String attackButton =
-"				<input type = \"submit\" class=\"profileButton\" name = \"attack\" value = \"Attack\" />  \n" + 
+"				<input type = \"submit\" class=\"profileButton\" name = \"attack\" value = \"Attack\" /> <br /> \n" + 
 "                               <select name = \"itemSelected\"> \n";
         String useButton = 
 "                               </select>" + 
 "				<input type = \"submit\" class=\"profileButton\" name=\"use\" value = \"Use item\" /> \n";
         String lastPart = 
 "                               </form>" + 
-"		<div class=\"grid1\"> </div>\n" +
+"		<div class=\"grid1\"> </div> </div>\n" +
 "	</body>\n" +
 "	\n" +
 "</html>";
@@ -931,7 +933,7 @@ public class GameInstance {
         }
         else if(playerChar.getHealth()<1)
         {
-            out.printf("The valiant hero has been killed.\n");
+            out.printf("The valiant hero has been killed. <br />\n");
             out.printf("<input type=\"submit\" name=\"OK\" value=\"OK\" class=\"profileButton\" /> \n");
         }
    
@@ -1940,7 +1942,8 @@ public class GameInstance {
 			String sellPart = "		</table>\n" +
                     "		</div>\n" +
                     "		<div class=\"grid1\"> </div>\n" +
-					"<div class=\"grid1\"> </div>\n" +
+			"       <div class=\"grid10\">" + 
+                        "       <div class=\"grid1\"> </div>\n" +
 		            "		<div class=\"grid8 centered\">\n" +
 		            "		<h1 id=\"title\" class=\"centered\">Your Items</h1>\n" +
 		            "		<table id=\"table\" align=\"center\">\n" +
@@ -1958,7 +1961,7 @@ public class GameInstance {
 			
 			String buttonPart = ("		</table>\n" +
 	                "		</div>\n" +
-	                "		<div class=\"grid1\"> </div>\n" +
+	                "		<div class=\"grid1\"> </div> </div>\n" +
 					"		<div class=\"grid10\" align=\"center\">\n" +
 					"			<input id=\"Form\" type =\"submit\" value=\"This button does not do anything\" class=frontPageButton /> \n" +
 					"		</div>\n" +
@@ -2431,7 +2434,7 @@ public class GameInstance {
     {
       String startPart = 
                     "		<div class=\"grid1 centered\"> </div>\n" +
-					"<div class=\"grid1\"> </div>\n" +
+					"<div class=\"grid10\"> \n <div class=\"grid1\"> </div>\n" +
 		            "		<div class=\"grid8 centered\">\n" +
 		            "		<h1 id=\"title\" class=\"centered\">Your Inventory</h1>\n" +
 		            "		<table id=\"table\" align=\"center\">\n" +
@@ -2446,7 +2449,7 @@ public class GameInstance {
 		            "				<th> Upgrade Count </th>\n" +
 		            "			</tr>\n" +
 		            "			";
-      String endPart = "</table> </div>";
+      String endPart = "</table> </div> </div>";
       
       out.println(startPart);
       for (int i = 0; i < playerChar.itemsHeld.length; i++){
