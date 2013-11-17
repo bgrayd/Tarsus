@@ -1140,9 +1140,11 @@ public class GameInstance {
                         if(gold < playerChar.itemsHeld[i].CONSTANT_upgradeGold)
                         {
                             out.println("You do not have enought gold.");
+                            printBlacksmithState(out);
                             return stateEnum.BLACKSMITH;
                         }
-                        playerChar.itemsHeld[i].upgradeItem();
+                        gold = gold - 50;
+                        updateGold(out);
                         String query = "UPDATE Items SET upgradeCount=upgradeCount+1, ";
                         if(playerChar.itemsHeld[i].getType() == 1)
                         {
@@ -1169,6 +1171,7 @@ public class GameInstance {
                         connectDB();
                         sqlCommand(query, out);
                         disconnectDB();
+                        getItems(out);
                         printBlacksmithState(out);
                         break;
                     }
@@ -1501,11 +1504,11 @@ public class GameInstance {
                         itemsHeld[i] = item;
                         if (equipWeaponId == itemId)
                         {
-                            weapon = new Item(iName, itemId, type, upgradeCount, strengthVal, agilityVal, magicVal, 0);
+                            weapon = item;
                         }
                         if (equipArmorId == itemId)
                         {
-                            armor = new Item(iName, itemId, type, upgradeCount, strengthVal, agilityVal, magicVal, 0);
+                            armor = item;
                         }
                         i++;
                     }
@@ -2722,7 +2725,8 @@ public class GameInstance {
     
     void getItems(PrintWriter out)
     {
-        //getting the length for itemsHeld
+        playerChar.weapon = null;
+        playerChar.armor = null;
         playerChar.itemsHeld = null;
         try
         {
@@ -2736,6 +2740,7 @@ public class GameInstance {
                     int equipArmorId = result.getInt("equippedArmor");
                     disconnectDB();
                     
+                    //getting the length for itemsHeld
                     connectDB();
                     String search2 = "SELECT COUNT(I.itemId) AS rows FROM Items I, CharacterHasItem C WHERE I.itemId=C.itemId AND C.charName='" + playerChar.getName() + "';";
                     result = sqlQuery(search2, out);
@@ -2744,8 +2749,6 @@ public class GameInstance {
                     disconnectDB();
 
                     playerChar.itemsHeld = new Item[rows];
-                    Item weapon = null;
-                    Item armor = null;
                     String search3 = "SELECT * FROM Items I, CharacterHasItem C WHERE I.itemId=C.itemId AND C.charName='" + playerChar.getName() + "';";
                     connectDB();
                     result = sqlQuery(search3, out);
@@ -2764,11 +2767,11 @@ public class GameInstance {
                         playerChar.itemsHeld[i] = item;
                         if (equipWeaponId == itemId)
                         {
-                            weapon = new Item(iName, itemId, type, upgradeCount, strengthVal, agilityVal, magicVal, 0);
+                            playerChar.weapon = item;
                         }
                         if (equipArmorId == itemId)
                         {
-                            armor = new Item(iName, itemId, type, upgradeCount, strengthVal, agilityVal, magicVal, 0);
+                            playerChar.armor = item;
                         }
                         i++;
                     }
