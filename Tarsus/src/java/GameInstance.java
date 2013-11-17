@@ -1135,9 +1135,11 @@ public class GameInstance {
                         if(gold < playerChar.itemsHeld[i].CONSTANT_upgradeGold)
                         {
                             out.println("You do not have enought gold.");
+                            printBlacksmithState(out);
                             return stateEnum.BLACKSMITH;
                         }
-                        playerChar.itemsHeld[i].upgradeItem();
+                        gold = gold - 50;
+                        updateGold(out);
                         String query = "UPDATE Items SET upgradeCount=upgradeCount+1, ";
                         if(playerChar.itemsHeld[i].getType() == 1)
                         {
@@ -1164,6 +1166,7 @@ public class GameInstance {
                         connectDB();
                         sqlCommand(query, out);
                         disconnectDB();
+                        getItems(out);
                         printBlacksmithState(out);
                         break;
                     }

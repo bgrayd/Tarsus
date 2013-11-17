@@ -43,11 +43,6 @@ class Item {
         health = 0;
     }
     
-    void upgradeItem()
-    {
-        upgradeCount = upgradeCount + 1;
-    }
-    
     String getName()
     {
         return name;
