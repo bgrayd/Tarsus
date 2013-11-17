@@ -2610,8 +2610,8 @@ public class GameInstance {
                     disconnectDB();
 
                     playerChar.itemsHeld = new Item[rows];
-                    Item weapon = null;
-                    Item armor = null;
+                    playerChar.weapon = null;
+                    playerChar.armor = null;
                     String search3 = "SELECT * FROM Items I, CharacterHasItem C WHERE I.itemId=C.itemId AND C.charName='" + playerChar.getName() + "';";
                     connectDB();
                     result = sqlQuery(search3, out);
@@ -2630,11 +2630,11 @@ public class GameInstance {
                         playerChar.itemsHeld[i] = item;
                         if (equipWeaponId == itemId)
                         {
-                            weapon = new Item(iName, itemId, type, upgradeCount, strengthVal, agilityVal, magicVal, 0);
+                            playerChar.weapon = new Item(iName, itemId, type, upgradeCount, strengthVal, agilityVal, magicVal, 0);
                         }
                         if (equipArmorId == itemId)
                         {
-                            armor = new Item(iName, itemId, type, upgradeCount, strengthVal, agilityVal, magicVal, 0);
+                            playerChar.armor = new Item(iName, itemId, type, upgradeCount, strengthVal, agilityVal, magicVal, 0);
                         }
                         i++;
                     }
