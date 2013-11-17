@@ -976,21 +976,17 @@ public class GameInstance {
            }
            else
            {
-               String value1 = request.getParameter(accountName);
-               String value2 = request.getParameter("Log Out");
-
-               String value = "";
-               if(value1 != null)
-                   value = value1;
-               if(value2 != null)
-                   value = value2;
-
-               if(value.equals(accountName))
-                   return stateEnum.PROFILE;
-               if(value.equals("Log Out"))
-                   return stateEnum.LOGOUT;
+               try{
+                   stateEnum check = checkNameandLog(request);
+ 
+                   if(check != stateEnum.REGISTERED_CHARACTER_CREATION)
+                       return check;
+               }
+               catch(Exception e){
+               }
+               charCreationParameters(out, request, false);
            }
-        return stateEnum.PROFILE;
+        return stateEnum.DECISION;
     }
     
     /****************************************************
@@ -2436,6 +2432,22 @@ public class GameInstance {
     {
         String value = request.getParameter("Home");
         return value.equals("Home");
+    }
+    
+    stateEnum checkNameandLog(HttpServletRequest request)
+    {
+        String name = request.getParameter(accountName), logOut = request.getParameter("Log Out");
+        try{
+            if(name!=null)
+                return stateEnum.PROFILE;
+        }
+        catch(Exception e){}
+        try{
+            if(logOut != null)
+                return stateEnum.LOGOUT;
+        }
+        catch(Exception e){}
+        return stateEnum.REGISTERED_CHARACTER_CREATION;
     }
 
     private void printInventory(PrintWriter out)
