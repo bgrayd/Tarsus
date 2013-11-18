@@ -29,16 +29,17 @@ public class GameInstance {
     Item[] storeItems;
     String item_type_string[] = {"Error", "Weapon", "Armor", "Item"};
     
-    int constantPtsPerLevel = 5;
-    int constantWeaponPtsPerLevel = 3;
-    int constantArmorPtsPerLevel = 5;
-    int constantGoldPerLevel = 20;
-    int constantHealthPerLevel = 15;
-    int constantStrengthPerLevel = 10;
-    int constantAgilityPerLevel = 10;
-    int constantMagicPerLevel = 10;
-    int constantHealthBase = 200;
-    int constantItemNameMaxLength = 20;
+    final int constantPtsPerLevel = 5;
+    final int constantWeaponPtsPerLevel = 3;
+    final int constantArmorPtsPerLevel = 5;
+    final int constantGoldPerLevel = 20;
+    final int constantHealthPerLevel = 15;
+    final int constantStrengthPerLevel = 5;
+    final int constantAgilityPerLevel = 5;
+    final int constantMagicPerLevel = 5;
+    final int constantHealthBase = 200;
+    final int constantItemNameMaxLength = 20;
+    final double constantItemScalar = .75;
     
     
     GameInstance()
@@ -341,7 +342,7 @@ public class GameInstance {
 			for(int j = 0; j < 4; j++)
 			{
 				// multiples the base stat for cases where the base stat is split up in proportions
-				base_stats[j] *=(((quality) * 100) + 20);
+				base_stats[j] *=(((quality) * 100) + 20) * constantItemScalar; // apply some constant e.g .75
 				base_stats[j] = Math.round(base_stats[j]);
 				//value_sum += base_stats[j];
 			}
@@ -1085,7 +1086,10 @@ public class GameInstance {
             String value5 = request.getParameter("Blacksmith");
             
             if(value1 != null)
+            {
+                printDecisionState(out);
                 return stateEnum.DECISION;
+            }
             else if(value2 != null)
                 return stateEnum.LOGOUT;
             else if(value3 != null)
@@ -2256,7 +2260,6 @@ public class GameInstance {
 "			var magic = parseInt(document.forms[\"createCharacterForm\"][\"magic\"].value);\n" +
 "                       var health = parseInt(document.forms[\"createCharacterForm\"][\"health\"].value);\n" +
 "			var total = strength + agility + magic + health;\n" +
-"			alert(\"Total Experience points used: \" + total);\n" +
 "			if(total > maxValue)\n" +
 "			{\n" +
 "				alert(\"Cannot use more than\" + maxValue + \" experience points.\");\n" +
