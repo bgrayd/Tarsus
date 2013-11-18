@@ -940,7 +940,8 @@ public class GameInstance {
             for(int i=0; i < playerChar.itemsHeld.length;i++)
             {
                 //change first string, the value parameter, to itemId
-                out.printf("<option value = \"%s\"> %s </option> \n", playerChar.itemsHeld[i].getName(),playerChar.itemsHeld[i].getName());
+                if(playerChar.itemsHeld[i]!=null)
+                    out.printf("<option value = \"%s\"> %s </option> \n", playerChar.itemsHeld[i].getName(),playerChar.itemsHeld[i].getName());
             }
             out.printf(useButton);
         }
