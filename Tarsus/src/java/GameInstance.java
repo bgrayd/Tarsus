@@ -404,10 +404,10 @@ public class GameInstance {
             String name = result.getString("name");
             String bio = result.getString("bio");
             int level = result.getInt("level");
-            int health = result.getInt("health");
-            int strength = result.getInt("strength");
-            int agility = result.getInt("agility");
-            int magic = result.getInt("magic");
+            int health = (int) (result.getInt("health")*.9);
+            int strength = (int) (result.getInt("strength")*.9);
+            int agility = (int) (result.getInt("agility")*.9);
+            int magic = (int) (result.getInt("magic")*.9);
             int timesAttacked = result.getInt("timesAttacked");
             int timesSwitchedToStrength = result.getInt("timesSwitchedToStrength");
             int timesSwitchedToAgility = result.getInt("timesSwitchedToAgility");
@@ -2288,7 +2288,13 @@ public class GameInstance {
 "	</body>\n" +
 "	\n" +
 "</html>";
-            out.printf(page,playerChar.getStrength(),playerChar.getAgility(),playerChar.getMagic(),playerChar.getMaxHealth()/constantHealthPerLevel);
+            
+            int Strength = playerChar.getStrength()/constantStrengthPerLevel;
+            int Agility = playerChar.getAgility()/constantAgilityPerLevel;
+            int Magic = playerChar.getMagic()/constantMagicPerLevel;
+            int Health = (playerChar.getMaxHealth()-constantHealthBase)/constantHealthPerLevel;
+            
+            out.printf(page, Strength,Agility, Magic, Health);
             return stateEnum.LEVEL_UP;
         }
         else
