@@ -1635,7 +1635,10 @@ public class GameInstance {
                             out.println(result.getString("creator"));
                             out.println("</td>");                            
                             out.println("<td>");
-                            out.println(result.getString("bio"));
+                            if(result.getString("bio") != "Auto Added")
+                                out.println("No Description Given");
+                            else
+                                out.println(result.getString("bio"));
                             out.println("</td>");
                             out.println("</tr>\n");
                         }
