@@ -14,5 +14,6 @@ public enum stateEnum {
     LEVEL_UP,
     PROFILE,
     PAST_CHARACTERS,
+    ALL_CHARACTERS,
     LOGOUT
 }
