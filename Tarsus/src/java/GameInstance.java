@@ -37,7 +37,7 @@ public class GameInstance {
     final int constantStrengthPerLevel = 5;
     final int constantAgilityPerLevel = 5;
     final int constantMagicPerLevel = 5;
-    final int constantHealthBase = 200;
+    final int constantHealthBase = 100;
     final int constantItemNameMaxLength = 20;
     final double constantItemScalar = .75;
     
