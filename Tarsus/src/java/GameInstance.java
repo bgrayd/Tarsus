@@ -533,6 +533,7 @@ public class GameInstance {
         String query = "DELETE FROM CharacterHasItem WHERE itemId=";
         query += "" + item.getItemId() + "";
         query += ";";
+        connectDB();
         return sqlCommand(query, out);
     }
     
@@ -561,6 +562,7 @@ public class GameInstance {
     
     Boolean characterHasItem(Item item, Character character,PrintWriter out)
     {
+        connectDB();
         String query = "INSERT into CharacterHasItem (itemId, charName) VALUES ('"+item.getItemId()+"','"+character.getName()+"');";
         return sqlCommand(query, out);
     }
