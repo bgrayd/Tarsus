@@ -882,7 +882,7 @@ public class GameInstance {
                 actionEnum playerAction = playerChar.requestAction(request);
                 actionEnum aresAction = aresChar.requestAction(request);
 
-                if(playerAction == actionEnum.ATTACK)
+                if((playerAction == actionEnum.ATTACK)&&(aresAction == actionEnum.ATTACK))
                 {
                     //find which type of attack the player is using and calculate the damage
                     if(playerChar.weapon.getStrength()!=0)
@@ -899,9 +899,7 @@ public class GameInstance {
                     {
                         aresDamage = (int) ((playerChar.getMagic()+playerChar.weapon.getMagic())*(Math.random()*.4+.8)-(aresChar.getMagic()*aresChar.armor.getMagic()/100));
                     }
-                }
-                if(aresAction == actionEnum.ATTACK)
-                {
+
                     //find which type of attack the player is using and calculate the damage
                     if(aresChar.weapon.getStrength()!=0)
                     {
