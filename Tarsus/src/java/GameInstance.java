@@ -394,10 +394,8 @@ public class GameInstance {
         disconnectDB();
         connectDB();
         ResultSet result = sqlQuery(search1, out);
-        
         //get a random number between 1 and the total number of characters, for selecting an enemy
         int number = (int) (Math.random()*max) +1;
-        
         
         if(result.isBeforeFirst())
         {
@@ -406,6 +404,9 @@ public class GameInstance {
             {
               result.next();
             }
+            
+            if(result.isAfterLast())
+                result.last();
             
             //get the information about the character and reduce all stats to 90%
             String name = result.getString("name");
