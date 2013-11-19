@@ -382,9 +382,11 @@ public class GameInstance {
      ***************************************************/
     void getNextEnemy(Integer Level, PrintWriter out) throws SQLException
     {
+        //this gets all of the characters at a given level
         String search1 = "SELECT * FROM Characters WHERE level='"+Level.toString() + "' AND isDead=b'1';";
         connectDB();
         
+        //this will get the number of characters at a given level
         String maxCount = "SELECT COUNT(*) AS rows FROM Characters WHERE level='1' AND isDead=b'1';";
         ResultSet resultMax = sqlQuery(maxCount, out);
         resultMax.next();
@@ -392,16 +394,20 @@ public class GameInstance {
         disconnectDB();
         connectDB();
         ResultSet result = sqlQuery(search1, out);
+        
+        //get a random number between 1 and the total number of characters, for selecting an enemy
         int number = (int) (Math.random()*max) +1;
         
         
         if(result.isBeforeFirst())
         {
+            //iterate to the enemy randomly selected
             for(int i=0;i<number;i++)
             {
               result.next();
             }
-            //result.next();
+            
+            //get the information about the character and reduce all stats to 90%
             String name = result.getString("name");
             String bio = result.getString("bio");
             int level = result.getInt("level");
@@ -424,7 +430,8 @@ public class GameInstance {
             result.next();
             int rows = result.getInt("rows");
             disconnectDB();
-
+            
+            //load the items held
             Item[] itemsHeld = new Item[rows];
             Item weapon = null;
             Item armor = null;
@@ -459,6 +466,7 @@ public class GameInstance {
         }
         else
         {
+            //if there are no characters at the level, generate Ares who is very hard to beat
             Item[] itemsHeld = {generateWeapon(Level +1), generateArmor(Level+1)};
             int aresHealth = constantHealthBase+(Level+1)*constantPtsPerLevel*constantHealthPerLevel;
             int aresStrength = (Level+1)*constantPtsPerLevel*constantStrengthPerLevel;
@@ -479,6 +487,7 @@ public class GameInstance {
     
     /****************************************************
      * Adds a newly created character to the database
+     * diconnectDB needs to be called after use
      * @param chrct character object to add to the database
      * @param isDead Boolean, whether or not the character is dead
      * @param out PrintWriter for the page
@@ -496,7 +505,8 @@ public class GameInstance {
 
     
     /****************************************************
-     * update created character to the database
+     * Update created character to the database
+     * disconnectDB needs to be called after use
      * @param chrct character object to update in the database
      * @param isDead Boolean, whether or not the character is dead
      * @param out PrintWriter for the page
@@ -514,6 +524,7 @@ public class GameInstance {
     
     /****************************************************
      * Adds new item to the database
+     * disconnectDB needs to be called after use
      * @param item item object to add to the database
      * @param out PrintWriter for the page
      * @return did it work
@@ -753,9 +764,6 @@ public class GameInstance {
             aresChar = new AresCharacter("Ares", "", Level, aresHealth, aresStrength, aresAgility, aresMagic, itemsHeld, itemsHeld[0], itemsHeld[1], 0, 0, 0, 0);
             
             try {
-                //Item[] itemsHeld = {generateWeapon(1), generateArmor(1), generateWeapon(1), generateArmor(1)};
-                //playerChar = new PlayerCharacter("player", "", 1, 1000, 1, 2, 3, itemsHeld, itemsHeld[0], itemsHeld[1], 0, 0, 0, 0);
-                //aresChar = new AresCharacter("enemy", "", 1, 100, 1, 2, 3, itemsHeld, itemsHeld[0], itemsHeld[1], 0, 0, 0, 0);
                 getNextEnemy(playerChar.getLevel(), out);
             } catch (SQLException ex) {
             }
@@ -852,6 +860,7 @@ public class GameInstance {
         
         int aresDamage = 0, playerDamage = 0;      
         
+        //The page clicked was in the battle state, so interpret the button pressed
         if(startingState == stateEnum.BATTLE)
         {
             String value = null, valueAttack=request.getParameter("attack"), valueUse=request.getParameter("use"), valueOK=request.getParameter("OK"), itemName;
@@ -871,8 +880,9 @@ public class GameInstance {
                 actionEnum playerAction = playerChar.requestAction(request);
                 actionEnum aresAction = aresChar.requestAction(request);
 
-                if(playerAction == actionEnum.ATTACK)
+                if((playerAction == actionEnum.ATTACK)&&(aresAction == actionEnum.ATTACK))
                 {
+                    //find which type of attack the player is using and calculate the damage
                     if(playerChar.weapon.getStrength()!=0)
                     {
                         aresDamage = (int) ((playerChar.getStrength()+playerChar.weapon.getStrength())*(Math.random()*.4+.8)-(aresChar.getStrength()*aresChar.armor.getStrength()/100));
@@ -887,9 +897,8 @@ public class GameInstance {
                     {
                         aresDamage = (int) ((playerChar.getMagic()+playerChar.weapon.getMagic())*(Math.random()*.4+.8)-(aresChar.getMagic()*aresChar.armor.getMagic()/100));
                     }
-                }
-                if(aresAction == actionEnum.ATTACK)
-                {
+
+                    //find which type of attack the player is using and calculate the damage
                     if(aresChar.weapon.getStrength()!=0)
                     {
                         playerDamage = (int) ((aresChar.getStrength()+aresChar.weapon.getStrength())*(Math.random()*.4+.8)-(playerChar.getStrength()*playerChar.armor.getStrength()/100));
@@ -903,22 +912,27 @@ public class GameInstance {
                         playerDamage = (int) ((aresChar.getAgility()+aresChar.weapon.getAgility())*(Math.random()*.4+.8)-(playerChar.getAgility()*playerChar.armor.getAgility()/100));
                     }
                 }
-
+                
+                //inflict the damage
                 playerChar.setHealth(playerChar.getHealth() - playerDamage);
                 aresChar.setHealth(aresChar.getHealth() - aresDamage);
 
             }
             
+            //the player has been defeated
             else if(playerChar.getHealth()<1)
             {
                 //mark the character as dead in the database
                 updateCharacter(playerChar, true, out);
                 return stateEnum.PROFILE;
             }
+            
+            //the player defeated the enemy without dying
             else if(aresChar.getHealth()<1)
                 return stateEnum.LEVEL_UP;
         }
         
+        //print out most of the page
         out.printf(startPage,accountName);
         out.printf(statsTable, playerChar.name, playerChar.getHealth(), playerChar.getStrength(), playerChar.getMagic(), playerChar.getAgility());
         out.printf(equippedTable1, playerChar.weapon.getName(), playerChar.weapon.getStrength(), playerChar.weapon.getMagic(), playerChar.weapon.getAgility());
@@ -931,6 +945,7 @@ public class GameInstance {
         
         out.printf("<div>You have done %d damage to your opponent.\n Your opponent has done %d damage to you.</div>", aresDamage, playerDamage);
         
+        //the different ways the page can end
         if((playerChar.getHealth()>0) && (aresChar.getHealth()>0))
         {
             out.printf(attackButton);
@@ -971,7 +986,7 @@ public class GameInstance {
     stateEnum registeredCharacterCreationState(PrintWriter out, HttpServletRequest request) {
         if((startingState != stateEnum.REGISTERED_CHARACTER_CREATION)|(error!=null))
            {
-               //create new page for it
+               //create new page
                Integer level = 1;
                printRegCharacterCreation(level, out);
                error = null;
@@ -979,6 +994,7 @@ public class GameInstance {
            }
            else
            {
+               //it was crashing on value == string constant on some cases, this is the only way to stop it
                try{
                    stateEnum check = checkNameandLog(request);
  
@@ -987,6 +1003,7 @@ public class GameInstance {
                }
                catch(Exception e){
                }
+               //if it makes it this far, a character needs to be made
                charCreationParameters(out, request, false);
            }
         return stateEnum.DECISION;
@@ -1002,7 +1019,7 @@ public class GameInstance {
 
     if((startingState != stateEnum.UNREGISTERED_CHARACTER_CREATION)|(error!=null))
     {
-        //create new page for it
+        //create new page
         Integer level = (int)(Math.random()*49+1);
         printCharacterCreation(level, out);
         error = null;
@@ -1010,10 +1027,7 @@ public class GameInstance {
     }
     else
     {
-        /*String value = request.getParameter("Home");
-        if(value.equals("Home"))
-            return stateEnum.INIT;*/
-
+        //it was crashing on value == string constant on some cases, this is the only way to stop it
         try
         {
             if(checkHome(request))
@@ -1025,6 +1039,7 @@ public class GameInstance {
         {
             return charCreationParameters(out, request, true);
         }
+        //if it makes it this far create a new character
         return charCreationParameters(out, request, true);
     }
 }
@@ -2234,6 +2249,12 @@ public class GameInstance {
         out.println(script);
     }
 
+    /****************************************************
+     * The state for handling a level up
+     * @param out the print writer
+     * @param request the servlet request
+     * @return the next state
+     ***************************************************/
     private stateEnum levelUpState(PrintWriter out, HttpServletRequest request)
     {
         if(startingState != stateEnum.LEVEL_UP)
@@ -2306,6 +2327,7 @@ public class GameInstance {
 "	\n" +
 "</html>";
             
+            //find out the number of points put into different skills
             int Strength = playerChar.getStrength()/constantStrengthPerLevel;
             int Agility = playerChar.getAgility()/constantAgilityPerLevel;
             int Magic = playerChar.getMagic()/constantMagicPerLevel;
@@ -2316,11 +2338,13 @@ public class GameInstance {
         }
         else
         {
+            //get the parameters
             int health = Integer.parseInt(request.getParameter("health"));
             int strength = Integer.parseInt(request.getParameter("strength"));
             int agility = Integer.parseInt(request.getParameter("agility"));
             int magic = Integer.parseInt(request.getParameter("magic"));
             
+            //calculated the new values
             playerChar.setMaxHealth(playerChar.getMaxHealth()+health*constantHealthPerLevel);
             playerChar.setHealth(playerChar.getMaxHealth());
             playerChar.setStrength(playerChar.getStrength()+strength*constantStrengthPerLevel);
@@ -2334,6 +2358,11 @@ public class GameInstance {
         }
     }
 
+    /****************************************************
+     * Prints the page for unregistered character creation
+     * @param level the level of the character to create
+     * @param out the PrintWriter for the page
+     ***************************************************/
     private void printCharacterCreation(Integer level, PrintWriter out) {
         String StartPage = "<html>\n" +
 "        <head>\n" +
@@ -2432,11 +2461,13 @@ public class GameInstance {
             out.printf(fifthPart);
             out.printf("<input type=\"hidden\" name=\"level\" value=\"%d\" />\n",level);
             
+            //print out the weapon choices
             out.println("<table><tr><h2>Weapons</h2></tr><tr><th>Name</th><th>Strength</th><th>Agility</th><th>Magic</th><th>select</th><tr>");
             for(int i=0; i<numItemChoices; i++)
             {
                 tempItem = generateWeapon(level);
                 submitValue = tempItem.getName()+"="+((Integer)tempItem.itemId).toString()+"+"+((Integer)tempItem.getStrength()).toString()+"-"+((Integer)tempItem.getAgility()).toString()+"*"+((Integer)tempItem.getMagic()).toString()+"_"+((Integer)tempItem.getType()).toString();
+                //the first choice is automatically checked
                 if(i==0)
                     out.printf("<tr><td>%s    </td><td>%d</td><td>%d</td><td>%d</td><td><input type=\"radio\" name=\"weapon\" value=\"%s\" checked></td></tr>\n",tempItem.getName(),tempItem.getStrength(), tempItem.getAgility(), tempItem.getMagic(), submitValue);
                 else
@@ -2444,11 +2475,13 @@ public class GameInstance {
             }
             out.println("</table>");
             
+            //print out the armor choices
             out.println("<table><tr><h2>Armor</h2></tr><tr><th>Name</th><th>Strength</th><th>Agility</th><th>Magic</th><th>select</th><tr>");
             for(int i=0; i<numItemChoices; i++)
             {
                 tempItem = generateArmor(level);
                 submitValue = tempItem.getName()+"="+((Integer)tempItem.itemId).toString()+"+"+((Integer)tempItem.getStrength()).toString()+"-"+((Integer)tempItem.getAgility()).toString()+"*"+((Integer)tempItem.getMagic()).toString()+"_"+((Integer)tempItem.getType()).toString();
+                //the first one is automatically checked
                 if(i==0)
                     out.printf("<tr><td>%s    </td><td>%d</td><td>%d</td><td>%d</td><td><input type=\"radio\" name=\"armor\" value=\"%s\" checked></td></tr>\n",tempItem.getName(),tempItem.getStrength(), tempItem.getAgility(), tempItem.getMagic(), submitValue);                    
                 else
@@ -2462,6 +2495,11 @@ public class GameInstance {
            
     }
     
+    /****************************************************
+     * Prints the page for registered character creation
+     * @param level the level of the character to create
+     * @param out the PrintWriter for the page
+     ***************************************************/
     private void printRegCharacterCreation(Integer level, PrintWriter out) {
         String StartPage = "<html>\n" +
 "        <head>\n" +
@@ -2561,11 +2599,13 @@ public class GameInstance {
             out.printf(fifthPart);
             out.printf("<input type=\"hidden\" name=\"level\" value=\"%d\" />\n",level);
             
+            //print the weapon choices
             out.println("<table><tr><h2>Weapons</h2></tr><tr><th>Name</th><th>Strength</th><th>Agility</th><th>Magic</th><th>select</th><tr>");
             for(int i=0; i<numItemChoices; i++)
             {
                 tempItem = generateWeapon(level);
                 submitValue = tempItem.getName()+"="+((Integer)tempItem.itemId).toString()+"+"+((Integer)tempItem.getStrength()).toString()+"-"+((Integer)tempItem.getAgility()).toString()+"*"+((Integer)tempItem.getMagic()).toString()+"_"+((Integer)tempItem.getType()).toString();
+                //the first choice is the defualt selected option
                 if(i==0)
                     out.printf("<tr><td>%s    </td><td>%d</td><td>%d</td><td>%d</td><td><input type=\"radio\" name=\"weapon\" value=\"%s\" checked></td></tr>\n",tempItem.getName(),tempItem.getStrength(), tempItem.getAgility(), tempItem.getMagic(), submitValue);
                 else
@@ -2573,11 +2613,13 @@ public class GameInstance {
             }
             out.println("</table>");
             
+            //print fout the armor choices
             out.println("<table><tr><h2>Armor</h2></tr><tr><th>Name</th><th>Strength</th><th>Agility</th><th>Magic</th><th>select</th><tr>");
             for(int i=0; i<numItemChoices; i++)
             {
                 tempItem = generateArmor(level);
                 submitValue = tempItem.getName()+"="+((Integer)tempItem.itemId).toString()+"+"+((Integer)tempItem.getStrength()).toString()+"-"+((Integer)tempItem.getAgility()).toString()+"*"+((Integer)tempItem.getMagic()).toString()+"_"+((Integer)tempItem.getType()).toString();
+                //the first one is selected by default
                 if(i==0)
                     out.printf("<tr><td>%s    </td><td>%d</td><td>%d</td><td>%d</td><td><input type=\"radio\" name=\"armor\" value=\"%s\" checked></td></tr>\n",tempItem.getName(),tempItem.getStrength(), tempItem.getAgility(), tempItem.getMagic(), submitValue);                    
                 else
@@ -2591,12 +2633,22 @@ public class GameInstance {
            
     }
 
+    /****************************************************
+     * Checks the parameters for the home button being pressed
+     * @param request the servlet request
+     * @return whether or not it was pressed
+     ***************************************************/
     private boolean checkHome(HttpServletRequest request)
     {
         String value = request.getParameter("Home");
         return value.equals("Home");
     }
     
+    /****************************************************
+     * Checks for the name or loggout being pressed
+     * @param request the servlet request
+     * @return the next state, possibly the current state
+     ***************************************************/
     stateEnum checkNameandLog(HttpServletRequest request)
     {
         String name = request.getParameter(accountName), logOut = request.getParameter("Log Out");
@@ -2690,9 +2742,16 @@ public class GameInstance {
       out.println(endPart);
     }
     
+    /****************************************************
+     * Interprets the character creation parameters
+     * @param out the print writer
+     * @param request the servlet request
+     * @param isUnReg whether or not the user is signed in
+     * @return the next state
+     ***************************************************/
     private stateEnum charCreationParameters(PrintWriter out, HttpServletRequest request, Boolean isUnReg) {
         
-
+        //load the parameters
         String name = (String) request.getParameter("name");
         String bio = request.getParameter("bio");
         int level = Integer.parseInt(request.getParameter("level"));
@@ -2701,7 +2760,7 @@ public class GameInstance {
         int agility = (Integer.parseInt(request.getParameter("agility"))*constantAgilityPerLevel);
         int magic = (Integer.parseInt(request.getParameter("magic"))*constantMagicPerLevel);
         
-        //Item[] items = {new Item(request.getParameter("weapon")), new Item(request.getParameter("armor"))};
+        //load the weapon and armor choices
         String weap = request.getParameter("weapon");
         Item weap2 = new Item(weap);
         String armor = request.getParameter("armor");
@@ -2709,18 +2768,19 @@ public class GameInstance {
         
         Item[] items = {weap2, armor2};
 
+        //check to see if the name is already in use
         try{
             String findCharName = "SELECT name FROM Characters "
                     + "WHERE name = \"" + name + "\";";
             
             Boolean alreadyExists = false;
-                connectDB();
-                ResultSet result = sqlQuery(findCharName, out);
-                if(result.isBeforeFirst()){
-                    alreadyExists= true;
-                    
-                }
+            connectDB();
+            ResultSet result = sqlQuery(findCharName, out);
+            if(result.isBeforeFirst()){
+                alreadyExists= true;
+            }
             
+            //make the character
             if(isValidString(name) & isValidString(bio) & !alreadyExists)
             {
                newItem(items[0], out);
@@ -2737,6 +2797,7 @@ public class GameInstance {
             }
             else
             {
+                //report any errors
                 error = "The character name or bio is invalid or there was a database error";
                 if(alreadyExists)
                     error = "That name is already in use";
