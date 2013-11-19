@@ -394,10 +394,8 @@ public class GameInstance {
         disconnectDB();
         connectDB();
         ResultSet result = sqlQuery(search1, out);
-        
         //get a random number between 1 and the total number of characters, for selecting an enemy
         int number = (int) (Math.random()*max) +1;
-        
         
         if(result.isBeforeFirst())
         {
@@ -406,6 +404,9 @@ public class GameInstance {
             {
               result.next();
             }
+            
+            if(result.isAfterLast())
+                result.last();
             
             //get the information about the character and reduce all stats to 90%
             String name = result.getString("name");
@@ -924,6 +925,7 @@ public class GameInstance {
             {
                 //mark the character as dead in the database
                 updateCharacter(playerChar, true, out);
+                disconnectDB();
                 return stateEnum.PROFILE;
             }
             
@@ -2354,6 +2356,7 @@ public class GameInstance {
                         
             //update database
             updateCharacter(playerChar, false, out);
+            disconnectDB();
             return stateEnum.DECISION;
         }
     }
@@ -2790,6 +2793,7 @@ public class GameInstance {
                newCharacter(chrct,isUnReg, out);
                characterHasItem(items[0], chrct, out);
                characterHasItem(items[1], chrct, out);
+               disconnectDB();
                if(isUnReg)
                     return stateEnum.INIT;
                playerChar = chrct;
