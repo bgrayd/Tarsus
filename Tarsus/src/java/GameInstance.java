@@ -473,7 +473,7 @@ public class GameInstance {
             int aresStrength = (Level+1)*constantPtsPerLevel*constantStrengthPerLevel;
             int aresAgility = (Level+1)*constantPtsPerLevel*constantAgilityPerLevel;
             int aresMagic = (Level+1)*constantPtsPerLevel*constantMagicPerLevel;
-            aresChar = new AresCharacter("Ares", "", Level, aresHealth, aresStrength, aresAgility, aresMagic, itemsHeld, itemsHeld[0], itemsHeld[1], 0, 0, 0, 0);
+            aresChar = new AresCharacter("Dominic Toretto", "", Level, aresHealth, aresStrength, aresAgility, aresMagic, itemsHeld, itemsHeld[0], itemsHeld[1], 0, 0, 0, 0);
         }
     }
     
