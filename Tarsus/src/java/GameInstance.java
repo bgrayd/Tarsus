@@ -699,7 +699,7 @@ public class GameInstance {
                     if(gold < storeItems[i].getValue())
                     {
                         printStoreState(out);
-                        out.println("<script> alert(\"You do not have enought gold.\") </script>");
+                        out.println("<script> alert(\"You do not have enougth gold.\") </script>");
                         return stateEnum.STORE;
                     }
                     gold -= storeItems[i].getValue();
@@ -1174,7 +1174,7 @@ public class GameInstance {
                         if(gold < playerChar.itemsHeld[i].CONSTANT_upgradeGold)
                         {
                             printBlacksmithState(out);
-                            out.println("<script> alert(\"You do not have enought gold.\") </script>");
+                            out.println("<script> alert(\"You do not have enougth gold.\") </script>");
                             return stateEnum.BLACKSMITH;
                         }
                         gold = gold - 50;
@@ -2288,7 +2288,7 @@ public class GameInstance {
 "			var total = strength + agility + magic + health;\n" +
 "			if(total > maxValue)\n" +
 "			{\n" +
-"				alert(\"Cannot use more than\" + maxValue + \" experience points.\");\n" +
+"				alert(\"Cannot use more than \" + maxValue + \" experience points.\");\n" +
 "				return false;\n" +
 "			}\n" +
 "		\n" +
@@ -2393,10 +2393,9 @@ public class GameInstance {
 "                        var magic = parseInt(document.forms[\"createCharacterForm\"][\"magic\"].value);\n" +
 "                       var health = parseInt(document.forms[\"createCharacterForm\"][\"health\"].value);\n" +
 "                        var total = strength + agility + magic + health;\n" +
-"                        alert(\"Total Experience points used: \" + total);\n" +
 "                        if(total > maxValue)\n" +
 "                        {\n" +
-"                                alert(\"Cannot use more than\" + maxValue + \" experience points.\");\n" +
+"                                alert(\"Cannot use more than \" + maxValue + \" experience points.\");\n" +
 "                                return false;\n" +
 "                        }\n" +
 "                \n" +
@@ -2530,10 +2529,9 @@ public class GameInstance {
 "                        var magic = parseInt(document.forms[\"createCharacterForm\"][\"magic\"].value);\n" +
 "                       var health = parseInt(document.forms[\"createCharacterForm\"][\"health\"].value);\n" +
 "                        var total = strength + agility + magic + health;\n" +
-"                        alert(\"Total Experience points used: \" + total);\n" +
 "                        if(total > maxValue)\n" +
 "                        {\n" +
-"                                alert(\"Cannot use more than\" + maxValue + \" experience points.\");\n" +
+"                                alert(\"Cannot use more than \" + maxValue + \" experience points.\");\n" +
 "                                return false;\n" +
 "                        }\n" +
 "                \n" +
