@@ -1104,10 +1104,7 @@ public class GameInstance {
             String value5 = request.getParameter("Blacksmith");
             
             if(value1 != null)
-            {
-                printDecisionState(out);
-                return stateEnum.DECISION;
-            }
+                return stateEnum.PROFILE;
             else if(value2 != null)
                 return stateEnum.LOGOUT;
             else if(value3 != null)
