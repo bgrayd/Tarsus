@@ -450,7 +450,8 @@ public class GameInstance {
                 int strengthVal= result.getInt("strengthVal");
                 int agilityVal = result.getInt("agilityVal");
                 int magicVal = result.getInt("magicVal");
-                Item item = new Item(iName, itemId, type, upgradeCount, strengthVal, agilityVal, magicVal, 0);
+                int healthVal = result.getInt("healthVal");
+                Item item = new Item(iName, itemId, type, upgradeCount, strengthVal, agilityVal, magicVal, healthVal);
                 itemsHeld[i] = item;
                 if (equipWeaponId == itemId)
                 {
@@ -1533,7 +1534,8 @@ public class GameInstance {
                         int strengthVal= result.getInt("strengthVal");
                         int agilityVal = result.getInt("agilityVal");
                         int magicVal = result.getInt("magicVal");
-                        Item item = new Item(iName, itemId, type, upgradeCount, strengthVal, agilityVal, magicVal, 0);
+                        int healthVal = result.getInt("healthVal");
+                        Item item = new Item(iName, itemId, type, upgradeCount, strengthVal, agilityVal, magicVal, healthVal);
                         itemsHeld[i] = item;
                         if (equipWeaponId == itemId)
                         {
@@ -2859,7 +2861,8 @@ public class GameInstance {
                         int strengthVal= result.getInt("strengthVal");
                         int agilityVal = result.getInt("agilityVal");
                         int magicVal = result.getInt("magicVal");
-                        Item item = new Item(iName, itemId, type, upgradeCount, strengthVal, agilityVal, magicVal, 0);
+                        int healthVal = result.getInt("healthVal");
+                        Item item = new Item(iName, itemId, type, upgradeCount, strengthVal, agilityVal, magicVal, healthVal);
                         playerChar.itemsHeld[i] = item;
                         if (equipWeaponId == itemId)
                         {
