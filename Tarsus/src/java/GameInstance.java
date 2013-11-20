@@ -1104,10 +1104,7 @@ public class GameInstance {
             String value5 = request.getParameter("Blacksmith");
             
             if(value1 != null)
-            {
-                printDecisionState(out);
-                return stateEnum.DECISION;
-            }
+                return stateEnum.PROFILE;
             else if(value2 != null)
                 return stateEnum.LOGOUT;
             else if(value3 != null)
@@ -1652,7 +1649,10 @@ public class GameInstance {
                             out.println(result.getString("creator"));
                             out.println("</td>");                            
                             out.println("<td>");
-                            out.println(result.getString("bio"));
+                            if(result.getString("bio") != "Auto Added")
+                                out.println("No Description Given");
+                            else
+                                out.println(result.getString("bio"));
                             out.println("</td>");
                             out.println("</tr>\n");
                         }
