@@ -450,7 +450,8 @@ public class GameInstance {
                 int strengthVal= result.getInt("strengthVal");
                 int agilityVal = result.getInt("agilityVal");
                 int magicVal = result.getInt("magicVal");
-                Item item = new Item(iName, itemId, type, upgradeCount, strengthVal, agilityVal, magicVal, 0);
+                int healthVal = result.getInt("healthVal");
+                Item item = new Item(iName, itemId, type, upgradeCount, strengthVal, agilityVal, magicVal, healthVal);
                 itemsHeld[i] = item;
                 if (equipWeaponId == itemId)
                 {
@@ -972,7 +973,7 @@ public class GameInstance {
             gold+=newGold;
             updateGold(out);
             playerChar.setHealth(playerChar.getMaxHealth());
-            out.printf("Congradulations you beat your enemy.\n You get %d gold.\n", newGold);
+            out.printf("Congratulations you beat your enemy.\n You get %d gold.\n", newGold);
             out.printf("<input type=\"submit\" name=\"OK\" value=\"OK\" class=\"profileButton\" /> \n");
         }
         out.printf(lastPart);
@@ -1533,7 +1534,8 @@ public class GameInstance {
                         int strengthVal= result.getInt("strengthVal");
                         int agilityVal = result.getInt("agilityVal");
                         int magicVal = result.getInt("magicVal");
-                        Item item = new Item(iName, itemId, type, upgradeCount, strengthVal, agilityVal, magicVal, 0);
+                        int healthVal = result.getInt("healthVal");
+                        Item item = new Item(iName, itemId, type, upgradeCount, strengthVal, agilityVal, magicVal, healthVal);
                         itemsHeld[i] = item;
                         if (equipWeaponId == itemId)
                         {
@@ -1649,7 +1651,7 @@ public class GameInstance {
                             out.println(result.getString("creator"));
                             out.println("</td>");                            
                             out.println("<td>");
-                            if(result.getString("bio") != "Auto Added")
+                            if((result.getString("bio").contains("Auto Added")) || (result.getString("bio").length() < 2))
                                 out.println("No Description Given");
                             else
                                 out.println(result.getString("bio"));
@@ -2859,7 +2861,8 @@ public class GameInstance {
                         int strengthVal= result.getInt("strengthVal");
                         int agilityVal = result.getInt("agilityVal");
                         int magicVal = result.getInt("magicVal");
-                        Item item = new Item(iName, itemId, type, upgradeCount, strengthVal, agilityVal, magicVal, 0);
+                        int healthVal = result.getInt("healthVal");
+                        Item item = new Item(iName, itemId, type, upgradeCount, strengthVal, agilityVal, magicVal, healthVal);
                         playerChar.itemsHeld[i] = item;
                         if (equipWeaponId == itemId)
                         {
