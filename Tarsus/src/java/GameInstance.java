@@ -972,7 +972,7 @@ public class GameInstance {
             gold+=newGold;
             updateGold(out);
             playerChar.setHealth(playerChar.getMaxHealth());
-            out.printf("Congradulations you beat your enemy.\n You get %d gold.\n", newGold);
+            out.printf("CongratulationsCongradulations you beat your enemy.\n You get %d gold.\n", newGold);
             out.printf("<input type=\"submit\" name=\"OK\" value=\"OK\" class=\"profileButton\" /> \n");
         }
         out.printf(lastPart);
