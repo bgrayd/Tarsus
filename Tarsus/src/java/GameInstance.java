@@ -972,7 +972,7 @@ public class GameInstance {
             gold+=newGold;
             updateGold(out);
             playerChar.setHealth(playerChar.getMaxHealth());
-            out.printf("CongratulationsCongradulations you beat your enemy.\n You get %d gold.\n", newGold);
+            out.printf("Congratulations you beat your enemy.\n You get %d gold.\n", newGold);
             out.printf("<input type=\"submit\" name=\"OK\" value=\"OK\" class=\"profileButton\" /> \n");
         }
         out.printf(lastPart);
@@ -1649,7 +1649,7 @@ public class GameInstance {
                             out.println(result.getString("creator"));
                             out.println("</td>");                            
                             out.println("<td>");
-                            if(result.getString("bio") != "Auto Added")
+                            if((result.getString("bio").contains("Auto Added")) || (result.getString("bio").length() < 2))
                                 out.println("No Description Given");
                             else
                                 out.println(result.getString("bio"));
