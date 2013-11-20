@@ -2393,7 +2393,6 @@ public class GameInstance {
 "                        var magic = parseInt(document.forms[\"createCharacterForm\"][\"magic\"].value);\n" +
 "                       var health = parseInt(document.forms[\"createCharacterForm\"][\"health\"].value);\n" +
 "                        var total = strength + agility + magic + health;\n" +
-"                        alert(\"Total Experience points used: \" + total);\n" +
 "                        if(total > maxValue)\n" +
 "                        {\n" +
 "                                alert(\"Cannot use more than\" + maxValue + \" experience points.\");\n" +
@@ -2530,7 +2529,6 @@ public class GameInstance {
 "                        var magic = parseInt(document.forms[\"createCharacterForm\"][\"magic\"].value);\n" +
 "                       var health = parseInt(document.forms[\"createCharacterForm\"][\"health\"].value);\n" +
 "                        var total = strength + agility + magic + health;\n" +
-"                        alert(\"Total Experience points used: \" + total);\n" +
 "                        if(total > maxValue)\n" +
 "                        {\n" +
 "                                alert(\"Cannot use more than\" + maxValue + \" experience points.\");\n" +
