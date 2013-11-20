@@ -1415,7 +1415,7 @@ public class GameInstance {
             {
                out.println(accountPageBegin + 
                         "<h3 id=\"title\" class=\"centered\"> Invalid Username "
-                       + "</h3 \n" + accountPageEnd);
+                       + "</h3> \n" + accountPageEnd);
                return stateEnum.ACCOUNT_CREATION;
             }
             
@@ -1424,7 +1424,7 @@ public class GameInstance {
             if(password != confirmPassword){
                 out.println(accountPageBegin + 
                         "<h3 id=\"title\" class=\"centered\"> The Passwords Do "
-                        + "Not Match </h3 \n" + accountPageEnd);
+                        + "Not Match </h3> \n" + accountPageEnd);
                 return stateEnum.ACCOUNT_CREATION;  
             }
             String command = "INSERT INTO Login VALUES ('" + username + "', MD5('"
