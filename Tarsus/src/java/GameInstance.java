@@ -699,7 +699,7 @@ public class GameInstance {
                     if(gold < storeItems[i].getValue())
                     {
                         printStoreState(out);
-                        out.println("<script> alert(\"You do not have enought gold.\") </script>");
+                        out.println("<script> alert(\"You do not have enougth gold.\") </script>");
                         return stateEnum.STORE;
                     }
                     gold -= storeItems[i].getValue();
@@ -1174,7 +1174,7 @@ public class GameInstance {
                         if(gold < playerChar.itemsHeld[i].CONSTANT_upgradeGold)
                         {
                             printBlacksmithState(out);
-                            out.println("<script> alert(\"You do not have enought gold.\") </script>");
+                            out.println("<script> alert(\"You do not have enougth gold.\") </script>");
                             return stateEnum.BLACKSMITH;
                         }
                         gold = gold - 50;
@@ -1415,7 +1415,7 @@ public class GameInstance {
             {
                out.println(accountPageBegin + 
                         "<h3 id=\"title\" class=\"centered\"> Invalid Username "
-                       + "</h3 \n" + accountPageEnd);
+                       + "</h3> \n" + accountPageEnd);
                return stateEnum.ACCOUNT_CREATION;
             }
             
@@ -1424,7 +1424,7 @@ public class GameInstance {
             if(password != confirmPassword){
                 out.println(accountPageBegin + 
                         "<h3 id=\"title\" class=\"centered\"> The Passwords Do "
-                        + "Not Match </h3 \n" + accountPageEnd);
+                        + "Not Match </h3> \n" + accountPageEnd);
                 return stateEnum.ACCOUNT_CREATION;  
             }
             String command = "INSERT INTO Login VALUES ('" + username + "', MD5('"
@@ -2288,7 +2288,7 @@ public class GameInstance {
 "			var total = strength + agility + magic + health;\n" +
 "			if(total > maxValue)\n" +
 "			{\n" +
-"				alert(\"Cannot use more than\" + maxValue + \" experience points.\");\n" +
+"				alert(\"Cannot use more than \" + maxValue + \" experience points.\");\n" +
 "				return false;\n" +
 "			}\n" +
 "		\n" +
@@ -2395,7 +2395,7 @@ public class GameInstance {
 "                        var total = strength + agility + magic + health;\n" +
 "                        if(total > maxValue)\n" +
 "                        {\n" +
-"                                alert(\"Cannot use more than\" + maxValue + \" experience points.\");\n" +
+"                                alert(\"Cannot use more than \" + maxValue + \" experience points.\");\n" +
 "                                return false;\n" +
 "                        }\n" +
 "                \n" +
@@ -2531,7 +2531,7 @@ public class GameInstance {
 "                        var total = strength + agility + magic + health;\n" +
 "                        if(total > maxValue)\n" +
 "                        {\n" +
-"                                alert(\"Cannot use more than\" + maxValue + \" experience points.\");\n" +
+"                                alert(\"Cannot use more than \" + maxValue + \" experience points.\");\n" +
 "                                return false;\n" +
 "                        }\n" +
 "                \n" +
